@@ -1,5 +1,6 @@
-#include <clocale>
+п»ї#include <clocale>
 #include <cstdio>
+#include <iostream>
 
 #include "lemmatizator_engine.h"
 
@@ -7,10 +8,10 @@
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	HLEM hEngine = sol_LoadLemmatizatorA("external/lemmatizator/x64/lemmatizer.db", LEME_DEFAULT);
+	HLEM hEngine = sol_LoadLemmatizatorW(L"external/lemmatizator/x64/lemmatizer.db", LEME_DEFAULT);
 
 	wchar_t utf8[256];
-	auto lemmas = sol_LemmatizePhraseW(hEngine, L"Сижу и кушаю гречку, роя землю", 0, L' ');
+	auto lemmas = sol_LemmatizePhraseW(hEngine,  L"РЎРёР¶Сѓ Рё Р±СѓРґСѓ СЃРёРґРµС‚СЊ РЅР° СЃС‚СѓР»Рµ", 0, L' ');
 	if (lemmas != nullptr)
 	{
 		int nlemma = sol_CountLemmas(lemmas);
