@@ -6,7 +6,8 @@
 class Lemmatizer
 {
 public:
-	Lemmatizer(const std::wstring& pathToDictionary);
+	Lemmatizer();
+	explicit Lemmatizer(const std::wstring& pathToDictionary);
 	std::vector<std::wstring> LemmatizeText(const std::wstring& text) const;
 	~Lemmatizer();
 	static const std::wstring DefaultPathToRussianDictionary;

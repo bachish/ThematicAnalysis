@@ -4,6 +4,10 @@
 
 const std::wstring Lemmatizer::DefaultPathToRussianDictionary = L"external/lemmatizator/x64/lemmatizer.db";
 
+Lemmatizer::Lemmatizer():Lemmatizer(DefaultPathToRussianDictionary)
+{
+}
+
 Lemmatizer::Lemmatizer(const std::wstring& pathToDictionary)
 {
 	_hEngine = sol_LoadLemmatizatorW(pathToDictionary.c_str(), LEME_DEFAULT);
