@@ -1,15 +1,11 @@
 ﻿#include "DocumentReader.h"
+
 #include "XmlSourceParser.h"
 #include <fstream>
 #include <sstream>
 
+#include "Utils.h"
 
-std::wstring ReadAllFile( std::ifstream const& fin)
-{
-	std::wstringstream wss;
-	wss << fin.rdbuf();
-	return wss.str();
-}
 
 std::ifstream OpenFileWithUsingExceptions( std::string const& filePath)
 {
@@ -29,7 +25,7 @@ NormalizedArticle DocumentReader::createNormalizedArticle(std::wstring const& ti
 std::vector<NormalizedArticle> DocumentReader::read(std::string const& filePath) const
 {
 	auto fin = OpenFileWithUsingExceptions(filePath);
-	auto documentText = ReadAllFile(fin);
+	auto documentText = Utils::readAllFile(fin);
 	auto [titles, contents] = XmlSourceParser().parseTitlesAndContents(documentText);
 
 	std::vector<NormalizedArticle> result;
