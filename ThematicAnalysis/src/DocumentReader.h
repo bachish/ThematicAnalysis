@@ -5,7 +5,11 @@
 class DocumentReader
 {
 public:
-	std::vector<NormalizedArticle> read(std::string filePath);
+	// throw std::ifstream::failure when i/o error
+	std::vector<NormalizedArticle> read(std::string const& filePath) const;
 private:
+
+	NormalizedArticle createNormalizedArticle(std::wstring const& title, std::wstring const& content) const;
+
 	Lemmatizer _lemmatizer;
 };
