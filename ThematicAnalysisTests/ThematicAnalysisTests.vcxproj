@@ -101,7 +101,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;..\ThematicAnalysis\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Lemmatizer.obj;DocumentReader.obj;lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Lemmatizer.obj;Term.obj;DocumentReader.obj;lemmatizator.lib;Utils.obj;NormalizedArticle.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

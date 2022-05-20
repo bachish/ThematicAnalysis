@@ -1,7 +1,5 @@
 ﻿#include "XmlSourceParser.h"
 
-
-
 /**
  * \brief Extract from text only titles and content
  * \param documentText - source text in xml
