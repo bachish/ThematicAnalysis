@@ -18,7 +18,13 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="XmlSourceParserTests.cpp">
+    <ClCompile Include="UtilsTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DocumentReaderTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+     <ClCompile Include="XmlSourceParserTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
