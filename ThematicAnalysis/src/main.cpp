@@ -14,6 +14,4 @@ int main()
 	auto words = lemmatizer.lemmatizeText(L"Сижу и буду сидеть");
 	for (auto&& word : words)
 		std::wcout << word << std::endl;
-
-	auto parser = XmlSourceParser();
 }
