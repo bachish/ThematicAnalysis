@@ -19,11 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DocumentReader.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\XmlSourceParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DocumentReader.h" />
     <ClInclude Include="src\Lemmatizer.h" />
+    <ClInclude Include="src\XmlSourceParser.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
