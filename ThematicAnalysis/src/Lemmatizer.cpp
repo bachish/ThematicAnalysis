@@ -1,4 +1,7 @@
 #include "Lemmatizer.h"
+
+#include <algorithm>
+#include <cwctype>
 #include <lemmatizator_engine.h>
 #include <memory>
 
@@ -26,6 +29,8 @@ std::vector<std::wstring> Lemmatizer::lemmatizeText(const std::wstring& text) co
 		{
 			sol_GetLemmaStringW(hWords, i, strBuf.get(), sizeof(strBuf));
 			words.emplace_back(strBuf.get());
+			auto word = words.back();
+			std::transform(word.begin(), word.end(), word.begin(), [](wchar_t ch){return std::towlower(ch);});
 		}
 
 		sol_DeleteLemmas(hWords);
