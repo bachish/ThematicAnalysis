@@ -2,9 +2,9 @@
 #include <lemmatizator_engine.h>
 #include <memory>
 
-const std::wstring Lemmatizer::DefaultPathToRussianDictionary = L"external/lemmatizator/x64/lemmatizer.db";
+const std::wstring Lemmatizer::RUS_DICTIONARY_DEFAULT_PATH = L"external/lemmatizator/x64/lemmatizer.db";
 
-Lemmatizer::Lemmatizer():Lemmatizer(DefaultPathToRussianDictionary)
+Lemmatizer::Lemmatizer():Lemmatizer(RUS_DICTIONARY_DEFAULT_PATH)
 {
 }
 
@@ -13,7 +13,7 @@ Lemmatizer::Lemmatizer(const std::wstring& pathToDictionary)
 	_hEngine = sol_LoadLemmatizatorW(pathToDictionary.c_str(), LEME_DEFAULT);
 }
 
-std::vector<std::wstring> Lemmatizer::LemmatizeText(const std::wstring& text) const
+std::vector<std::wstring> Lemmatizer::lemmatizeText(const std::wstring& text) const
 {
 	std::vector<std::wstring> words;
 	auto strBuf = std::unique_ptr<wchar_t[]>(new wchar_t[text.length() + 1]);

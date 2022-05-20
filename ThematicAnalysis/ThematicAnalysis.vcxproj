@@ -22,18 +22,22 @@
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
     <ClCompile Include="src\NormalizedArticle.cpp" />
     <ClCompile Include="src\SemanticGraph.cpp" />
+    <ClCompile Include="src\DocumentReader.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\XmlSourceParser.cpp" />
     <ClCompile Include="src\Term.cpp" />
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DocumentReader.h" />
     <ClInclude Include="src\SemanticGraphBuilder.h" />
     <ClInclude Include="src\NormalizedArticle.h" />
     <ClInclude Include="src\SemanticGraph.h" />
     <ClInclude Include="src\Lemmatizer.h" />
     <ClInclude Include="src\Term.h" />
     <ClInclude Include="src\Utils.h" />
+    <ClInclude Include="src\XmlSourceParser.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
