@@ -15,7 +15,7 @@ size_t Utils::calculateHashCode(std::wstring const& text)
 
 
 
-std::wstring Utils::readAllFile( std::ifstream const& fin)
+std::wstring Utils::readAllFile( std::wifstream const& fin)
 {
 	std::wstringstream wss;
 	wss << fin.rdbuf();

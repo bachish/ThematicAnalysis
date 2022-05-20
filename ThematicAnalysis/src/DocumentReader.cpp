@@ -7,9 +7,9 @@
 #include "Utils.h"
 
 
-std::ifstream OpenFileWithUsingExceptions( std::string const& filePath)
+std::wifstream OpenFileWithUsingExceptions( std::string const& filePath)
 {
-	std::ifstream fin;
+	std::wifstream fin;
 	fin.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fin.open(filePath);
 	return fin;

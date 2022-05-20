@@ -178,7 +178,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="resources\XmlSourseParser\OnePaper.txt" />
+    <Content Include="resources\XmlSourseParser\OnePaper.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
