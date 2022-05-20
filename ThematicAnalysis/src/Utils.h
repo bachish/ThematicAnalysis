@@ -6,5 +6,5 @@ class Utils
 {
 public:
 	static size_t calculateHashCode(std::wstring const& text);
-	static std::wstring sortAndConcatWords(std::vector<std::wstring> const& words);
+	static std::wstring sortAndConcatWords(std::vector<std::wstring> words);
 };

@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <numeric>
+#include <string>
+
 
 size_t Utils::calculateHashCode(std::wstring const& text)
 {
@@ -9,7 +11,7 @@ size_t Utils::calculateHashCode(std::wstring const& text)
 	return _hashCalculator(text);
 }
 
-std::wstring Utils::sortAndConcatWords(std::vector<std::wstring> const& words)
+std::wstring Utils::sortAndConcatWords(std::vector<std::wstring>  words)
 {
 	std::sort(words.begin(), words.end());
 	return std::accumulate(words.begin(), words.end(), std::wstring(L""));
