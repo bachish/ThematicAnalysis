@@ -24,7 +24,7 @@
     <ClCompile Include="DocumentReaderTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-     <ClCompile Include="XmlSourceParserTests.cpp">
+    <ClCompile Include="XmlSourceParserTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -34,6 +34,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="resources\XmlSourseParser\OnePaper.txt" />
+    <Text Include="resources\XmlSourceParser\TwoPaper.txt" />
   </ItemGroup>
 </Project>
