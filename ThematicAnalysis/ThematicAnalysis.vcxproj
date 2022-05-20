@@ -19,11 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\SemanticGraphBuilder.cpp" />
+    <ClCompile Include="src\NormalizedArticle.cpp" />
+    <ClCompile Include="src\SemanticGraph.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Term.cpp" />
+    <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SemanticGraphBuilder.h" />
+    <ClInclude Include="src\NormalizedArticle.h" />
+    <ClInclude Include="src\SemanticGraph.h" />
     <ClInclude Include="src\Lemmatizer.h" />
+    <ClInclude Include="src\Term.h" />
+    <ClInclude Include="src\Utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
