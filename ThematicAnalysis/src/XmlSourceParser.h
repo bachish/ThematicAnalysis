@@ -6,13 +6,12 @@
 class XmlSourceParser
 {
 public:
-	XmlSourceParser();
 	std::tuple<std::vector<std::wstring>, std::vector<std::wstring>> parseTitlesAndContents(std::wstring const & documentText);
 private:
 	std::vector<std::wstring> _titles;
 	std::vector<std::wstring> _contents;
-	std::wstring & _text;
-	size_t _ptr = 0, _size;
+	std::wstring _text;
+	size_t _ptr = 0, _size = 0;
 	const std::wstring nameTag = L"name";
 	const std::wstring contentTag = L"content";
 	const std::wstring paperTag = L"paper";
