@@ -13,27 +13,13 @@ namespace ThematicAnalysisTests
 	{
 		std::wstring readTestFile(std::wstring name)
 		{
-			auto path = L"resources/" + name;
-			return Utils::readAllFile(std::ifstream(path));
+			auto path = L"resources/XmlSourceParser/" + name;
+			return Utils::readAllFile(std::wifstream(path));
 		}
 		TEST_METHOD(OnePaper)
 		{
 			auto parser = XmlSourceParser();
-			auto text = LR"(<paper>
-				<paperName>
-				<name>
-				АБАК 
-				</name>
-				<detail>
-				</detail>
-				</paperName>
-				<paperDef>
-				Счетная доска применявшаяся арифметич 
-				</paperDef>
-				<content>
-				вычислений Древней Греции Риме затем 
-				</content>
-				</paper>)";
+			auto text = readTestFile(L"OnePaper.txt");
 			auto [titles, contents] = parser.parseTitlesAndContents(text);
 			Assert::AreEqual((size_t)1, titles.size());
 			Assert::AreEqual((size_t)1, contents.size());

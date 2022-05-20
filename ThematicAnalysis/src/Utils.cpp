@@ -1,11 +1,9 @@
 ﻿#include "Utils.h"
 #include <sstream>
 #include <fstream>
-
 #include <algorithm>
 #include <numeric>
 #include <string>
-
 
 size_t Utils::calculateHashCode(std::wstring const& text)
 {
@@ -13,11 +11,10 @@ size_t Utils::calculateHashCode(std::wstring const& text)
 	return _hashCalculator(text);
 }
 
-
-
-std::wstring Utils::readAllFile( std::ifstream const& fin)
+std::wstring Utils::readAllFile(std::wifstream& fin)
 {
 	std::wstringstream wss;
+	fin.imbue(std::locale("ru-RU"));
 	wss << fin.rdbuf();
 	return wss.str();
 }
@@ -38,19 +35,21 @@ void Utils::clearString(std::wstring& s)
 		if (i == '\t' || i == '\n')
 			i = ' ';
 	}
-	
+
 	s.erase(std::unique(s.begin(), s.end(), [](wchar_t a, wchar_t b)
 		{return a == b && a == ' '; }), s.end());
-	if(s[0] == ' ')
+	if (s[0] == ' ')
 		s.erase(s.begin(), s.begin() + 1);
 	const auto end = s.end();
-	if(s[s.size() -1] == ' ')
+	if (s[s.size() - 1] == ' ')
 		s.erase(s.end() - 1, s.end());
 }
 
+/**todo fix for wchar 
+ */
 bool Utils::isLetter(wchar_t c)
 {
-	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || isCyrillicLetter(c) ;
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || isCyrillicLetter(c);
 }
 bool Utils::isCyrillicLetter(wchar_t c)
 {
