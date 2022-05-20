@@ -2,24 +2,44 @@
 
 #include <fstream>
 
+
 #include "CppUnitTest.h"
 #include "Utils.h"
 #include "XmlSourceParser.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-TEST_CLASS(XmlSourceParserTests)
+namespace ThematicAnalysisTests
 {
-	std::wstring readTestFile(std::wstring name)
+	TEST_CLASS(XmlSourceParserTests)
 	{
-		return Utils::readAllFile(std::ifstream(L"resources/XmlSourceParser/" + name));
-	}
-	TEST_METHOD(OnePaper)
-	{
-		auto parser = XmlSourceParser();
-		auto [titles, contents] = parser.parseTitlesAndContents(readTestFile(L"OnePaper"));
-		Assert::AreEqual(titles.size(), (size_t)1);
-		Assert::AreEqual(contents.size(), (size_t)1);
-		Assert::AreEqual(titles[0], std::wstring(L"АБАК"));
-		Assert::AreEqual(contents[0], std::wstring(L"Счетная доска применявшаяся арифметич вычислений Древней Греции Риме затем"));
+		std::wstring readTestFile(std::wstring name)
+		{
+			auto path = L"resources/" + name;
+			return Utils::readAllFile(std::ifstream(path));
+		}
+		TEST_METHOD(OnePaper)
+		{
+			auto parser = XmlSourceParser();
+			auto text = LR"(<paper>
+				<paperName>
+				<name>
+				АБАК 
+				</name>
+				<detail>
+				</detail>
+				</paperName>
+				<paperDef>
+				Счетная доска применявшаяся арифметич 
+				</paperDef>
+				<content>
+				вычислений Древней Греции Риме затем 
+				</content>
+				</paper>)";
+			auto [titles, contents] = parser.parseTitlesAndContents(text);
+			Assert::AreEqual((size_t)1, titles.size());
+			Assert::AreEqual((size_t)1, contents.size());
+			Assert::AreEqual(std::wstring(L"АБАК"), titles[0]);
+			Assert::AreEqual(std::wstring(L"Счетная доска применявшаяся арифметич вычислений Древней Греции Риме затем"), contents[0]);
 
-	}
-};
+		}
+	};
+}

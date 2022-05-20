@@ -178,7 +178,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="resources\XmlSourseParser\OnePaper.txt" />
+    <Text Include="resources\XmlSourceParser\OnePaper.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

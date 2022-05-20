@@ -21,7 +21,6 @@ private:
 	void parse();
 	std::wstring readWord();
 	std::tuple<std::wstring, bool> readTag();
-	static bool isLetter(wchar_t c);
 	void skipSpace();
 	
 };

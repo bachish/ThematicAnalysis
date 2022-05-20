@@ -1,5 +1,7 @@
 ﻿#include "XmlSourceParser.h"
 
+#include "Utils.h"
+
 /**
  * \brief Extract from text only titles and content
  * \param documentText - source text in xml
@@ -45,6 +47,8 @@ void XmlSourceParser::parsePaper()
 	}
 	if (!title.empty())
 	{
+		Utils::clearString(title);
+		Utils::clearString(content);
 		_titles.push_back(title);
 		_contents.push_back(content);
 	}
@@ -71,7 +75,7 @@ std::wstring XmlSourceParser::readWord()
 {
 	skipSpace();
 	const auto start = _ptr;
-	while (isLetter(_text[_ptr]))
+	while (Utils::isLetter(_text[_ptr]))
 		++_ptr;
 	return _text.substr(start, _ptr - start);
 }
@@ -92,14 +96,11 @@ std::tuple<std::wstring, bool> XmlSourceParser::readTag()
 
 void XmlSourceParser::skipSpace()
 {
-	while (_ptr < _size && _ptr == ' ')
+	while (_ptr < _size && (_text[_ptr] == ' ' || _text[_ptr] == '\t' || _text[_ptr] == '\n'))
 		++_ptr;
 }
 
-bool XmlSourceParser::isLetter(wchar_t c)
-{
-	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-}
+
 
 std::wstring XmlSourceParser::readToEnd(const std::wstring& tagName)
 {
