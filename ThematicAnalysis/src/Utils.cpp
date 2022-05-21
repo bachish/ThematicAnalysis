@@ -10,6 +10,10 @@ size_t Utils::calculateHashCode(std::wstring const& text)
 	static std::hash<std::wstring> _hashCalculator;
 	return _hashCalculator(text);
 }
+size_t Utils::calculateTermHashCode(std::vector<std::wstring> words)
+{
+	return calculateHashCode(sortAndConcatWords(words));
+}
 
 std::wstring Utils::readAllFile(std::wifstream& fin)
 {

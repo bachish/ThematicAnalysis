@@ -6,6 +6,7 @@ class Utils
 {
 public:
 	static size_t calculateHashCode(std::wstring const& text);
+	static size_t calculateTermHashCode(std::vector<std::wstring> words);
 	static std::wstring readAllFile( std::wifstream & fin);
 	static std::wstring sortAndConcatWords(std::vector<std::wstring> words);
 	static void clearString(std::wstring& s);

@@ -101,7 +101,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;..\ThematicAnalysis\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Lemmatizer.obj;Term.obj;DocumentReader.obj;lemmatizator.lib;Utils.obj;NormalizedArticle.obj;XmlSourceParser.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;DocumentReader.obj;lemmatizator.lib;Utils.obj;NormalizedArticle.obj;XmlSourceParser.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -167,6 +167,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SemanticGraphTests.cpp" />
     <ClCompile Include="XmlSourceParserTests.cpp" />
     <ClCompile Include="UtilsTests.cpp" />
   </ItemGroup>

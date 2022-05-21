@@ -1,8 +1,8 @@
 ﻿#include "Term.h"
 #include "Utils.h"
 
-Term::Term(std::vector<std::wstring> words, std::wstring view)
-	: words(std::move(words)),
+Term::Term(std::vector<std::wstring> normalizedWords, std::wstring view)
+	: normalizedWords(std::move(normalizedWords)),
 	view(std::move(view)),
 	weight(0),
 	_hashCode(0),
@@ -13,7 +13,7 @@ Term::Term(std::vector<std::wstring> words, std::wstring view)
 size_t Term::getHashCode() const
 {
 	if (!_hashCodeCalculated) {
-		_hashCode = Utils::calculateHashCode(Utils::sortAndConcatWords(words));
+		_hashCode = Utils::calculateHashCode(Utils::sortAndConcatWords(normalizedWords));
 		_hashCodeCalculated = true;
 	}
 	return _hashCode;
