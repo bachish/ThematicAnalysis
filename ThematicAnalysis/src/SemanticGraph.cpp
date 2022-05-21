@@ -26,6 +26,16 @@ void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, d
 	ptr2->second[ptr->first] += weight;
 }
 
+double SemanticGraph::getLinkWeight(size_t firstTermHash, size_t secondTermHash) const
+{
+	if(isLinkExist(firstTermHash, secondTermHash))
+	{
+		const auto ptr1= _graph.find(firstTermHash);
+		return ptr1->second.find(secondTermHash)->second;
+	}
+	return 0;
+}
+
 bool SemanticGraph::isTermExist(size_t termHash) const
 {
 	return _graph.find(termHash) != _graph.end();

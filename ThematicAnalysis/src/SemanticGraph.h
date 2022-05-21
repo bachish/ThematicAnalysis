@@ -11,6 +11,7 @@ public:
 	void addTerm(Term const& term);
 	void addLink(size_t firstTermHash, size_t secondTermHash);
 	void addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight);
+	double getLinkWeight(size_t firstTermHash, size_t secondTermHash) const;
 	bool isTermExist(size_t termHash) const; 
 	bool isLinkExist(size_t firstTermHash, size_t secondTermHash) const; 
 private:

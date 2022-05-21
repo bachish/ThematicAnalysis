@@ -5,7 +5,7 @@
 class Term
 {
 public:
-	std::vector<std::wstring> words;
+	std::vector<std::wstring> normalizedWords;
 	std::wstring view;
 	double weight;
 
