@@ -17,17 +17,17 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(addTerm)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({L"АБАК"}, L"АБАК");
+			auto term = Term({"АБАК"}, "АБАК");
 			graph.addTerm(term);
 			Assert::IsTrue(graph.isTermExist(Utils::calculateHashCode(term.view)));
-			Assert::IsFalse(graph.isTermExist(Utils::calculateHashCode(L"не" + term.view)));
+			Assert::IsFalse(graph.isTermExist(Utils::calculateHashCode("не" + term.view)));
 		}
 
 		TEST_METHOD(addTwoTerm)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({ L"АБАК" }, L"АБАК");
-			auto term2 = Term({ L"АБЕЛЕВА", L"ГРУППА" }, L"АБЕЛЕВЫ ГРУППЫ");
+			auto term = Term({ "АБАК" }, "АБАК");
+			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
 			graph.addTerm(term);
 			graph.addTerm(term2);
 			Assert::IsTrue(graph.isTermExist(Utils::calculateTermHashCode(term.normalizedWords)));
@@ -36,8 +36,8 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(chekLink)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({ L"АБАК" }, L"АБАК");
-			auto term2 = Term({ L"АБЕЛЕВА", L"ГРУППА" }, L"АБЕЛЕВЫ ГРУППЫ");
+			auto term = Term({ "АБАК" }, "АБАК");
+			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
 			graph.addTerm(term);
 			graph.addTerm(term2);
 			Assert::IsFalse(graph.isLinkExist(term.getHashCode(), term2.getHashCode()));
@@ -48,8 +48,8 @@ namespace ThematicAnalysisTests
 		{
 			double weight = 50;
 			auto graph = SemanticGraph();
-			auto term = Term({ L"АБАК" }, L"АБАК");
-			auto term2 = Term({ L"АБЕЛЕВА", L"ГРУППА" }, L"АБЕЛЕВЫ ГРУППЫ");
+			auto term = Term({ "АБАК" }, "АБАК");
+			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
 			graph.addTerm(term);
 			graph.addTerm(term2);
 			graph.addLink(term.getHashCode(), term2.getHashCode());

@@ -7,34 +7,34 @@
  * \param documentText - source text in xml
  * \return tuple vectors of article titles and it's content
  */
-std::tuple<std::vector<std::wstring>, std::vector<std::wstring>> XmlSourceParser::parseTitlesAndContents(
-	std::wstring const& documentText)
+std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContents(
+	std::string const& documentText)
 {
 	_text = documentText;
 	_size = _text.size();
 	_ptr = 0;
-	_titles = std::vector<std::wstring>();
-	_contents = std::vector<std::wstring>();
+	_titles = std::vector<std::string>();
+	_contents = std::vector<std::string>();
 	parse();
 	return std::make_tuple(_titles, _contents);
 }
 
 void XmlSourceParser::parsePaper()
 {
-	std::wstring title, content;
+	std::string title, content;
 	while (_ptr < _size)
 	{
 		if (_text[_ptr] == '<')
 		{
 			auto tag = readTag();
-			std::wstring tag_name = std::get<std::wstring>(tag);
+			std::string tag_name = std::get<std::string>(tag);
 			if (tag_name == nameTag)
 			{
 				title = readToEnd(nameTag);
 			}
 			else if (tag_name == contentTag || tag_name == definitionTag)
 			{
-				content += L" ";
+				content += " ";
 				content += readToEnd(tag_name);
 			}
 			else if (tag_name == paperTag)
@@ -61,7 +61,7 @@ void XmlSourceParser::parse()
 		if (_text[_ptr] == '<')
 		{
 			auto tag = readTag();
-			if (std::get<std::wstring>(tag) == paperTag &&
+			if (std::get<std::string>(tag) == paperTag &&
 				!std::get<bool>(tag))
 			{
 				parsePaper();
@@ -71,7 +71,7 @@ void XmlSourceParser::parse()
 	}
 }
 
-std::wstring XmlSourceParser::readWord()
+std::string XmlSourceParser::readWord()
 {
 	skipSpace();
 	const auto start = _ptr;
@@ -80,7 +80,7 @@ std::wstring XmlSourceParser::readWord()
 	return _text.substr(start, _ptr - start);
 }
 
-std::tuple<std::wstring, bool> XmlSourceParser::readTag()
+std::tuple<std::string, bool> XmlSourceParser::readTag()
 {
 	bool isClosed = false;
 	while (_ptr < _size && _text[_ptr++] != '<') {}
@@ -102,7 +102,7 @@ void XmlSourceParser::skipSpace()
 
 
 
-std::wstring XmlSourceParser::readToEnd(const std::wstring& tagName)
+std::string XmlSourceParser::readToEnd(const std::string& tagName)
 {
 	const auto start = _ptr;
 	while (_ptr < _size)
@@ -111,7 +111,7 @@ std::wstring XmlSourceParser::readToEnd(const std::wstring& tagName)
 		{
 			auto tmp = _ptr;
 			auto tag = readTag();
-			if (std::get<std::wstring>(tag) == tagName)
+			if (std::get<std::string>(tag) == tagName)
 			{
 				if (std::get<bool>(tag))
 					return _text.substr(start, tmp - start);

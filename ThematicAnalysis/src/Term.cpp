@@ -1,7 +1,7 @@
 ﻿#include "Term.h"
 #include "Utils.h"
 
-Term::Term(std::vector<std::wstring> normalizedWords, std::wstring view)
+Term::Term(std::vector<std::string> normalizedWords, std::string view)
 	: normalizedWords(std::move(normalizedWords)),
 	view(std::move(view)),
 	weight(0),

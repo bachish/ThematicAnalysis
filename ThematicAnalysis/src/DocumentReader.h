@@ -9,7 +9,7 @@ public:
 	std::vector<NormalizedArticle> read(std::string const& filePath) const;
 private:
 
-	NormalizedArticle createNormalizedArticle(std::wstring const& title, std::wstring const& content) const;
+	NormalizedArticle createNormalizedArticle(std::string const& title, std::string const& content) const;
 
 	Lemmatizer _lemmatizer;
 };

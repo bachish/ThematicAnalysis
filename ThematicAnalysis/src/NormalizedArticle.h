@@ -5,6 +5,6 @@ class NormalizedArticle
 {
 public:
 	Term title;
-	std::vector<std::wstring> text;
-	NormalizedArticle(Term Title, std::vector<std::wstring> Text);
+	std::vector<std::string> text;
+	NormalizedArticle(Term Title, std::vector<std::string> Text);
 };

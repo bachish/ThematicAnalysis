@@ -21,12 +21,12 @@ void SemanticGraphBuilder::tryToAddLinkWeight(size_t titleTermHash, size_t ngram
 	}
 }
 
-std::wstring getNormalizedNgram(std::vector<std::wstring> const& words, size_t pos, size_t n)
+std::string getNormalizedNgram(std::vector<std::string> const& words, size_t pos, size_t n)
 {
-	return Utils::sortAndConcatWords(std::vector<std::wstring>(words.begin() + pos, words.begin() + pos + n));
+	return Utils::sortAndConcatWords(std::vector<std::string>(words.begin() + pos, words.begin() + pos + n));
 }
 
-void SemanticGraphBuilder::tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::wstring> const& words, size_t n)
+void SemanticGraphBuilder::tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::string> const& words, size_t n)
 {
 	for (size_t pos = 0; pos < words.size() - n + 1; pos++)
 	{

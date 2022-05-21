@@ -5,37 +5,37 @@
 #include <lemmatizator_engine.h>
 #include <memory>
 
-const std::wstring Lemmatizer::RUS_DICTIONARY_DEFAULT_PATH = L"external/lemmatizator/x64/lemmatizer.db";
+const std::string Lemmatizer::RUS_DICTIONARY_DEFAULT_PATH = "external/lemmatizator/x64/lemmatizer.db";
 
 Lemmatizer::Lemmatizer() :Lemmatizer(RUS_DICTIONARY_DEFAULT_PATH)
 {
 }
 
-Lemmatizer::Lemmatizer(const std::wstring& pathToDictionary)
+Lemmatizer::Lemmatizer(const std::string& pathToDictionary)
 {
-	_hEngine = sol_LoadLemmatizatorW(pathToDictionary.c_str(), LEME_DEFAULT);
+	_hEngine = sol_LoadLemmatizatorA(pathToDictionary.c_str(), LEME_DEFAULT);
 	if(_hEngine == nullptr)
 		throw std::invalid_argument("Can not open dictionary");
 }
 
-std::vector<std::wstring> Lemmatizer::lemmatizeText(const std::wstring& text) const
+std::vector<std::string> Lemmatizer::lemmatizeText(const std::string& text) const
 {
-	std::vector<std::wstring> words;
+	std::vector<std::string> words;
 	size_t bufSize = (text.length() + 100) * 1.5;
-	auto strBuf = std::unique_ptr<wchar_t[]>(new wchar_t[bufSize]);
-	auto hWords = sol_LemmatizePhraseW(_hEngine, text.c_str(), 0, L' ');
+	auto strBuf = std::unique_ptr<char[]>(new char[bufSize]);
+	auto hWords = sol_LemmatizePhraseA(_hEngine, text.c_str(), 0, L' ');
 	if (hWords != nullptr)
 	{
 		auto wordsCount = sol_CountLemmas(hWords);
 
 		for (int i = 0; i < wordsCount; ++i)
 		{
-			sol_GetLemmaStringW(hWords, i, strBuf.get(), bufSize);
+			sol_GetLemmaStringA(hWords, i, strBuf.get(), bufSize);
 			words.emplace_back(strBuf.get());
 			auto& word = words.back();
 
 			// word to lower
-			std::transform(word.begin(), word.end(), word.begin(), [](wchar_t ch){return std::tolower(ch, std::locale("ru-RU"));});
+			std::transform(word.begin(), word.end(), word.begin(), [](wchar_t ch){return std::tolower(ch);});
 		}
 
 		sol_DeleteLemmas(hWords);

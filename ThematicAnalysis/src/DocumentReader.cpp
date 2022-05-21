@@ -7,15 +7,15 @@
 #include "Utils.h"
 
 
-std::wifstream OpenFileWithUsingExceptions( std::string const& filePath)
+std::ifstream OpenFileWithUsingExceptions( std::string const& filePath)
 {
-	std::wifstream fin;
+	std::ifstream fin;
 	fin.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fin.open(filePath);
 	return fin;
 }
 
-NormalizedArticle DocumentReader::createNormalizedArticle(std::wstring const& title, std::wstring const& content) const
+NormalizedArticle DocumentReader::createNormalizedArticle(std::string const& title, std::string const& content) const
 {
 	auto contentNormWords = _lemmatizer.lemmatizeText(content);
 	auto titleTerm = Term(_lemmatizer.lemmatizeText(title), title);

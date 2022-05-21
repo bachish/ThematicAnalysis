@@ -5,11 +5,11 @@
 class Term
 {
 public:
-	std::vector<std::wstring> normalizedWords;
-	std::wstring view;
+	std::vector<std::string> normalizedWords;
+	std::string view;
 	double weight;
 
-	Term(std::vector<std::wstring> normalizedWords, std::wstring view);
+	Term(std::vector<std::string> normalizedWords, std::string view);
 	size_t getHashCode() const;
 	bool operator<(Term const& other) const;
 private:

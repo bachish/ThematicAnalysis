@@ -7,10 +7,10 @@ class Lemmatizer
 {
 public:
 	Lemmatizer();
-	explicit Lemmatizer(const std::wstring& pathToDictionary);
-	std::vector<std::wstring> lemmatizeText(const std::wstring& text) const;
+	explicit Lemmatizer(const std::string& pathToDictionary);
+	std::vector<std::string> lemmatizeText(const std::string& text) const;
 	~Lemmatizer();
-	static const std::wstring RUS_DICTIONARY_DEFAULT_PATH;
+	static const std::string RUS_DICTIONARY_DEFAULT_PATH;
 
 private:
 	HLEM _hEngine;

@@ -6,36 +6,35 @@
 #include <string>
 #include <locale>
 
-size_t Utils::calculateHashCode(std::wstring const& text)
+size_t Utils::calculateHashCode(std::string const& text)
 {
-	static std::hash<std::wstring> _hashCalculator;
+	static std::hash<std::string> _hashCalculator;
 	return _hashCalculator(text);
 }
-size_t Utils::calculateTermHashCode(std::vector<std::wstring> words)
+size_t Utils::calculateTermHashCode(std::vector<std::string> words)
 {
 	return calculateHashCode(sortAndConcatWords(words));
 }
 
-std::wstring Utils::readAllFile(std::wifstream& fin)
+std::string Utils::readAllFile(std::ifstream& fin)
 {
-	std::wstringstream wss;
-	fin.imbue(std::locale("ru-RU"));
+	std::stringstream wss;
 	wss << fin.rdbuf();
 	return wss.str();
 }
 
-std::wstring Utils::sortAndConcatWords(std::vector<std::wstring>  words)
+std::string Utils::sortAndConcatWords(std::vector<std::string>  words)
 {
 	std::sort(words.begin(), words.end());
-	return std::accumulate(words.begin(), words.end(), std::wstring(L""));
+	return std::accumulate(words.begin(), words.end(), std::string(""));
 }
 bool isStopChar(wchar_t c)
 {
 	return (c == ' ' || c == '\n' || c == '\t');
 }
-void Utils::clearString(std::wstring& s)
+void Utils::clearString(std::string& s)
 {
-	for (wchar_t& i : s)
+	for (auto& i : s)
 	{
 		if (i == '\t' || i == '\n')
 			i = ' ';
@@ -51,7 +50,7 @@ void Utils::clearString(std::wstring& s)
 }
 
 
-bool Utils::isLetter(wchar_t c)
+bool Utils::isLetter(char c)
 {
 	return std::isalpha(c, std::locale("ru-RU"));
 }

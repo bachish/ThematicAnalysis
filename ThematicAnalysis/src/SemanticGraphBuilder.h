@@ -12,7 +12,7 @@ public:
 
 private:
 	void tryToAddLinkWeight(size_t titleTermHash, size_t ngramHash);
-	void tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::wstring> const& words, size_t n);
+	void tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::string> const& words, size_t n);
 	void addAllTermsToGraph(std::vector<NormalizedArticle> const& articles);
 
 	SemanticGraph _graph;

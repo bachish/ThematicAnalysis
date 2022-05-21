@@ -13,7 +13,7 @@ int main()
 	auto a = std::filesystem::current_path();
 
 	Lemmatizer lemmatizer(Lemmatizer::RUS_DICTIONARY_DEFAULT_PATH);
-	auto words = lemmatizer.lemmatizeText(L"Сижу и буду сидеть");
+	auto words = lemmatizer.lemmatizeText("Сижу и буду сидеть");
 	for (auto&& word : words)
-		std::wcout << word << std::endl;
+		std::cout << word << std::endl;
 }
