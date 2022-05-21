@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numeric>
 #include <string>
+#include <locale>
 
 size_t Utils::calculateHashCode(std::wstring const& text)
 {
@@ -36,22 +37,17 @@ void Utils::clearString(std::wstring& s)
 			i = ' ';
 	}
 
-	s.erase(std::unique(s.begin(), s.end(), [](wchar_t a, wchar_t b)
-		{return a == b && a == ' '; }), s.end());
-	if (s[0] == ' ')
+	auto isTwoSpaces = [](wchar_t a, wchar_t b) {return a == b && a == ' '; };
+	s.erase(std::unique(s.begin(), s.end(), isTwoSpaces), s.end());
+
+	if (s.front() == ' ')
 		s.erase(s.begin(), s.begin() + 1);
-	const auto end = s.end();
-	if (s[s.size() - 1] == ' ')
+	if (s.back() == ' ')
 		s.erase(s.end() - 1, s.end());
 }
 
-/**todo fix for wchar 
- */
+
 bool Utils::isLetter(wchar_t c)
 {
-	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || isCyrillicLetter(c);
-}
-bool Utils::isCyrillicLetter(wchar_t c)
-{
-	return (c >= 'а' && c <= 'я') || (c >= 'А' && c <= 'Я');
+	return std::isalpha(c, std::locale("ru-RU"));
 }
