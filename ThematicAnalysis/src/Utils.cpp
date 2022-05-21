@@ -5,6 +5,8 @@
 #include <numeric>
 #include <string>
 #include <locale>
+#include <Windows.h>
+
 
 size_t Utils::calculateHashCode(std::string const& text)
 {
@@ -21,6 +23,35 @@ std::string Utils::readAllFile(std::ifstream& fin)
 	std::stringstream wss;
 	wss << fin.rdbuf();
 	return wss.str();
+}
+
+std::string cp1251ToUTF8(std::string str)
+{
+	auto size = str.size() + 1;
+	std::string res;
+
+	auto wsize = MultiByteToWideChar(1251, 0, str.c_str(), -1, nullptr, 0);
+	auto wres = new WCHAR[wsize];
+	MultiByteToWideChar(1251, 0, str.c_str(), -1, wres, wsize);
+
+	auto usize = WideCharToMultiByte(CP_UTF8, 0, wres, -1, nullptr, 0, 0, 0);
+	auto ures = new char[usize];
+	WideCharToMultiByte(CP_UTF8, 0, wres, -1, ures, usize, 0, 0);
+	res = ures;
+
+	delete[] ures;
+	delete[] wres;
+
+	return res;
+}
+
+void Utils::writeToFile(std::string const& filePath, std::string const& text)
+{
+	std::ofstream fout(filePath);
+	fout.imbue(std::locale(""));
+	auto wtext = cp1251ToUTF8(text);
+	fout << wtext;
+	fout.close();
 }
 
 std::string Utils::sortAndConcatWords(std::vector<std::string>  words)
@@ -53,4 +84,15 @@ void Utils::clearString(std::string& s)
 bool Utils::isLetter(char c)
 {
 	return std::isalpha(c, std::locale("ru-RU"));
+}
+
+
+
+void Utils::drawGraphImageFromDot(std::string dot, std::string imagePath)
+{
+	std::string dotFile = "temp.dot";
+	writeToFile(dotFile, dot);
+	std::string command = std::string("dot -Tpng temp.dot  -o ") + imagePath;
+	system(command.c_str());
+	//std::remove(dotFile.c_str());
 }

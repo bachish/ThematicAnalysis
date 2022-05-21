@@ -39,8 +39,7 @@
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\XmlSourceParser.h" />
   </ItemGroup>
-
-   <ItemGroup>
+  <ItemGroup>
     <Content Include="external\lemmatizator\x64\lemmatizer.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -143,14 +142,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;$(ProjectDir)\external\graphviz\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UGraphviz_cored.lib;lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)external\lemmatizator\x64\*.dll" "$(TargetDir)"</Command>
@@ -164,15 +163,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;$(ProjectDir)\external\graphviz\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UGraphviz_cored.lib;lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)external\lemmatizator\x64\*.dll" "$(TargetDir)"</Command>

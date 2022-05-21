@@ -1,4 +1,6 @@
 ﻿#include "SemanticGraph.h"
+#include "UGraphviz/UGraphviz.hpp"
+#include <sstream>
 
 void SemanticGraph::addTerm(Term const& term)
 {
@@ -17,7 +19,7 @@ void SemanticGraph::addLink(size_t firstTermHash, size_t secondTermHash)
 
 void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
 {
-	if(isLinkExist(!firstTermHash, secondTermHash))
+	if (isLinkExist(firstTermHash, secondTermHash))
 	{
 		//todo : what should it do?
 		//maybe "throw std::invalid_argument("invalid hash: link not exist")"?
@@ -55,7 +57,7 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
 }
 
 /**
- * \brief Extract subGraph 
+ * \brief Extract subGraph
  * \param centerHash subGraph center term
  * \param radius extraction level (from center term)
  * \return result subGraph
@@ -82,5 +84,39 @@ void SemanticGraph::buildNeighborhood(size_t centerHash, unsigned radius,
 			neighbors.addLink(centerHash, neighborHash);
 		}
 	}
-
 }
+
+
+std::string doubleToString(double num)
+{
+	std::stringstream ss;
+	ss << num;
+	return ss.str();
+}
+
+std::string SemanticGraph::getDotView() const
+{
+	Ubpa::UGraphviz::Graph gr("SemanticGraph");
+	auto& reg = gr.GetRegistry();
+	std::map<Term, size_t> nodes;
+	std::map<Term, bool> visited;
+	for (auto&& [term, neighbors] : _graph)
+	{
+		auto nodeId = reg.RegisterNode(term.view);
+		gr.AddNode(nodeId);
+		nodes[term] = nodeId;
+		visited[term] = false;
+	}
+
+	for (auto&& [term, neighbors] : _graph) {
+		for (auto&& [neighbor, weight] : neighbors)
+			if (!visited[neighbor]) {
+				auto edgeId = reg.RegisterEdge(nodes[term], nodes[neighbor]);
+				reg.RegisterEdgeAttr(edgeId, "label", doubleToString(weight));
+				gr.AddEdge(edgeId);
+			}
+		visited[term] = true;
+	}
+	return gr.Dump();
+}
+

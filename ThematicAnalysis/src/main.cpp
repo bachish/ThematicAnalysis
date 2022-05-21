@@ -3,22 +3,25 @@
 #include <filesystem>
 #include <iostream>
 #include <vector>
-
+#include "UGraphviz/UGraphviz.hpp"
 #include "DocumentReader.h"
 #include "Lemmatizer.h"
 #include "SemanticGraphBuilder.h"
+#include "Utils.h"
 
 
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	//	auto a = std::filesystem::current_path();
-	auto builder = SemanticGraphBuilder();
-	auto reader = DocumentReader();
-	auto graph = builder.build(reader.read("D:/Source/ThematicAnalysis/ThematicAnalysisTests/resources/AllMath.txt"));
-
-	Lemmatizer lemmatizer(Lemmatizer::RUS_DICTIONARY_DEFAULT_PATH);
-	auto words = lemmatizer.lemmatizeText("Сижу и буду сидеть");
-	for (auto&& word : words)
-		std::cout << word << std::endl;
+	auto graph = SemanticGraph();
+	auto term = Term({ "АБАК" }, "АБАК");
+	auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
+	auto term3 = Term({ "СТЕПЕНЬ" }, "СТЕПЕНИ");
+	graph.addTerm(term);
+	graph.addTerm(term2);
+	graph.addTerm(term3);
+	graph.addLink(term.getHashCode(), term2.getHashCode());
+	graph.addLinkWeight(term.getHashCode(), term2.getHashCode(), 12);
+	graph.addLink(term3.getHashCode(), term2.getHashCode());
+	Utils::drawGraphImageFromDot(graph.getDotView(), "image.png");
 }
