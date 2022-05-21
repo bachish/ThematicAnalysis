@@ -14,13 +14,15 @@ Lemmatizer::Lemmatizer() :Lemmatizer(RUS_DICTIONARY_DEFAULT_PATH)
 Lemmatizer::Lemmatizer(const std::wstring& pathToDictionary)
 {
 	_hEngine = sol_LoadLemmatizatorW(pathToDictionary.c_str(), LEME_DEFAULT);
+	if(_hEngine == nullptr)
+		throw std::invalid_argument("Can not open dictionary");
 }
 
 std::vector<std::wstring> Lemmatizer::lemmatizeText(const std::wstring& text) const
 {
 	std::vector<std::wstring> words;
-	auto bufSize = (text.length() + 100) * 1.5;
-	auto strBuf = new wchar_t[bufSize];
+	size_t bufSize = (text.length() + 100) * 1.5;
+	auto strBuf = std::unique_ptr<wchar_t[]>(new wchar_t[bufSize]);
 	auto hWords = sol_LemmatizePhraseW(_hEngine, text.c_str(), 0, L' ');
 	if (hWords != nullptr)
 	{
@@ -28,17 +30,16 @@ std::vector<std::wstring> Lemmatizer::lemmatizeText(const std::wstring& text) co
 
 		for (int i = 0; i < wordsCount; ++i)
 		{
-			sol_GetLemmaStringW(hWords, i, strBuf, bufSize);
-			words.emplace_back(strBuf);
+			sol_GetLemmaStringW(hWords, i, strBuf.get(), bufSize);
+			words.emplace_back(strBuf.get());
 			auto& word = words.back();
 
+			// word to lower
 			std::transform(word.begin(), word.end(), word.begin(), [](wchar_t ch){return std::tolower(ch, std::locale("ru-RU"));});
-
 		}
 
 		sol_DeleteLemmas(hWords);
 	}
-	delete[] strBuf;
 	return words;
 }
 
