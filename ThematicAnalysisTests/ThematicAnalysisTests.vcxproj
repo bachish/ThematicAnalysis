@@ -190,6 +190,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\AllMath.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="resources\AllMath.txt" />
+    <Text Include="resources\MiddleMath.txt" />
     <Text Include="resources\XmlSourceParser\TwoPaper.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

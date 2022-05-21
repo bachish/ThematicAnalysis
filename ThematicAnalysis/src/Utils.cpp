@@ -43,9 +43,9 @@ void Utils::clearString(std::string& s)
 	auto isTwoSpaces = [](wchar_t a, wchar_t b) {return a == b && a == ' '; };
 	s.erase(std::unique(s.begin(), s.end(), isTwoSpaces), s.end());
 
-	if (s.front() == ' ')
+	if (!s.empty() && s.front() == ' ')
 		s.erase(s.begin(), s.begin() + 1);
-	if (s.back() == ' ')
+	if (!s.empty() && s.back() == ' ')
 		s.erase(s.end() - 1, s.end());
 }
 
