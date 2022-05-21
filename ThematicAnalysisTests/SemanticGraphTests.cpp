@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include <fstream>
 #include "CppUnitTest.h"
+#include "DocumentReader.h"
 #include "SemanticGraph.h"
+#include "SemanticGraphBuilder.h"
 #include "Utils.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -87,6 +89,13 @@ namespace ThematicAnalysisTests
 			Assert::IsTrue(copy.isLinkExist(term.getHashCode(), term2.getHashCode()));
 			Assert::IsFalse(copy.isTermExist(term3.getHashCode()));
 			Assert::IsFalse(copy.isLinkExist(term3.getHashCode(), term2.getHashCode()));
+		}
+		TEST_METHOD(SubgraphOfBigGraph)
+		{
+			auto builder = SemanticGraphBuilder();
+			auto reader = DocumentReader();
+			auto graph = builder.build(reader.read("resources/AllMath.txt"));
+			Assert::IsTrue(graph.isTermExist(Utils::calculateHashCode(L"алгол")));
 		}
 	};
 }

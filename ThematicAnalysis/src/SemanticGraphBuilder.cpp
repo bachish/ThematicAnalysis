@@ -28,6 +28,8 @@ std::wstring getNormalizedNgram(std::vector<std::wstring> const& words, size_t p
 
 void SemanticGraphBuilder::tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::wstring> const& words, size_t n)
 {
+	if (words.size() < n)
+		return;
 	for (size_t pos = 0; pos < words.size() - n + 1; pos++)
 	{
 		auto ngram = getNormalizedNgram(words, pos, n);
