@@ -11,7 +11,6 @@ public:
 
 	Term(std::vector<std::string> normalizedWords, std::string view);
 	size_t getHashCode() const;
-	bool operator<(Term const& other) const;
 private:
 	mutable size_t _hashCode;
 	mutable bool _hashCodeCalculated;

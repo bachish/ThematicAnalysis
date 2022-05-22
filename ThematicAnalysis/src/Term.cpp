@@ -19,7 +19,4 @@ size_t Term::getHashCode() const
 	return _hashCode;
 }
 
-bool Term::operator<(Term const& other) const
-{
-	return this->getHashCode() < other.getHashCode();
-}
+

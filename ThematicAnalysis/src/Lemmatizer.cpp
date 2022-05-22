@@ -15,7 +15,7 @@ Lemmatizer::Lemmatizer(const std::string& pathToDictionary)
 {
 	_hEngine = sol_LoadLemmatizatorA(pathToDictionary.c_str(), LEME_DEFAULT);
 	if(_hEngine == nullptr)
-		throw std::invalid_argument("Can not open dictionary");
+		throw std::ios_base::failure("Can not open dictionary");
 }
 
 std::vector<std::string> Lemmatizer::lemmatizeText(const std::string& text) const

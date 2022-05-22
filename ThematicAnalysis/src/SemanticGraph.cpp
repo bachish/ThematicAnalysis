@@ -100,8 +100,8 @@ std::string SemanticGraph::getDotView() const
 {
 	Ubpa::UGraphviz::Graph gr("SemanticGraph");
 	auto& reg = gr.GetRegistry();
-	std::map<Term, size_t> nodes;
-	std::map<Term, bool> visited;
+	std::map<Term, size_t, TermComparator> nodes;
+	std::map<Term, bool, TermComparator> visited;
 	for (auto&& [term, neighbors] : _graph)
 	{
 		auto nodeId = reg.RegisterNode(term.view);

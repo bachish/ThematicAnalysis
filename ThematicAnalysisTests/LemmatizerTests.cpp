@@ -26,6 +26,11 @@ namespace ThematicAnalysisTests
 			}
 		}
 
+		TEST_METHOD(OpenNotExistDictionary)
+		{
+			Assert::ExpectException<std::ios_base::failure>([]() {Lemmatizer lemmatizer("not found"); });
+		}
+
 		TEST_METHOD(TextTest)
 		{
 			Lemmatizer lemmatizer;
