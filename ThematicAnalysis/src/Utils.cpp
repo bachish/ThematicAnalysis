@@ -7,6 +7,8 @@
 #include <locale>
 #include <Windows.h>
 
+#include "Lemmatizer.h"
+
 
 size_t Utils::calculateHashCode(std::string const& text)
 {
@@ -16,6 +18,12 @@ size_t Utils::calculateHashCode(std::string const& text)
 size_t Utils::calculateTermHashCode(std::vector<std::string> words)
 {
 	return calculateHashCode(sortAndConcatWords(words));
+}
+
+size_t Utils::calculateNormalizedHashCode(std::string const& text)
+{
+	Lemmatizer lemmatizer;
+	return calculateHashCode(sortAndConcatWords(lemmatizer.lemmatizeText(text)));
 }
 
 std::string Utils::readAllFile(std::ifstream& fin)
@@ -83,15 +91,14 @@ void Utils::clearString(std::string& s)
 
 bool Utils::isLetter(char c)
 {
-	return std::isalpha(c, std::locale("ru-RU"));
+	static std::locale loc("ru-RU");
+	return std::isalpha(c, loc);
 }
-
-
 
 void Utils::drawGraphImageFromDot(std::string dot, std::string imagePath)
 {
 	std::string dotFile = "temp.dot";
-	writeToFile(dotFile, dot);
+	//writeToFile(dotFile, dot);
 	std::string command = std::string("dot -Tpng temp.dot  -o ") + imagePath;
 	system(command.c_str());
 	//std::remove(dotFile.c_str());

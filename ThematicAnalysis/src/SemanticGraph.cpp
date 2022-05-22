@@ -4,7 +4,8 @@
 
 void SemanticGraph::addTerm(Term const& term)
 {
-	_graph[term] = std::map<Term, double, TermComparator>();
+	if (_graph.find(term.getHashCode()) == _graph.end())
+		_graph[term] = std::map<Term, double, TermComparator>();
 }
 
 void SemanticGraph::addLink(size_t firstTermHash, size_t secondTermHash)
@@ -19,7 +20,7 @@ void SemanticGraph::addLink(size_t firstTermHash, size_t secondTermHash)
 
 void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
 {
-	if (isLinkExist(firstTermHash, secondTermHash))
+	if (!isLinkExist(firstTermHash, secondTermHash))
 	{
 		//todo : what should it do?
 		//maybe "throw std::invalid_argument("invalid hash: link not exist")"?
@@ -82,6 +83,7 @@ void SemanticGraph::buildNeighborhood(size_t centerHash, unsigned radius,
 		if (!neighbors.isTermExist(neighborHash)) {
 			buildNeighborhood(neighborHash, radius - 1, neighbors);
 			neighbors.addLink(centerHash, neighborHash);
+			neighbors.addLinkWeight(centerHash, neighborHash, getLinkWeight(centerHash, neighborHash));
 		}
 	}
 }

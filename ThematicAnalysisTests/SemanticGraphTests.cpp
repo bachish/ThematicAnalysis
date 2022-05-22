@@ -94,7 +94,7 @@ namespace ThematicAnalysisTests
 		{
 			auto builder = SemanticGraphBuilder();
 			auto reader = DocumentReader();
-			auto graph = builder.build(reader.read("resources/AllMath.txt"));
+			auto graph = builder.build(reader.read("resources/MiddleMath.txt"));
 			Assert::IsTrue(graph.isTermExist(Utils::calculateHashCode("алгол")));
 		}
 	};

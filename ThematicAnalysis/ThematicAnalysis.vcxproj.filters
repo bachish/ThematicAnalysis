@@ -69,4 +69,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="resources\AllMath.txt" />
+  </ItemGroup>
 </Project>

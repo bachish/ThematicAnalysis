@@ -13,7 +13,7 @@ void SemanticGraphBuilder::addAllTermsToGraph(std::vector<NormalizedArticle> con
 
 void SemanticGraphBuilder::tryToAddLinkWeight(size_t titleTermHash, size_t ngramHash)
 {
-	if (_graph.isTermExist(ngramHash))
+	if (_graph.isTermExist(ngramHash) && titleTermHash != ngramHash)
 	{
 		if (!_graph.isLinkExist(titleTermHash, ngramHash))
 			_graph.addLink(titleTermHash, ngramHash);

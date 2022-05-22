@@ -10,6 +10,11 @@ namespace ThematicAnalysisTests
 
 	TEST_CLASS(UtilsTests)
 	{
+		TEST_CLASS_INITIALIZE(locale)
+		{
+			setlocale(LC_ALL, "rus");
+		}
+
 		TEST_METHOD(engSortAndConcatWords)
 		{
 			std::vector<std::string> words = { "b", "a", "c", "z" };
@@ -79,7 +84,7 @@ namespace ThematicAnalysisTests
 		{
 			std::string letters = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			for (auto&& letter : letters)
-				Assert::IsTrue(Utils::isLetter(letter));
+				Assert::IsTrue(Utils::isLetter(letter), (std::wstring(L"It is not letter: ") + std::to_wstring((int)letter)).c_str());
 		}
 
 		TEST_METHOD(areNotLetters)

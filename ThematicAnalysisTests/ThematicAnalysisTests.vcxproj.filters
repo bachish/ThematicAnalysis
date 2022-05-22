@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\XmlSourceParser\TwoPaper.txt" />
-    <Text Include="resources\AllMath.txt" />
     <Text Include="resources\MiddleMath.txt" />
   </ItemGroup>
 </Project>
