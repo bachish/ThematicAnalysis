@@ -1,5 +1,6 @@
 ﻿#include "SemanticGraphBuilder.h"
 
+#include "DocumentReader.h"
 #include "Hasher.h"
 
 constexpr double SemanticGraphBuilder::WEIGHT_ADDITION = 1.0;
@@ -46,4 +47,10 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 			tryAddNormalizedNgramsToGraph(titleHash, contentWords, n);
 		}
 	return _graph;
+}
+
+SemanticGraph SemanticGraphBuilder::build(std::string const& articlesFilePath)
+{
+	DocumentReader reader;
+	return build(reader.readAndNormalizeArticles(articlesFilePath));
 }
