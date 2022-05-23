@@ -1,5 +1,4 @@
 #include "TextAnalyzer.h"
-
 #include "SemanticGraphBuilder.h"
 #include "Hasher.h"
 constexpr double TextAnalyzer::WEIGHT_ADDITION = 3.0;
@@ -30,16 +29,16 @@ void TextAnalyzer::rebuildTagsGraph(size_t metTermHash)
 }
 void TextAnalyzer::mergeGraphs(SemanticGraph src)
 {
-	for (auto [hash, term] : src.getAllTerms())
+	for (auto [hash, node] : src.nodes)
 	{
-		tagsGraph.addTerm(term);
+		tagsGraph.addTerm(node.term);
 	}
-	for (auto [hash, term] : src.getAllTerms())
+	for (auto [hash, node] : src.nodes)
 	{
-		for (auto [term2, weight] : src.getAllNeighbors(hash))
+		for (auto [hash2, link] : node.neighbors)
 		{
-			if (tagsGraph.isTermExist(term2.getHashCode()))
-				tagsGraph.createLink(hash, term2.getHashCode(), weight);
+			if (tagsGraph.isTermExist(hash2))
+				tagsGraph.createLink(hash, hash2, link.weight);
 		}
 	}
 }
@@ -48,13 +47,11 @@ void TextAnalyzer::recalculateTermWeight(size_t centerTermHash, size_t radius, d
 	tagsGraph.addTermWeight(centerTermHash, delta);
 	if(radius > 0)
 	{
-		auto neighbors = tagsGraph.getAllNeighbors(centerTermHash);
-		//todo calculate it and store in term
-		double sumLinkWeightForNode = 10.;
-
-		for (auto [terms, weight] : neighbors)
+		auto node = tagsGraph.nodes.at(centerTermHash);
+		const auto weightSum = node.sumLinksWeight();
+		for (auto [neighbor_hash, link] : node.neighbors)
 		{
-			recalculateTermWeight(terms.getHashCode(), radius - 1, weight / sumLinkWeightForNode);
+			recalculateTermWeight(neighbor_hash, radius - 1, link.weight / weightSum);
 		}
 	}
 }
