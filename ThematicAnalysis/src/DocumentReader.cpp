@@ -17,12 +17,10 @@ std::ifstream OpenFileWithUsingExceptions( std::string const& filePath)
 
 NormalizedArticle DocumentReader::createNormalizedArticle(std::string const& title, std::string const& content) const
 {
-	auto contentNormWords = _lemmatizer.lemmatizeText(content);
-	auto titleTerm = Term(_lemmatizer.lemmatizeText(title), title);
-	return {titleTerm, contentNormWords};
+	return {_normalizer.normalize(title), title, _normalizer.normalize(content)};
 }
 
-std::vector<NormalizedArticle> DocumentReader::read(std::string const& filePath) const
+std::vector<NormalizedArticle> DocumentReader::readAndNormalizeArticles(std::string const& filePath) const
 {
 	auto fin = OpenFileWithUsingExceptions(filePath);
 	auto documentText = Utils::readAllFile(fin);
