@@ -125,6 +125,37 @@ std::string doubleToString(double num)
 	return ss.str();
 }
 
+inline std::vector<std::string> split(std::string const& text)
+{
+	std::stringstream ss(text);
+	std::vector<std::string> words;
+	while (!ss.eof())
+	{
+		std::string str;
+		ss >> str;
+		words.push_back(str);
+	}
+	return words;
+}
+
+std::string breakText(std::string const& text, int maxLen)
+{
+	auto words = split(text);
+	std::stringstream ss;
+	int len = 0;
+	for(auto& word: words)
+	{
+		ss << word << ' ';
+		len += word.size();
+		if(len > maxLen)
+		{
+			ss << '\n';
+			len = 0;
+		}
+	}
+	return ss.str();
+}
+
 std::string SemanticGraph::getDotView() const
 {
 	Ubpa::UGraphviz::Graph gr("SemanticGraph");
@@ -133,7 +164,7 @@ std::string SemanticGraph::getDotView() const
 	std::map<size_t, bool> visited;
 	for (auto&& [hash, node] : nodes)
 	{
-		auto nodeId = reg.RegisterNode(node.term.view);
+		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6));
 		gr.AddNode(nodeId);
 		registredNodes[hash] = nodeId;
 		visited[hash] = false;
@@ -148,7 +179,9 @@ std::string SemanticGraph::getDotView() const
 			}
 		visited[hash] = true;
 	}
-	gr.RegisterGraphAttr("overlap", "false");
+	gr.RegisterGraphAttr("overlap", "2:false");
+	gr.RegisterGraphAttr("splines", "true");
+	gr.RegisterGraphAttr("start", "6");
 	return gr.Dump();
 }
 
@@ -244,7 +277,7 @@ void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& i
 {
 	std::string dotFile = "temp.dot";
 	FileManager::writeUTF8ToFile(dotFile, getDotView());
-	std::string command = std::string("neato -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	std::string command = std::string("fdp  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
 }

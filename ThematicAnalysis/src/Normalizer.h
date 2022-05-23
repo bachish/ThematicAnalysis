@@ -7,7 +7,7 @@
 class Normalizer
 {
 public:
-	std::vector<std::string> normalize(std::string const& text) const;
+	std::vector<std::string> normalize(std::string text) const;
 
 private:
 	Lemmatizer _lemmatizer;

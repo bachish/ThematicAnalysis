@@ -20,12 +20,23 @@ NormalizedArticle DocumentReader::createNormalizedArticle(std::string const& tit
 	return {_normalizer.normalize(title), title, _normalizer.normalize(content)};
 }
 
-std::vector<NormalizedArticle> DocumentReader::readAndNormalizeArticles(std::string const& filePath) const
+std::vector<NormalizedArticle> DocumentReader::readAndNormalizeArticles(std::string const& xmlPath) const
 {
-	auto fin = OpenFileWithUsingExceptions(filePath);
-	auto documentText = FileManager::readAllFile(fin);
-	auto [titles, contents] = XmlSourceParser().parseTitlesAndContents(documentText);
+	auto fin = OpenFileWithUsingExceptions(xmlPath);
+	auto xmlText = FileManager::readAllFile(fin);
+	return normalizeArticles(xmlText);
+}
 
+std::vector<NormalizedArticle> DocumentReader::readAndNormalizeArticles(std::string const& filePath,
+	IXmlConverter const& xmlConverter) const
+{
+	auto xmlText = xmlConverter.convertFileToXml(filePath);
+	return normalizeArticles(xmlText);
+}
+
+std::vector<NormalizedArticle> DocumentReader::normalizeArticles(std::string const& xmlText) const
+{
+	auto [titles, contents] = XmlSourceParser().parseTitlesAndContents(xmlText);
 	std::vector<NormalizedArticle> result;
 	for(size_t i = 0; i < titles.size(); i++)
 		result.push_back(createNormalizedArticle(titles[i], contents[i]));
@@ -38,5 +49,7 @@ std::vector<std::string> DocumentReader::readAndNormalizeText(std::string const&
 	auto documentText = FileManager::readAllFile(fin);
 	return _normalizer.normalize(documentText);
 }
+
+
 
 
