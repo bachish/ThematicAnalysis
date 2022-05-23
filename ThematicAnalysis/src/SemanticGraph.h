@@ -8,10 +8,12 @@ public:
 	void addTerm(Term const& term);
 	void createLink(size_t firstTermHash, size_t secondTermHash, double weight = 0);
 	void addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight);
+	void addTermWeight(size_t termHash, double weight);
 	double getLinkWeight(size_t firstTermHash, size_t secondTermHash) const;
 	bool isTermExist(size_t termHash) const; 
 	bool isLinkExist(size_t firstTermHash, size_t secondTermHash) const;
-
+	std::map<size_t, Term> getAllTerms();
+	std::map<Term, double, TermComparator> getAllNeighbors(size_t centralTermHash);
 	SemanticGraph getNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight = 1) const;
 	std::string getDotView() const;
 

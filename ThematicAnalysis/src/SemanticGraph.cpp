@@ -36,6 +36,12 @@ void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, d
 	ptr2->second[ptr->first] += weight;
 }
 
+void SemanticGraph::addTermWeight(size_t termHash, double weight)
+{
+	auto& term = _graph.find(termHash)->first;
+	term.weight += weight;
+}
+
 double SemanticGraph::getLinkWeight(size_t firstTermHash, size_t secondTermHash) const
 {
 	if (isLinkExist(firstTermHash, secondTermHash))
@@ -60,6 +66,22 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
 	}
 	const auto neighbors = ptr->second;
 	return neighbors.find(secondTermHash) != neighbors.end();
+}
+
+std::map<size_t, Term> SemanticGraph::getAllTerms()
+{
+	auto terms = std::map<size_t, Term>();
+	for (auto && [term, links] : _graph)
+	{
+		terms[term.getHashCode()] = term;
+	}
+	return terms;
+}
+
+std::map<Term, double, TermComparator> SemanticGraph::getAllNeighbors(size_t centralTermHash)
+{
+	return _graph.find(centralTermHash)->second;
+
 }
 
 /**

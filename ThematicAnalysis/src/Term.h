@@ -7,7 +7,7 @@ class Term
 public:
 	std::vector<std::string> normalizedWords;
 	std::string view;
-	double weight;
+	mutable double weight;
 
 	Term(std::vector<std::string> normalizedWords, std::string view);
 	size_t getHashCode() const;
