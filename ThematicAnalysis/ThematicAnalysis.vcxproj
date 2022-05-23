@@ -30,6 +30,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\XmlSourceParser.cpp" />
     <ClCompile Include="src\Term.cpp" />
+    <ClCompile Include="TextAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DocumentReader.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="src\Lemmatizer.h" />
     <ClInclude Include="src\Term.h" />
     <ClInclude Include="src\XmlSourceParser.h" />
+    <ClInclude Include="TextAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\lemmatizator\x64\lemmatizer.db">
