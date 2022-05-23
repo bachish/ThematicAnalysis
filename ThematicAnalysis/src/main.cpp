@@ -9,16 +9,24 @@
 #include "SemanticGraphBuilder.h"
 #include "Utils.h"
 
+void create() {
+	auto builder = SemanticGraphBuilder();
+	auto reader = DocumentReader();
+	auto graph = builder.build(reader.read("resources/AllMath.txt"));
+	graph.exportToFile("resources/allMath.gr");
+}
 
+void import()
+{
+	SemanticGraph graph;
+	graph.importFromFile("resources/allMath.gr");
+	auto subgr = graph.getNeighborhood(Utils::calculateNormalizedHashCode("Первообразная"), 1, 3);
+	Utils::drawGraphImageFromDot(subgr.getDotView(), "image");
+}
 int main()
 {
 	setlocale(LC_ALL, "rus");
 	//	auto a = std::filesystem::current_path();
-	auto builder = SemanticGraphBuilder();
-	auto reader = DocumentReader();
-	auto graph = builder.build(reader.read("../ThematicAnalysisTests/resources/AllMath.txt"));
-	auto termHash = Utils::calculateNormalizedHashCode("Алгебраическая функция");
-	graph = graph.getNeighborhood(termHash, 1);
-	Utils::drawGraphImageFromDot(graph.getDotView(), "image.png");
-
+	//create();
+	import();
 }

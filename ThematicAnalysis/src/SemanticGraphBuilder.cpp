@@ -16,7 +16,7 @@ void SemanticGraphBuilder::tryToAddLinkWeight(size_t titleTermHash, size_t ngram
 	if (_graph.isTermExist(ngramHash) && titleTermHash != ngramHash)
 	{
 		if (!_graph.isLinkExist(titleTermHash, ngramHash))
-			_graph.addLink(titleTermHash, ngramHash);
+			_graph.createLink(titleTermHash, ngramHash);
 		_graph.addLinkWeight(titleTermHash, ngramHash, SemanticGraphBuilder::WEIGHT_ADDITION);
 	}
 }

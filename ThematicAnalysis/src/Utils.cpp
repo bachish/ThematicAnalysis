@@ -98,8 +98,8 @@ bool Utils::isLetter(char c)
 void Utils::drawGraphImageFromDot(std::string dot, std::string imagePath)
 {
 	std::string dotFile = "temp.dot";
-	//writeToFile(dotFile, dot);
-	std::string command = std::string("dot -Tpng temp.dot  -o ") + imagePath;
+	writeToFile(dotFile, dot);
+	std::string command = std::string("neato -Tpng temp.dot  -o ") + imagePath + ".png";
 	system(command.c_str());
-	//std::remove(dotFile.c_str());
+	std::remove(dotFile.c_str());
 }

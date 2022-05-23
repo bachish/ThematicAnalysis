@@ -1,6 +1,13 @@
 ﻿#include "SemanticGraph.h"
+
+#include <algorithm>
+
 #include "UGraphviz/UGraphviz.hpp"
 #include <sstream>
+#include <fstream>
+#include <numeric>
+
+#include "Utils.h"
 
 void SemanticGraph::addTerm(Term const& term)
 {
@@ -8,14 +15,12 @@ void SemanticGraph::addTerm(Term const& term)
 		_graph[term] = std::map<Term, double, TermComparator>();
 }
 
-void SemanticGraph::addLink(size_t firstTermHash, size_t secondTermHash)
+void SemanticGraph::createLink(size_t firstTermHash, size_t secondTermHash, double weight)
 {
-	if (isLinkExist(firstTermHash, secondTermHash))
-		return;
 	const auto ptr = _graph.find(firstTermHash);
 	const auto ptr2 = _graph.find(secondTermHash);
-	ptr->second[ptr2->first] = 0;
-	ptr2->second[ptr->first] = 0;
+	ptr->second[ptr2->first] = weight;
+	ptr2->second[ptr->first] = weight;
 }
 
 void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
@@ -63,26 +68,26 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
  * \param radius extraction level (from center term)
  * \return result subGraph
  */
-SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius) const
+SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight) const
 {
 	auto neighbors = SemanticGraph();
-	buildNeighborhood(centerHash, radius, neighbors);
+	buildNeighborhood(centerHash, radius, minWeight, neighbors);
 	return neighbors;
 }
 
-void SemanticGraph::buildNeighborhood(size_t centerHash, unsigned radius,
+void SemanticGraph::buildNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight,
 	SemanticGraph& neighbors) const
 {
 	if (!isTermExist(centerHash)) return;
 	const auto termMap = _graph.find(centerHash);
 	neighbors.addTerm(termMap->first);
 	if (radius == 0) return;
-	for (auto neib : termMap->second)
+	for (auto&& [neib, weight] : termMap->second)
 	{
-		const auto neighborHash = neib.first.getHashCode();
-		if (!neighbors.isTermExist(neighborHash)) {
-			buildNeighborhood(neighborHash, radius - 1, neighbors);
-			neighbors.addLink(centerHash, neighborHash);
+		const auto neighborHash = neib.getHashCode();
+		if (!neighbors.isTermExist(neighborHash) && weight >= minWeight) {
+			buildNeighborhood(neighborHash, radius - 1, minWeight, neighbors);
+			neighbors.createLink(centerHash, neighborHash);
 			neighbors.addLinkWeight(centerHash, neighborHash, getLinkWeight(centerHash, neighborHash));
 		}
 	}
@@ -119,6 +124,93 @@ std::string SemanticGraph::getDotView() const
 			}
 		visited[term] = true;
 	}
+	gr.RegisterGraphAttr("overlap", "false");
 	return gr.Dump();
+}
+
+
+///	EXPORT/IMPORT FORMAT
+/// <vertexes count>
+/// <view>
+/// <weight> <normalized words count> <word 1> ...
+/// ...
+/// <edges count>
+///	<first term index> <second term index> <weight>
+///	...
+void SemanticGraph::exportToFile(std::string const& filePath)
+{
+	std::ofstream fout(filePath);
+	exportToStream(fout);
+	fout.close();
+}
+
+void SemanticGraph::exportToStream(std::ostream& out)
+{
+	std::map<Term, bool, TermComparator> visited;
+	std::map<Term, int, TermComparator> indexes;
+	out << _graph.size() << std::endl;
+	int index = 0;
+	for (auto&& [term, neighbors] : _graph)
+	{
+		out << term.view << '\n' << term.weight << ' ' << term.normalizedWords.size() << ' ';
+		for (auto&& word : term.normalizedWords)
+			out << word << ' ';
+		out << std::endl;
+		indexes[term] = index++;
+		visited[term] = false;
+	}
+
+	auto edgesCount = std::accumulate(_graph.begin(), _graph.end(), static_cast<size_t>(0), [](size_t cnt, auto pair) {return cnt + pair.second.size(); }) / 2;
+	out << edgesCount << std::endl;
+	for (auto&& [term, neighbors] : _graph) {
+		for (auto&& [neighbor, weight] : neighbors)
+			if (!visited[neighbor]) {
+				out << indexes[term] << ' ' << indexes[neighbor] << ' ' << weight << std::endl;
+			}
+		visited[term] = true;
+	}
+}
+
+void SemanticGraph::importFromFile(std::string const& filePath)
+{
+	std::ifstream fin(filePath);
+	std::stringstream ss(Utils::readAllFile(fin));
+	importFromStream(ss);
+	fin.close();
+}
+
+Term readTerm(std::istream& in)
+{
+	std::string view;
+	double weight;
+	int wordsCount;
+	std::ws(in);
+	std::getline(in, view);
+	in >> weight >> wordsCount;
+	std::vector<std::string> words(wordsCount);
+	for (size_t i = 0; i < wordsCount; i++)
+		in >> words[i];
+	return { words, view };
+}
+
+void SemanticGraph::importFromStream(std::istream& in)
+{
+	int termsCount, linksCount;
+	in >> termsCount;
+	std::vector<Term> terms;
+	terms.reserve(termsCount);
+	for(int i = 0; i < termsCount; i++) {
+		auto term = readTerm(in);
+		terms.push_back(term);
+		addTerm(term);
+	}
+	in >> linksCount;
+	while (linksCount--) {
+		size_t firstTermIndex, secondTermIndex;
+		double weight;
+		in >> firstTermIndex >> secondTermIndex >> weight;
+
+		createLink(terms[firstTermIndex].getHashCode(), terms[secondTermIndex].getHashCode(), weight);
+	}
 }
 
