@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FileManager.cpp" />
+    <ClCompile Include="src\Hasher.cpp" />
+    <ClCompile Include="src\Normalizer.cpp" />
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
     <ClCompile Include="src\NormalizedArticle.cpp" />
     <ClCompile Include="src\SemanticGraph.cpp" />
@@ -27,16 +30,17 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\XmlSourceParser.cpp" />
     <ClCompile Include="src\Term.cpp" />
-    <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DocumentReader.h" />
+    <ClInclude Include="src\FileManager.h" />
+    <ClInclude Include="src\Hasher.h" />
+    <ClInclude Include="src\Normalizer.h" />
     <ClInclude Include="src\SemanticGraphBuilder.h" />
     <ClInclude Include="src\NormalizedArticle.h" />
     <ClInclude Include="src\SemanticGraph.h" />
     <ClInclude Include="src\Lemmatizer.h" />
     <ClInclude Include="src\Term.h" />
-    <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\XmlSourceParser.h" />
   </ItemGroup>
   <ItemGroup>

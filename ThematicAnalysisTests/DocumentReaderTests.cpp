@@ -15,7 +15,8 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(ExceptionOnOpenNotExistFile)
 		{
 			DocumentReader reader;
-			Assert::ExpectException<std::ifstream::failure>([&reader]() {reader.read("not exist file");});
+			Assert::ExpectException<std::ifstream::failure>([&reader]() {reader.readAndNormalizeArticles("not exist file");});
+			Assert::ExpectException<std::ifstream::failure>([&reader]() {reader.readAndNormalizeText("not exist file");});
 		}
 	};
 }

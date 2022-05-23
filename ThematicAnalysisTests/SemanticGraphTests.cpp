@@ -2,9 +2,9 @@
 #include <fstream>
 #include "CppUnitTest.h"
 #include "DocumentReader.h"
+#include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
-#include "Utils.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 /**
@@ -19,103 +19,124 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(AddTermTest)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
+			std::vector<std::string> normWords = { "АБАК" };
+			std::string view = "АБАК";
+			auto term = Term(normWords, view, Hasher::sortAndCalcHash(normWords));
 			graph.addTerm(term);
-			Assert::IsTrue(graph.isTermExist(Utils::calculateHashCode(term.view)));
-			Assert::IsFalse(graph.isTermExist(Utils::calculateHashCode("не" + term.view)));
+			Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash(normWords)));
+			normWords.emplace_back("не");
+			Assert::IsFalse(graph.isTermExist(Hasher::sortAndCalcHash(normWords)));
 		}
 
 		TEST_METHOD(AddTwoTermsTest)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			graph.addTerm(term);
-			graph.addTerm(term2);
-			Assert::IsTrue(graph.isTermExist(Utils::calculateTermHashCode(term.normalizedWords)));
-			Assert::IsTrue(graph.isTermExist(Utils::calculateTermHashCode(term2.normalizedWords)));
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				graph.addTerm(terms[i]);
+				Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash(normWords[i])));
+			}
 		}
+
 		TEST_METHOD(LinkTest)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			graph.addTerm(term);
-			graph.addTerm(term2);
-			Assert::IsFalse(graph.isLinkExist(term.getHashCode(), term2.getHashCode()));
-			graph.createLink(term.getHashCode(), term2.getHashCode());
-			Assert::IsTrue(graph.isLinkExist(term.getHashCode(), term2.getHashCode()));
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				graph.addTerm(terms[i]);
+			}
+			Assert::IsFalse(graph.isLinkExist(terms[0].getHashCode(), terms[1].getHashCode()));
+			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
+			Assert::IsTrue(graph.isLinkExist(terms[0].getHashCode(), terms[1].getHashCode()));
 		}
+
 		TEST_METHOD(LinkWeightTest)
 		{
 			double weight = 50;
 			auto graph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			graph.addTerm(term);
-			graph.addTerm(term2);
-			graph.createLink(term.getHashCode(), term2.getHashCode());
-			Assert::IsTrue(graph.getLinkWeight(term.getHashCode(), term2.getHashCode()) < eps);
-			graph.addLinkWeight(term.getHashCode(), term2.getHashCode(), weight);
-			Assert::IsTrue(graph.getLinkWeight(term.getHashCode(), term2.getHashCode()) - weight < eps);
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				graph.addTerm(terms[i]);
+			}
+			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
+			Assert::IsTrue(graph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()) < 1 + eps);
+			graph.addLinkWeight(terms[0].getHashCode(), terms[1].getHashCode(), weight);
+			Assert::IsTrue(graph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()) < 1 + weight + eps);
 		}
+
 		TEST_METHOD(SubgraphR0Test)
 		{
-			auto graph = new SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			graph->addTerm(term);
-			graph->addTerm(term2);
-			graph->createLink(term.getHashCode(), term2.getHashCode());
-			const auto copy = graph->getNeighborhood(term.getHashCode(), 0);
-			Assert::IsTrue(copy.isTermExist(term.getHashCode()));
-			Assert::IsFalse(copy.isTermExist(term2.getHashCode()));
+			auto graph = SemanticGraph();
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				graph.addTerm(terms[i]);
+			}
+
+			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
+			const auto copy = graph.getNeighborhood(terms[0].getHashCode(), 0);
+			Assert::IsTrue(copy.isTermExist(terms[0].getHashCode()));
+			Assert::IsFalse(copy.isTermExist(terms[1].getHashCode()));
 		}
 
 		TEST_METHOD(SubgraphR1Test)
 		{
 			auto graph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			auto term3 = Term({ "СТЕПЕНЬ" }, "СТЕПЕНИ");
-			graph.addTerm(term);
-			graph.addTerm(term2);
-			graph.addTerm(term3);
-			graph.createLink(term.getHashCode(), term2.getHashCode());
-			graph.createLink(term3.getHashCode(), term2.getHashCode());
-			const auto copy = graph.getNeighborhood(term.getHashCode(), 1);
-			Assert::IsTrue(copy.isTermExist(term.getHashCode()));
-			Assert::IsTrue(copy.isTermExist(term2.getHashCode()));
-			Assert::IsTrue(copy.isLinkExist(term.getHashCode(), term2.getHashCode()));
-			Assert::IsFalse(copy.isTermExist(term3.getHashCode()));
-			Assert::IsFalse(copy.isLinkExist(term3.getHashCode(), term2.getHashCode()));
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" },{ "СТЕПЕНЬ" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ","СТЕПЕНИ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				graph.addTerm(terms[i]);
+			}
+
+			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
+			graph.createLink(terms[2].getHashCode(), terms[1].getHashCode());
+			const auto copy = graph.getNeighborhood(terms[0].getHashCode(), 1);
+			Assert::IsTrue(copy.isTermExist(terms[0].getHashCode()));
+			Assert::IsTrue(copy.isTermExist(terms[1].getHashCode()));
+			Assert::IsTrue(copy.isLinkExist(terms[0].getHashCode(), terms[1].getHashCode()));
+			Assert::IsFalse(copy.isTermExist(terms[2].getHashCode()));
+			Assert::IsFalse(copy.isLinkExist(terms[2].getHashCode(), terms[1].getHashCode()));
 		}
+
 		TEST_METHOD(SubgraphOfBigGraph)
 		{
 			auto builder = SemanticGraphBuilder();
 			auto reader = DocumentReader();
-			auto graph = builder.build(reader.read("resources/MiddleMath.txt"));
-			Assert::IsTrue(graph.isTermExist(Utils::calculateHashCode("алгол")));
-		}
-
-		SemanticGraph getDefaultGraph()
-		{
-			auto graph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			auto term3 = Term({ "СТЕПЕНЬ" }, "СТЕПЕНИ");
-			graph.addTerm(term);
-			graph.addTerm(term2);
-			graph.addTerm(term3);
-			graph.createLink(term.getHashCode(), term2.getHashCode());
-			graph.createLink(term3.getHashCode(), term2.getHashCode());
-			graph.addLinkWeight(term3.getHashCode(), term2.getHashCode(), 1);
-			return graph;
+			auto graph = builder.build(reader.readAndNormalizeArticles("resources/MiddleMath.txt"));
+			Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash({ "алгол" })));
 		}
 
 		TEST_METHOD(exportTest)
 		{
-			auto graph = getDefaultGraph();
+			auto graph = SemanticGraph();
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" },{ "СТЕПЕНЬ" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ","СТЕПЕНИ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				graph.addTerm(terms[i]);
+			}
+			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
+			graph.createLink(terms[2].getHashCode(), terms[1].getHashCode(), 2);
 
 			std::stringstream exportSs;
 			graph.exportToStream(exportSs);
@@ -127,34 +148,36 @@ namespace ThematicAnalysisTests
 				"АБАК\n"
 				"0 1 АБАК \n"
 				"2\n"
-				"0 1 1\n"
-				"0 2 0\n"));
+				"0 1 2\n"
+				"0 2 1\n"));
 		}
 
 		TEST_METHOD(exportAndImportTest)
 		{
 			auto exportedGraph = SemanticGraph();
-			auto term = Term({ "АБАК" }, "АБАК");
-			auto term2 = Term({ "АБЕЛЕВА", "ГРУППА" }, "АБЕЛЕВЫ ГРУППЫ");
-			auto term3 = Term({ "СТЕПЕНЬ" }, "СТЕПЕНИ");
-			exportedGraph.addTerm(term);
-			exportedGraph.addTerm(term2);
-			exportedGraph.addTerm(term3);
-			exportedGraph.createLink(term.getHashCode(), term2.getHashCode());
-			exportedGraph.createLink(term3.getHashCode(), term2.getHashCode(), 1);
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" },{ "СТЕПЕНЬ" } };
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ","СТЕПЕНИ" };
+			std::vector<Term> terms;
+			for (size_t i = 0; i < views.size(); i++)
+			{
+				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
+				exportedGraph.addTerm(terms[i]);
+			}
+			exportedGraph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
+			exportedGraph.createLink(terms[2].getHashCode(), terms[1].getHashCode(), 2);
 
 			std::stringstream exportSs;
 			exportedGraph.exportToStream(exportSs);
 			SemanticGraph importedGraph;
 			importedGraph.importFromStream(exportSs);
-			Assert::IsTrue(importedGraph.isTermExist(term.getHashCode()));
-			Assert::IsTrue(importedGraph.isTermExist(term2.getHashCode()));
-			Assert::IsTrue(importedGraph.isTermExist(term3.getHashCode()));
-			Assert::IsTrue(importedGraph.isLinkExist(term.getHashCode(), term2.getHashCode()));
-			Assert::IsTrue(importedGraph.isLinkExist(term3.getHashCode(), term2.getHashCode()));
-			Assert::IsFalse(importedGraph.isLinkExist(term3.getHashCode(), term.getHashCode()));
-			Assert::AreEqual(0., importedGraph.getLinkWeight(term.getHashCode(), term2.getHashCode()));
-			Assert::AreEqual(1., importedGraph.getLinkWeight(term2.getHashCode(), term3.getHashCode()));
+			Assert::IsTrue(importedGraph.isTermExist(terms[0].getHashCode()));
+			Assert::IsTrue(importedGraph.isTermExist(terms[1].getHashCode()));
+			Assert::IsTrue(importedGraph.isTermExist(terms[2].getHashCode()));
+			Assert::IsTrue(importedGraph.isLinkExist(terms[0].getHashCode(), terms[1].getHashCode()));
+			Assert::IsTrue(importedGraph.isLinkExist(terms[2].getHashCode(), terms[1].getHashCode()));
+			Assert::IsFalse(importedGraph.isLinkExist(terms[2].getHashCode(), terms[0].getHashCode()));
+			Assert::AreEqual(1., importedGraph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()));
+			Assert::AreEqual(2., importedGraph.getLinkWeight(terms[1].getHashCode(), terms[2].getHashCode()));
 		}
 	};
 }

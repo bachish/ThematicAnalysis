@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <fstream>
 #include "CppUnitTest.h"
-#include "Utils.h"
+#include "FileManager.h"
 #include "XmlSourceParser.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -21,7 +21,7 @@ namespace ThematicAnalysisTests
 		std::string readTestFile(std::string name)
 		{
 			auto path = "resources/XmlSourceParser/" + name;
-			return Utils::readAllFile(std::ifstream(path));
+			return FileManager::readAllFile(std::ifstream(path));
 		}
 		TEST_METHOD(OnePaper)
 		{

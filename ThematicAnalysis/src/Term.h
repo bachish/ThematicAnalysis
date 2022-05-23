@@ -9,11 +9,10 @@ public:
 	std::string view;
 	double weight;
 
-	Term(std::vector<std::string> normalizedWords, std::string view);
+	Term(std::vector<std::string> normalizedWords, std::string view, size_t hash);
 	size_t getHashCode() const;
 private:
-	mutable size_t _hashCode;
-	mutable bool _hashCodeCalculated;
+	size_t _hashCode;
 };
 
 struct TermComparator

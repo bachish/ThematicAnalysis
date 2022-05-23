@@ -1,6 +1,7 @@
 ﻿#include "XmlSourceParser.h"
 
-#include "Utils.h"
+#include <algorithm>
+#include <locale>
 
 /**
  * \brief Extract from text only titles and content
@@ -17,6 +18,31 @@ std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::
 	_contents = std::vector<std::string>();
 	parse();
 	return std::make_tuple(_titles, _contents);
+}
+
+
+void clearString(std::string& s)
+{
+	for (auto& i : s)
+	{
+		if (i == '\t' || i == '\n')
+			i = ' ';
+	}
+
+	auto isTwoSpaces = [](wchar_t a, wchar_t b) {return a == b && a == ' '; };
+	s.erase(std::unique(s.begin(), s.end(), isTwoSpaces), s.end());
+
+	if (!s.empty() && s.front() == ' ')
+		s.erase(s.begin(), s.begin() + 1);
+	if (!s.empty() && s.back() == ' ')
+		s.erase(s.end() - 1, s.end());
+}
+
+
+bool isLetter(char c)
+{
+	static std::locale loc("ru-RU");
+	return std::isalpha(c, loc);
 }
 
 void XmlSourceParser::parsePaper()
@@ -47,8 +73,8 @@ void XmlSourceParser::parsePaper()
 	}
 	if (!title.empty())
 	{
-		Utils::clearString(title);
-		Utils::clearString(content);
+		clearString(title);
+		clearString(content);
 		_titles.push_back(title);
 		_contents.push_back(content);
 	}
@@ -75,7 +101,7 @@ std::string XmlSourceParser::readWord()
 {
 	skipSpace();
 	const auto start = _ptr;
-	while (Utils::isLetter(_text[_ptr]))
+	while (isLetter(_text[_ptr]))
 		++_ptr;
 	return _text.substr(start, _ptr - start);
 }

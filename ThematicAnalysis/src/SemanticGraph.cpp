@@ -1,13 +1,12 @@
 ﻿#include "SemanticGraph.h"
 
-#include <algorithm>
-
 #include "UGraphviz/UGraphviz.hpp"
 #include <sstream>
 #include <fstream>
 #include <numeric>
 
-#include "Utils.h"
+#include "FileManager.h"
+#include "Hasher.h"
 
 void SemanticGraph::addTerm(Term const& term)
 {
@@ -75,11 +74,11 @@ SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius,
 	return neighbors;
 }
 
-void SemanticGraph::buildNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight,
+void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, unsigned minWeight,
 	SemanticGraph& neighbors) const
 {
-	if (!isTermExist(centerHash)) return;
-	const auto termMap = _graph.find(centerHash);
+	if (!isTermExist(curHash)) return;
+	const auto termMap = _graph.find(curHash);
 	neighbors.addTerm(termMap->first);
 	if (radius == 0) return;
 	for (auto&& [neib, weight] : termMap->second)
@@ -87,8 +86,8 @@ void SemanticGraph::buildNeighborhood(size_t centerHash, unsigned radius, unsign
 		const auto neighborHash = neib.getHashCode();
 		if (!neighbors.isTermExist(neighborHash) && weight >= minWeight) {
 			buildNeighborhood(neighborHash, radius - 1, minWeight, neighbors);
-			neighbors.createLink(centerHash, neighborHash);
-			neighbors.addLinkWeight(centerHash, neighborHash, getLinkWeight(centerHash, neighborHash));
+			neighbors.createLink(curHash, neighborHash);
+			neighbors.addLinkWeight(curHash, neighborHash, getLinkWeight(curHash, neighborHash));
 		}
 	}
 }
@@ -174,7 +173,7 @@ void SemanticGraph::exportToStream(std::ostream& out)
 void SemanticGraph::importFromFile(std::string const& filePath)
 {
 	std::ifstream fin(filePath);
-	std::stringstream ss(Utils::readAllFile(fin));
+	std::stringstream ss(FileManager::readAllFile(fin));
 	importFromStream(ss);
 	fin.close();
 }
@@ -183,14 +182,14 @@ Term readTerm(std::istream& in)
 {
 	std::string view;
 	double weight;
-	int wordsCount;
+	size_t wordsCount;
 	std::ws(in);
 	std::getline(in, view);
 	in >> weight >> wordsCount;
 	std::vector<std::string> words(wordsCount);
 	for (size_t i = 0; i < wordsCount; i++)
 		in >> words[i];
-	return { words, view };
+	return { words, view, Hasher::sortAndCalcHash(words) };
 }
 
 void SemanticGraph::importFromStream(std::istream& in)
@@ -199,7 +198,7 @@ void SemanticGraph::importFromStream(std::istream& in)
 	in >> termsCount;
 	std::vector<Term> terms;
 	terms.reserve(termsCount);
-	for(int i = 0; i < termsCount; i++) {
+	for (int i = 0; i < termsCount; i++) {
 		auto term = readTerm(in);
 		terms.push_back(term);
 		addTerm(term);
@@ -212,5 +211,14 @@ void SemanticGraph::importFromStream(std::istream& in)
 
 		createLink(terms[firstTermIndex].getHashCode(), terms[secondTermIndex].getHashCode(), weight);
 	}
+}
+
+void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName) const
+{
+	std::string dotFile = "temp.dot";
+	FileManager::writeUTF8ToFile(dotFile, getDotView());
+	std::string command = std::string("neato -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	system(command.c_str());
+	std::remove(dotFile.c_str());
 }
 

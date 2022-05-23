@@ -45,6 +45,7 @@ Latest commit 888439e on 8 May
 mono_crash.*
 
 # Build results
+temp/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

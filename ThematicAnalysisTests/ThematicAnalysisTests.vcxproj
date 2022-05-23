@@ -101,7 +101,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;..\ThematicAnalysis\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;DocumentReader.obj;lemmatizator.lib;Utils.obj;NormalizedArticle.obj;XmlSourceParser.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FileManager.obj;Hasher.obj;Normalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;DocumentReader.obj;lemmatizator.lib;Utils.obj;NormalizedArticle.obj;XmlSourceParser.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -190,7 +190,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="resources\MiddleMath.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

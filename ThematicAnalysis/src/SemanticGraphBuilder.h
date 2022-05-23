@@ -6,6 +6,7 @@ class SemanticGraphBuilder
 {
 public:
 	SemanticGraph build(std::vector<NormalizedArticle> const& articles);
+	SemanticGraph build(std::string const& articlesFilePath);
 
 	static const double WEIGHT_ADDITION;
 	static const int N_FOR_NGRAM;
