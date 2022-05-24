@@ -3,7 +3,8 @@
 Term::Term(std::vector<std::string> normalizedWords, std::string view, size_t hash)
 	: normalizedWords(std::move(normalizedWords)),
 	view(std::move(view)),
-	_hashCode(hash)
+	_hashCode(hash),
+	numberArticlesThatUseIt(0)
 {
 }
 

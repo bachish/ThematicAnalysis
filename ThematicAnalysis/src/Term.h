@@ -7,6 +7,7 @@ class Term
 public:
 	std::vector<std::string> normalizedWords;
 	std::string view;
+	size_t numberArticlesThatUseIt;
 	Term(std::vector<std::string> normalizedWords, std::string view, size_t hash);
 	Term();
 	size_t getHashCode() const;

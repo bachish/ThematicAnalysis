@@ -14,9 +14,9 @@ public:
 	static const int N_FOR_NGRAM;
 
 private:
-	void tryToAddLinkWeight(size_t titleTermHash, size_t ngramHash);
-	void tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::string> const& words, size_t n);
+	void tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::string> const& words, std::map<size_t, size_t>& linkedTerms, size_t n);
 	void addAllTermsToGraph(std::vector<NormalizedArticle> const& articles);
+	void calculateTermsUsedDocuments(std::vector<NormalizedArticle> const& articles);
 
 	SemanticGraph _graph;
 };
