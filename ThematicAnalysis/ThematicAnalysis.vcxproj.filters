@@ -54,6 +54,9 @@
     <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Lemmatizer.h">
@@ -95,8 +98,14 @@
     <ClInclude Include="src\XmlConverter\MathXmlConverter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\AllMath.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="external\mystem.exe" />
   </ItemGroup>
 </Project>

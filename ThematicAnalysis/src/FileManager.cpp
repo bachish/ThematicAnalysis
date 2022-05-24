@@ -3,6 +3,12 @@
 #include <Windows.h>
 #include <sstream>
 #include <fstream>
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <array>
 
 
 std::string FileManager::readAllFile(const std::ifstream& fin)
@@ -41,4 +47,45 @@ void FileManager::writeUTF8ToFile(std::string const& filePath, std::string const
 	auto wtext = cp1251ToUTF8(text);
 	fout << wtext;
 	fout.close();
+}
+
+void FileManager::writeToFile(std::string const& filePath, std::string const& text)
+{
+	std::ofstream fout(filePath);
+	fout.imbue(std::locale(""));
+	fout << text;
+	fout.close();
+}
+
+bool FileManager::executeExeWithParams(std::string exe, std::string params, std::string& output)
+{
+	/*DWORD exitCode = 0;
+	SHELLEXECUTEINFOA ShExecInfo;
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = "open";
+	ShExecInfo.lpFile = exe.c_str();
+	ShExecInfo.lpParameters = params.c_str();
+	ShExecInfo.lpDirectory = workingDir.c_str();
+	ShExecInfo.nShow = SW_HIDE;
+	ShExecInfo.hInstApp = NULL;
+	ShellExecuteExA(&ShExecInfo);
+
+	auto res = WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+	if (res == 0)
+		GetExitCodeProcess(ShExecInfo.hProcess, &exitCode);
+	return res == 0 && exitCode == 0;*/
+
+		auto cmd = exe + " " + params;
+		std::array<char, 128> buffer;
+		std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.c_str(), "r"), _pclose);
+		if (!pipe) {
+			return false;
+		}
+		while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+			output += buffer.data();
+		}
+
+		return true;
 }

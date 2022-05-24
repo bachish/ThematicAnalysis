@@ -28,6 +28,7 @@
     <ClCompile Include="src\DocumentReader.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\StringUtils.cpp" />
     <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp" />
     <ClCompile Include="src\XmlSourceParser.cpp" />
     <ClCompile Include="src\Term.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="src\DocumentReader.h" />
     <ClInclude Include="src\FileManager.h" />
     <ClInclude Include="src\Hasher.h" />
+    <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\XmlConverter\IXmlConverter.h" />
     <ClInclude Include="src\Normalizer.h" />
     <ClInclude Include="src\SemanticGraphBuilder.h" />
@@ -52,9 +54,17 @@
     <Content Include="external\lemmatizator\x64\lemmatizer.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+	<Content Include="external\mystem.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\AllMath.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="external\mystem.exe">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

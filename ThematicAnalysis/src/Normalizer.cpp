@@ -1,13 +1,12 @@
 ﻿#include "Normalizer.h"
 
 #include <algorithm>
-#include <cassert>
-#include <chrono>
-#include <fstream>
-#include <iostream>
+#include <execution>
 #include <locale>
 #include <numeric>
-#include <sstream>
+
+#include "FileManager.h"
+#include "StringUtils.h"
 
 std::string deleteMultipleBlanks(std::string text)
 {
@@ -17,18 +16,6 @@ std::string deleteMultipleBlanks(std::string text)
 	return text;
 }
 
-inline std::vector<std::string> split(std::string const& text)
-{
-	std::stringstream ss(text);
-	std::vector<std::string> words;
-	while (!ss.eof())
-	{
-		std::string str;
-		ss >> str;
-		words.push_back(str);
-	}
-	return words;
-}
 
 std::vector<std::string> eraseStopWords(std::vector<std::string> words)
 {
@@ -50,14 +37,13 @@ std::string toLowerText(std::string  word)
 	return word;
 }
 
+
 std::vector<std::string> Normalizer::normalize(std::string text) const
 {
 	text = deleteMultipleBlanks(text);
 	text = clearText(text);
 	text = toLowerText(text);
-	auto words = split(text);
+	auto words = StringUtils::split(text);
 	words = eraseStopWords(words);
-	text = std::accumulate(words.begin(), words.end(), std::string(), [](std::string& str, std::string& word) {return str + word + ' '; });
-	text.erase(text.end() - 1);
-	return _lemmatizer.lemmatizeText(text);
+	return _lemmatizer.lemmatizeText(StringUtils::concat(words, " "));
 }

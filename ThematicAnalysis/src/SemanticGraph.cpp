@@ -7,6 +7,7 @@
 
 #include "FileManager.h"
 #include "Hasher.h"
+#include "StringUtils.h"
 
 Node::Node(Term term) :
 	term(term),
@@ -49,7 +50,7 @@ void SemanticGraph::createLink(size_t firstTermHash, size_t secondTermHash, doub
 	auto& node = nodes[firstTermHash];
 	auto& node2 = nodes[secondTermHash];
 	node.neighbors.insert({ secondTermHash, Link(secondTermHash, weight) });
-	node.neighbors.insert({ firstTermHash, Link(firstTermHash, weight) });
+	node2.neighbors.insert({ firstTermHash, Link(firstTermHash, weight) });
 }
 
 void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
@@ -125,22 +126,11 @@ std::string doubleToString(double num)
 	return ss.str();
 }
 
-inline std::vector<std::string> split(std::string const& text)
-{
-	std::stringstream ss(text);
-	std::vector<std::string> words;
-	while (!ss.eof())
-	{
-		std::string str;
-		ss >> str;
-		words.push_back(str);
-	}
-	return words;
-}
+
 
 std::string breakText(std::string const& text, int maxLen)
 {
-	auto words = split(text);
+	auto words = StringUtils::split(text);
 	std::stringstream ss;
 	int len = 0;
 	for (auto& word : words)
@@ -179,9 +169,7 @@ std::string SemanticGraph::getDotView() const
 			}
 		visited[hash] = true;
 	}
-	gr.RegisterGraphAttr("overlap", "2:false");
-	gr.RegisterGraphAttr("splines", "true");
-	gr.RegisterGraphAttr("start", "6");
+	gr.RegisterGraphAttr("overlap", "false");
 	return gr.Dump();
 }
 
