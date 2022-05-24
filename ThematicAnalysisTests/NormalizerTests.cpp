@@ -16,8 +16,8 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(WordsTest)
 		{
 			Normalizer normalizer;
-			std::string text = "Сижу x- и. <, *стою в поле#";
-			std::vector<std::string> normWords = { "сидеть",  "стоять", "поле"};
+			std::string text = "Сижу x- и. <, *стою на дороге#";
+			std::vector<std::string> normWords = { "сидеть",  "стоять", "дорога"};
 			auto resWords = normalizer.normalize(text);
 			
 			Assert::AreEqual((size_t)3, resWords.size());

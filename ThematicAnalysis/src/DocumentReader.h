@@ -12,9 +12,14 @@ public:
 	std::vector<NormalizedArticle> readAndNormalizeArticles(std::string const& filePath, IXmlConverter const& xmlConverter) const;
 	std::vector<std::string> readAndNormalizeText(std::string const& filePath) const;
 private:
+	std::string concatTitlesAndContents(std::vector<std::string> const& titles, std::vector<std::string> const& contents, size_t approxSize) const;
+	std::vector<std::string> getTitle(std::vector<std::string> const& words, size_t& curPos);
 	std::vector<NormalizedArticle> normalizeArticles(std::string const& xmlText) const;
 	NormalizedArticle createNormalizedArticle(std::string const& title, std::string const& content) const;
 
 	Normalizer _normalizer;
 	XmlSourceParser _parser;
+
+	std::string termEndTag = "termendtag";
+	std::string contentEndTag = "contentendtag";
 };

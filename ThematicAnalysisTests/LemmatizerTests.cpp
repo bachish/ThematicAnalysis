@@ -17,7 +17,7 @@ namespace ThematicAnalysisTests
 		{
 			Lemmatizer lemmatizer;
 			std::vector<std::string> sourceWords = { "Сижу", "Работы", "Гречневые", "Забавно", "Интегралов" };
-			std::vector<std::string> normWords = { "сидеть", "работа", "гречневый", "забавно", "интеграл" };
+			std::vector<std::string> normWords = { "сидеть", "работа", "гречневый", "забавный", "интеграл" };
 			for (size_t i = 0; i < sourceWords.size(); i++)
 			{
 				auto res = lemmatizer.lemmatizeText(sourceWords[i]);
@@ -32,7 +32,7 @@ namespace ThematicAnalysisTests
 		{
 			Lemmatizer lemmatizer;
 			std::string sourceText = "Сижу Работы ГречнЕвые ЗабавНо Интегралов";
-			std::vector<std::string> normWords = { "сидеть", "работа", "гречневый", "забавно", "интеграл" };
+			std::vector<std::string> normWords = { "сидеть", "работа", "гречневый", "забавный", "интеграл" };
 			auto res = lemmatizer.lemmatizeText(sourceText);
 			Assert::AreEqual((size_t)5, res.size());
 

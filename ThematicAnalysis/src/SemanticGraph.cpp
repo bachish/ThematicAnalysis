@@ -169,9 +169,7 @@ std::string SemanticGraph::getDotView() const
 			}
 		visited[hash] = true;
 	}
-	gr.RegisterGraphAttr("overlap", "2:false");
-	gr.RegisterGraphAttr("splines", "true");
-	gr.RegisterGraphAttr("start", "6");
+	gr.RegisterGraphAttr("overlap", "false");
 	return gr.Dump();
 }
 

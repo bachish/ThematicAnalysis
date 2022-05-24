@@ -1,5 +1,6 @@
 ﻿#include "StringUtils.h"
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -24,5 +25,25 @@ std::vector<std::string> StringUtils::split(std::string const& text, std::string
 
 	return words;
 }
+
+size_t getSumSize(std::vector<std::string> const& vec)
+{
+	size_t size = 0;
+	for (auto&& word : vec)
+		size += word.size();
+	return size;
+}
+
+std::string StringUtils::concat(std::vector<std::string> const& words, std::string delim)
+{
+	std::string res;
+	if (words.empty()) return res;
+
+	res.reserve(getSumSize(words) + words.size() * delim.size());
+	std::for_each(words.begin(), words.end() - 1, [&res, &delim](std::string const& word) {res.append(word + delim); });
+	res.append(words.back());
+	return res;
+}
+
 
 
