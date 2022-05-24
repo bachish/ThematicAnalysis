@@ -1,59 +1,52 @@
 #include "Lemmatizer.h"
-
-#include <algorithm>
 #include <locale>
-#include <lemmatizator_engine.h>
-#include <memory>
+#include <filesystem>
+#include <iostream>
+#include <Windows.h>
 
-const std::string Lemmatizer::RUS_DICTIONARY_DEFAULT_PATH = "external/lemmatizator/x64/lemmatizer.db";
+#include "FileManager.h"
+#include "StringUtils.h"
 
-Lemmatizer::Lemmatizer() :Lemmatizer(RUS_DICTIONARY_DEFAULT_PATH)
+void runMyStem(std::string const& tempFile, std::string const& resFile)
 {
+	auto isExecuted = FileManager::executeExeWithParams("external\\mystem.exe", "-e cp1251 -nl " + tempFile + " " + resFile);
+	if (!isExecuted)
+	{
+		throw std::runtime_error("Can't run mystem.exe!");
+	}
 }
 
-Lemmatizer::Lemmatizer(const std::string& pathToDictionary)
+std::string handleLine(std::string line)
 {
-	_hEngine = sol_LoadLemmatizatorA(pathToDictionary.c_str(), LEME_DEFAULT);
-	if(_hEngine == nullptr)
-		throw std::ios_base::failure("Can not open dictionary");
+	auto words = StringUtils::split(line, "|");
+	auto word = words.front();
+	while (word.back() == '?') word.pop_back();
+	return word;
 }
+
+
+
+std::string useMyStem(const std::string& text)
+{
+	std::filesystem::create_directory("temp");
+	std::string tempFile = "temp/temp.txt";
+	std::string resFile = "temp/res.txt";
+
+	FileManager::writeToFile(tempFile, text);
+	runMyStem(tempFile, resFile);
+	auto resStr = FileManager::readAllFile(resFile);
+	std::filesystem::remove(tempFile);
+	std::filesystem::remove(resFile);
+	return resStr;
+}
+
 
 std::vector<std::string> Lemmatizer::lemmatizeText(const std::string& text) const
 {
-	std::vector<std::string> words;
-	int bufSize = static_cast<int>((text.length() + 100) * 1.5);
-	auto strBuf = std::unique_ptr<char[]>(new char[bufSize]);
-	auto hWords = sol_LemmatizePhraseA(_hEngine, text.c_str(), 0, L' ');
-	if (hWords != nullptr)
-	{
-		auto wordsCount = sol_CountLemmas(hWords);
-
-		for (int i = 0; i < wordsCount; ++i)
-		{
-			sol_GetLemmaStringA(hWords, i, strBuf.get(), bufSize);
-			words.emplace_back(strBuf.get());
-			auto& word = words.back();
-
-			// word to lower
-			std::transform(word.begin(), word.end(), word.begin(), [](wchar_t ch){return std::tolower(ch);});
-		}
-
-		sol_DeleteLemmas(hWords);
-	}
-	return words;
+	auto resText = useMyStem(text);
+	auto lines = StringUtils::split(resText, "\n", true);
+	std::transform(lines.begin(), lines.end(), lines.begin(), [](std::string& line) {return handleLine(line); });
+	return lines;
 }
 
-std::string Lemmatizer::lemmatizeWord(const std::string& word) const
-{
 
-	int bufSize = static_cast<int>((word.length() + 100) * 1.5);
-	auto strBuf = std::unique_ptr<char[]>(new char[bufSize]);
-	sol_GetLemmaA(_hEngine, word.c_str(), strBuf.get(), bufSize);
-	std::string normWord = strBuf.get();
-	return normWord;
-}
-
-Lemmatizer::~Lemmatizer()
-{
-	sol_DeleteLemmatizator(_hEngine);
-}

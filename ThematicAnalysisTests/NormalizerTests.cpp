@@ -16,10 +16,11 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(WordsTest)
 		{
 			Normalizer normalizer;
-			std::string text = "Сижу x- и. не<, *стою#";
-			std::vector<std::string> normWords = { "сидеть",  "стоять" };
+			std::string text = "Сижу x- и. <, *стою в поле#";
+			std::vector<std::string> normWords = { "сидеть",  "стоять", "поле"};
 			auto resWords = normalizer.normalize(text);
-			Assert::AreEqual((size_t)2, resWords.size());
+			
+			Assert::AreEqual((size_t)3, resWords.size());
 
 			for (size_t i = 0; i < resWords.size(); i++)
 			{

@@ -1,16 +1,17 @@
 ﻿#include <clocale>
 #include <cstdio>
 #include <filesystem>
-#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <regex>
 #include <boost/regex.hpp>
-#include "DocumentReader.h"
 #include "Hasher.h"
 #include "Normalizer.h"
 #include "SemanticGraphBuilder.h"
 #include "TextAnalyzer.h"
 #include "XmlConverter/MathXmlConverter.h"
+
+
 void create() {
 	auto builder = SemanticGraphBuilder();
 	auto graph =  builder.build("resources/math/math.txt", MathXmlConverter());
@@ -48,6 +49,14 @@ void tags()
 
 int main() {
 	setlocale(LC_ALL, "rus");
-	create();
+	Lemmatizer lemmatizer;
+	std::vector<std::string> sourceWords = { "Сижу", "Работы", "Гречневые", "Забавно", "Интегралов" };
+	std::vector<std::string> normWords = { "сидеть", "работа", "гречневый", "забавно", "интеграл" };
+	for (size_t i = 0; i < sourceWords.size(); i++)
+	{
+		auto res = lemmatizer.lemmatizeText(sourceWords[i]);
+		std::cout << res[0] << ' ';
+	}
+	
 	return 0;
 }

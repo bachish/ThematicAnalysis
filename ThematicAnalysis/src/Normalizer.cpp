@@ -9,6 +9,8 @@
 #include <numeric>
 #include <sstream>
 
+#include "StringUtils.h"
+
 std::string deleteMultipleBlanks(std::string text)
 {
 	static std::locale loc("ru-RU");
@@ -17,18 +19,6 @@ std::string deleteMultipleBlanks(std::string text)
 	return text;
 }
 
-inline std::vector<std::string> split(std::string const& text)
-{
-	std::stringstream ss(text);
-	std::vector<std::string> words;
-	while (!ss.eof())
-	{
-		std::string str;
-		ss >> str;
-		words.push_back(str);
-	}
-	return words;
-}
 
 std::vector<std::string> eraseStopWords(std::vector<std::string> words)
 {
@@ -55,7 +45,7 @@ std::vector<std::string> Normalizer::normalize(std::string text) const
 	text = deleteMultipleBlanks(text);
 	text = clearText(text);
 	text = toLowerText(text);
-	auto words = split(text);
+	auto words = StringUtils::split(text);
 	words = eraseStopWords(words);
 	text = std::accumulate(words.begin(), words.end(), std::string(), [](std::string& str, std::string& word) {return str + word + ' '; });
 	text.erase(text.end() - 1);
