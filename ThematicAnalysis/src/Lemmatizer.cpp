@@ -21,7 +21,7 @@ Lemmatizer::Lemmatizer(const std::string& pathToDictionary)
 std::vector<std::string> Lemmatizer::lemmatizeText(const std::string& text) const
 {
 	std::vector<std::string> words;
-	size_t bufSize = (text.length() + 100) * 1.5;
+	int bufSize = static_cast<int>((text.length() + 100) * 1.5);
 	auto strBuf = std::unique_ptr<char[]>(new char[bufSize]);
 	auto hWords = sol_LemmatizePhraseA(_hEngine, text.c_str(), 0, L' ');
 	if (hWords != nullptr)
@@ -41,6 +41,16 @@ std::vector<std::string> Lemmatizer::lemmatizeText(const std::string& text) cons
 		sol_DeleteLemmas(hWords);
 	}
 	return words;
+}
+
+std::string Lemmatizer::lemmatizeWord(const std::string& word) const
+{
+
+	int bufSize = static_cast<int>((word.length() + 100) * 1.5);
+	auto strBuf = std::unique_ptr<char[]>(new char[bufSize]);
+	sol_GetLemmaA(_hEngine, word.c_str(), strBuf.get(), bufSize);
+	std::string normWord = strBuf.get();
+	return normWord;
 }
 
 Lemmatizer::~Lemmatizer()

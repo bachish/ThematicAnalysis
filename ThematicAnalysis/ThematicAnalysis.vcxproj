@@ -28,22 +28,25 @@
     <ClCompile Include="src\DocumentReader.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp" />
     <ClCompile Include="src\XmlSourceParser.cpp" />
     <ClCompile Include="src\Term.cpp" />
-    <ClCompile Include="TextAnalyzer.cpp" />
+    <ClCompile Include="src\TextAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DocumentReader.h" />
     <ClInclude Include="src\FileManager.h" />
     <ClInclude Include="src\Hasher.h" />
+    <ClInclude Include="src\XmlConverter\IXmlConverter.h" />
     <ClInclude Include="src\Normalizer.h" />
     <ClInclude Include="src\SemanticGraphBuilder.h" />
     <ClInclude Include="src\NormalizedArticle.h" />
     <ClInclude Include="src\SemanticGraph.h" />
     <ClInclude Include="src\Lemmatizer.h" />
     <ClInclude Include="src\Term.h" />
+    <ClInclude Include="src\XmlConverter\MathXmlConverter.h" />
     <ClInclude Include="src\XmlSourceParser.h" />
-    <ClInclude Include="TextAnalyzer.h" />
+    <ClInclude Include="src\TextAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\lemmatizator\x64\lemmatizer.db">
@@ -151,13 +154,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;$(ProjectDir)\external\boost_regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;$(ProjectDir)\external\graphviz\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;$(ProjectDir)\external\graphviz\lib;$(ProjectDir)\external\boost_regex\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>UGraphviz_cored.lib;lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -172,7 +175,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;$(ProjectDir)\external\boost_regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -180,7 +183,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;$(ProjectDir)\external\graphviz\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\external\lemmatizator\x64;$(ProjectDir)\external\graphviz\lib;$(ProjectDir)\external\boost_regex\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>UGraphviz_core.lib;lemmatizator.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

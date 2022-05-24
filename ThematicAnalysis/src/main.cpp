@@ -1,31 +1,53 @@
 ﻿#include <clocale>
 #include <cstdio>
 #include <filesystem>
-
+#include <fstream>
+#include <iostream>
+#include <regex>
+#include <boost/regex.hpp>
 #include "DocumentReader.h"
 #include "Hasher.h"
 #include "Normalizer.h"
 #include "SemanticGraphBuilder.h"
-
+#include "TextAnalyzer.h"
+#include "XmlConverter/MathXmlConverter.h"
 void create() {
 	auto builder = SemanticGraphBuilder();
-	auto reader = DocumentReader();
-	auto graph = builder.build(reader.readAndNormalizeArticles("resources/AllMath.txt"));
-	graph.exportToFile("resources/allMath.gr");
+	auto graph =  builder.build("resources/math/math.txt", MathXmlConverter());
+	graph.exportToFile("temp/coolAllMath.gr");
 }
 
-void import()
+SemanticGraph getMathGraph()
 {
 	SemanticGraph graph;
-	graph.importFromFile("resources/allMath.gr");
+	graph.importFromFile("resources/coolAllMath.gr");
+	return graph;
+}
+
+void draw()
+{
+	auto graph = getMathGraph();
 	Normalizer normalizer;
-	auto subgr = graph.getNeighborhood(Hasher::sortAndCalcHash(normalizer.normalize("Первообразная")), 1, 3);
+	auto subgr = graph.getNeighborhood(Hasher::sortAndCalcHash(normalizer.normalize("лагранжиан")), 1, 3);
 	subgr.drawToImage("", "image");
 }
-int main()
+
+void tags()
 {
+	auto graph = getMathGraph();
+	
+	TextAnalyzer analyzer;
+	analyzer.analyze("resources/mathText.txt", graph);
+	auto tags = analyzer.getRelevantTags(50);
+	for (auto& tag : tags)
+	{
+		//std::cout << tag << '\n';
+	}
+}
+
+
+int main() {
 	setlocale(LC_ALL, "rus");
-	//	auto a = std::filesystem::current_path();
-	//create();
-	import();
+	create();
+	return 0;
 }

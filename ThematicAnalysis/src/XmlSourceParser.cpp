@@ -5,19 +5,26 @@
 
 /**
  * \brief Extract from text only titles and content
- * \param documentText - source text in xml
+ * \param xmlText - source text in xml
  * \return tuple vectors of article titles and it's content
  */
 std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContents(
-	std::string const& documentText)
+	std::string const& xmlText)
 {
-	_text = documentText;
+	_text = xmlText;
 	_size = _text.size();
 	_ptr = 0;
 	_titles = std::vector<std::string>();
 	_contents = std::vector<std::string>();
 	parse();
 	return std::make_tuple(_titles, _contents);
+}
+
+std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContentsFromFile(
+	std::string const& filePath, IXmlConverter const& xmlConverter)
+{
+	auto xmlText = xmlConverter.convertFileToXml(filePath);
+	return parseTitlesAndContents(xmlText);
 }
 
 
@@ -82,6 +89,8 @@ void XmlSourceParser::parsePaper()
 
 void XmlSourceParser::parse()
 {
+	int i = 0;
+
 	while (_ptr < _size)
 	{
 		if (_text[_ptr] == '<')
@@ -90,11 +99,13 @@ void XmlSourceParser::parse()
 			if (std::get<std::string>(tag) == paperTag &&
 				!std::get<bool>(tag))
 			{
+				i++;
 				parsePaper();
 			}
 		}
 		else ++_ptr;
 	}
+	;
 }
 
 std::string XmlSourceParser::readWord()

@@ -12,6 +12,11 @@ std::string FileManager::readAllFile(const std::ifstream& fin)
 	return wss.str();
 }
 
+std::string FileManager::readAllFile(std::string const& filePath)
+{
+	return readAllFile(std::ifstream(filePath));
+}
+
 std::string cp1251ToUTF8(const std::string& str)
 {
 	auto wsize = MultiByteToWideChar(1251, 0, str.c_str(), -1, nullptr, 0);
