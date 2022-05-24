@@ -1,11 +1,26 @@
 #include "TextAnalyzer.h"
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+
+#include "DocumentReader.h"
+#include "FileManager.h"
 #include "SemanticGraphBuilder.h"
 #include "Hasher.h"
+#include "Normalizer.h"
 constexpr double TextAnalyzer::WEIGHT_ADDITION = 3.0;
-constexpr size_t TextAnalyzer::LINK_RADIUS = 2;
+constexpr size_t TextAnalyzer::LINK_RADIUS = 1;
 
 
-void TextAnalyzer::analyze(std::vector<std::string> normalizedText, SemanticGraph graph)
+void TextAnalyzer::analyze(std::string const& textFilePath, SemanticGraph const& graph)
+{
+	DocumentReader reader;
+	auto normText = reader.readAndNormalizeText(textFilePath);
+	analyze(normText, graph);
+}
+
+void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph)
 {
 	tagsGraph = SemanticGraph();
 	_sourceGraph = graph;
@@ -19,6 +34,22 @@ void TextAnalyzer::analyze(std::vector<std::string> normalizedText, SemanticGrap
 			}
 		}
 	}
+}
+
+std::vector<std::string> TextAnalyzer::getRelevantTags(int tagsCount)
+{
+	std::vector<Node> nodes;
+	nodes.reserve(tagsGraph.nodes.size());
+	std::transform(tagsGraph.nodes.begin(), tagsGraph.nodes.end(), std::back_inserter(nodes), [](auto el) {return el.second; });
+	std::sort(nodes.begin(), nodes.end(), [](Node& n1, Node& n2) {return n1.weight > n2.weight; });
+	tagsCount = tagsCount <= nodes.size() ? tagsCount : nodes.size();
+	for (int i = 0; i < tagsCount; i++)
+		std::cout << nodes[i].term.view << ' ' << nodes[i].weight << "\n";
+	std::vector<std::string> terms;
+	terms.reserve(tagsCount);
+	std::transform(nodes.begin(), nodes.begin() + tagsCount, std::back_inserter(terms), [](Node& el) {return el.term.view; });
+	return terms;
+
 }
 
 void TextAnalyzer::rebuildTagsGraph(size_t metTermHash)
@@ -45,7 +76,7 @@ void TextAnalyzer::mergeGraphs(SemanticGraph src)
 void TextAnalyzer::recalculateTermWeight(size_t centerTermHash, size_t radius, double delta)
 {
 	tagsGraph.addTermWeight(centerTermHash, delta);
-	if(radius > 0)
+	if (radius > 0)
 	{
 		auto node = tagsGraph.nodes.at(centerTermHash);
 		const auto weightSum = node.sumLinksWeight();

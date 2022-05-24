@@ -41,15 +41,15 @@ Link::Link()
 void SemanticGraph::addTerm(Term const& term)
 {
 	if (nodes.find(term.getHashCode()) == nodes.end())
-		nodes[term.getHashCode()] = Node(term);
+		nodes.insert({ term.getHashCode() ,  Node(term) });
 }
 
 void SemanticGraph::createLink(size_t firstTermHash, size_t secondTermHash, double weight)
 {
 	auto& node = nodes[firstTermHash];
 	auto& node2 = nodes[secondTermHash];
-	node.neighbors[secondTermHash] = Link(secondTermHash, weight);
-	node2.neighbors[firstTermHash] = Link(firstTermHash, weight);
+	node.neighbors.insert({ secondTermHash, Link(secondTermHash, weight) });
+	node.neighbors.insert({ firstTermHash, Link(firstTermHash, weight) });
 }
 
 void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
@@ -106,7 +106,7 @@ void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, unsigned 
 	SemanticGraph& neighbors) const
 {
 	if (!isTermExist(curHash)) return;
-	const auto termNode = nodes.find(curHash)->second;
+	const auto& termNode = nodes.find(curHash)->second;
 	neighbors.addTerm(termNode.term);
 	if (radius == 0) return;
 	for (auto&& [hash, link] : termNode.neighbors)
@@ -143,11 +143,11 @@ std::string breakText(std::string const& text, int maxLen)
 	auto words = split(text);
 	std::stringstream ss;
 	int len = 0;
-	for(auto& word: words)
+	for (auto& word : words)
 	{
 		ss << word << ' ';
 		len += word.size();
-		if(len > maxLen)
+		if (len > maxLen)
 		{
 			ss << '\n';
 			len = 0;
@@ -218,7 +218,7 @@ void SemanticGraph::exportToStream(std::ostream& out)
 	}
 
 	/// ?????????
-	auto edgesCount = std::accumulate(nodes.begin(), nodes.end(), static_cast<size_t>(0), [](size_t cnt, auto pair) 
+	auto edgesCount = std::accumulate(nodes.begin(), nodes.end(), static_cast<size_t>(0), [](size_t cnt, auto pair)
 		{return cnt + pair.second.neighbors.size(); }) / 2;
 	out << edgesCount << std::endl;
 	for (auto&& [hash, node] : nodes) {

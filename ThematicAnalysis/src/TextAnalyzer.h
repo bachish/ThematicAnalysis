@@ -6,8 +6,8 @@ class TextAnalyzer
 public:
 	//why public?
 	SemanticGraph tagsGraph;
-	void analyze(std::string textFilePath, SemanticGraph graph);
-	void analyze(std::vector<std::string> normalizedText, SemanticGraph graph);
+	void analyze(std::string const& textFilePath, SemanticGraph const& graph);
+	void analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph);
 	std::vector<std::string> getRelevantTags(int tagsCount);
 private:
 	void rebuildTagsGraph(size_t termHash);

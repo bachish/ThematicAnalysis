@@ -31,7 +31,7 @@
     <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp" />
     <ClCompile Include="src\XmlSourceParser.cpp" />
     <ClCompile Include="src\Term.cpp" />
-    <ClCompile Include="TextAnalyzer.cpp" />
+    <ClCompile Include="src\TextAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DocumentReader.h" />
@@ -46,7 +46,7 @@
     <ClInclude Include="src\Term.h" />
     <ClInclude Include="src\XmlConverter\MathXmlConverter.h" />
     <ClInclude Include="src\XmlSourceParser.h" />
-    <ClInclude Include="TextAnalyzer.h" />
+    <ClInclude Include="src\TextAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\lemmatizator\x64\lemmatizer.db">

@@ -48,7 +48,7 @@
     <ClCompile Include="src\FileManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextAnalyzer.cpp">
+    <ClCompile Include="src\TextAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp">
@@ -86,7 +86,7 @@
     <ClInclude Include="src\FileManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextAnalyzer.h">
+    <ClInclude Include="src\TextAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\XmlConverter\IXmlConverter.h">
