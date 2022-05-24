@@ -244,7 +244,7 @@ void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& i
 {
 	std::string dotFile = "temp.dot";
 	FileManager::writeUTF8ToFile(dotFile, getDotView());
-	std::string command = std::string("neato -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
 }
