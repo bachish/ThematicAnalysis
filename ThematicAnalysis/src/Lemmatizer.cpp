@@ -21,7 +21,7 @@ std::string runMyStem(std::string const& tempFile)
 	return output;
 }
 
-std::string handleLine(std::string line)
+std::string handleMyStemLine(std::string line)
 {
 	auto words = StringUtils::split(line, "|");
 	auto word = words.front();
@@ -56,7 +56,7 @@ std::vector<std::string> Lemmatizer::lemmatizeTextWithMyStem(const std::string& 
 {
 	auto resText = useMyStem(text);
 	auto lines = StringUtils::split(resText, "\n", true);
-	std::transform(lines.begin(), lines.end(), lines.begin(), [](std::string& line) {return handleLine(line); });
+	std::transform(lines.begin(), lines.end(), lines.begin(), [](std::string& line) {return handleMyStemLine(line); });
 	return lines;
 }
 

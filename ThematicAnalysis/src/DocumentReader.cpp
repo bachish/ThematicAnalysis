@@ -64,10 +64,6 @@ std::vector<std::string> readUntilWord(std::vector<std::string> const& words, si
 	}
 }
 
-
-
-
-
 std::vector<NormalizedArticle> DocumentReader::normalizeArticles(std::string const& xmlText) const
 {
 	auto [titles, contents] = XmlSourceParser().parseTitlesAndContents(xmlText);
