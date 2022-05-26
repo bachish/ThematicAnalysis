@@ -18,9 +18,8 @@ public:
 class Link
 {
 public:
-	Link(size_t hash, double weight);
+	Link(double weight);
 	Link();
-	size_t hash;
 	double weight;
 };
 
@@ -30,13 +29,12 @@ public:
 	std::map<size_t, Node> nodes;
 
 	void addTerm(Term const& term);
-	void createLink(size_t firstTermHash, size_t secondTermHash, double weight = 1);
-	void addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight);
+	void createLink(size_t firstTermHash, size_t secondTermHash, double weight = 0);
 	void addTermWeight(size_t termHash, double weight);
-	double getLinkWeight(size_t firstTermHash, size_t secondTermHash);
+	double getLinkWeight(size_t firstTermHash, size_t secondTermHash) const;
 	bool isTermExist(size_t termHash) const;
 	bool isLinkExist(size_t firstTermHash, size_t secondTermHash) const;
-	SemanticGraph getNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight = 1) const;
+	SemanticGraph getNeighborhood(size_t centerHash, unsigned radius, double minWeight = 0) const;
 	std::string getDotView() const;
 
 	void exportToFile(std::string const& filePath);
@@ -46,5 +44,5 @@ public:
 	void drawToImage(std::string const& dirPath, std::string const& imageName) const;
 
 private:
-	void buildNeighborhood(size_t curHash, unsigned radius, unsigned minWeight, SemanticGraph& current) const;
+	void buildNeighborhood(size_t curHash, unsigned radius, double minWeight, SemanticGraph& current) const;
 };

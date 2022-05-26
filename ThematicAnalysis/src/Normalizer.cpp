@@ -11,7 +11,7 @@
 std::string deleteMultipleBlanks(std::string text)
 {
 	static std::locale loc("ru-RU");
-	std::transform(text.begin(), text.end(), text.begin(), [](char ch) {return isalpha(ch, loc) || isdigit(ch) ? ch : ' '; });
+	std::transform(std::execution::par, text.begin(), text.end(), text.begin(), [](char ch) {return isalpha(ch, loc) || isdigit(ch) ? ch : ' '; });
 	text.erase(std::unique(text.begin(), text.end(), [](char ch, char ch2) {return ch == ch2 && ch == ' '; }), text.end());
 	return text;
 }
@@ -26,14 +26,14 @@ std::vector<std::string> eraseStopWords(std::vector<std::string> words)
 std::string clearText(std::string  word)
 {
 	static std::locale loc("ru-RU");
-	word.erase(std::remove_if(word.begin(), word.end(), [](char ch) {return !std::isalpha(ch, loc) && !std::isdigit(ch) && !isblank(ch); }), word.end());
+	word.erase(std::remove_if(word.begin(), word.end(), [](char ch) {return !isblank(ch, loc) && !std::isdigit(ch, loc) && !std::isalpha(ch, loc); }), word.end());
 	return word;
 }
 
 std::string toLowerText(std::string  word)
 {
 	static std::locale loc("ru-RU");
-	std::transform(word.begin(), word.end(), word.begin(), [](char ch) {return tolower(ch, loc); });
+	std::transform(std::execution::par, word.begin(), word.end(), word.begin(), [](char ch) {return tolower(ch, loc); });
 	return word;
 }
 

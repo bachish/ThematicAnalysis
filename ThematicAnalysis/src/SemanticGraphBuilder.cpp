@@ -1,6 +1,9 @@
 ﻿#include "SemanticGraphBuilder.h"
 
+#include <execution>
 #include <set>
+#include <cmath>
+#include <iterator>
 
 #include "DocumentReader.h"
 #include "Hasher.h"
@@ -10,8 +13,37 @@ constexpr int SemanticGraphBuilder::N_FOR_NGRAM = 4;
 
 void SemanticGraphBuilder::addAllTermsToGraph(std::vector<NormalizedArticle> const& articles)
 {
+
 	for (auto&& article : articles)
 		_graph.addTerm(Term(article.titleWords, article.titleView, Hasher::sortAndCalcHash(article.titleWords)));
+}
+
+std::vector<NormalizedArticle> concatArticlesWithSameName(std::vector<NormalizedArticle> const& articles)
+{
+	std::map<size_t, std::vector<NormalizedArticle>> hashToArticles;
+	for (auto&& article : articles)
+	{
+		auto articleHash = Hasher::sortAndCalcHash(article.titleWords);
+		auto articleIt = hashToArticles.find(articleHash);
+		hashToArticles[articleHash].push_back(std::move(article));
+	}
+	if (articles.size() == hashToArticles.size()) return articles;
+	std::vector<NormalizedArticle> newArticles;
+	std::transform(hashToArticles.begin(), hashToArticles.end(), std::back_inserter(newArticles),
+		[](auto& it)
+		{
+			std::vector<NormalizedArticle>& articles = it.second;
+			if (articles.size() > 1) {
+				std::vector<std::string> contentSum;
+				std::for_each(articles.begin(), articles.end(), [&contentSum](NormalizedArticle const& art)
+					{
+						contentSum.insert(contentSum.end(), art.text.begin(), art.text.end());
+					});
+				articles[0].text = contentSum;
+			}
+			return articles[0];
+		});
+	return newArticles;
 }
 
 void SemanticGraphBuilder::calculateTermsUsedDocuments(std::vector<NormalizedArticle> const& articles)
@@ -22,7 +54,7 @@ void SemanticGraphBuilder::calculateTermsUsedDocuments(std::vector<NormalizedArt
 		for (size_t n = 1; n < N_FOR_NGRAM; n++)
 		{
 			if (article.text.size() < n)
-				return;
+				break;
 			for (size_t pos = 0; pos < article.text.size() - n + 1; pos++)
 			{
 				auto ngramHash = Hasher::sortAndCalcHash(article.text, pos, n);
@@ -34,48 +66,62 @@ void SemanticGraphBuilder::calculateTermsUsedDocuments(std::vector<NormalizedArt
 		}
 		for (auto termsHash : terms)
 		{
-			_graph.nodes[termsHash].term.numberArticlesThatUseIt += 1;
+			_graph.nodes.at(termsHash).term.numberOfArticlesThatUseIt += 1;
 		}
 	}
 }
 
-void SemanticGraphBuilder::tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::string> const& words, std::map<size_t, size_t>& linkedTerms, size_t n)
+std::map<size_t, size_t> SemanticGraphBuilder::calcLinkedTermsCounts(std::vector<std::string> const& words) const
 {
-	if (words.size() < n)
-		return;
-	for (size_t pos = 0; pos < words.size() - n + 1; pos++)
-	{
-		auto ngramHash = Hasher::sortAndCalcHash(words, pos, n);
-		if (linkedTerms.find(ngramHash) != linkedTerms.end())
+	std::map<size_t, size_t> linkedTerms;
+	for (int n = 1; n <= N_FOR_NGRAM; n++) {
+
+		if (words.size() < n)
+			return linkedTerms;
+		for (size_t pos = 0; pos < words.size() - n + 1; pos++)
 		{
-			linkedTerms[ngramHash]++;
-		}
-		else if (_graph.isTermExist(ngramHash))
-		{
-			linkedTerms[ngramHash] = 1;
+			auto ngramHash = Hasher::sortAndCalcHash(words, pos, n);
+			auto linkedTermIt = linkedTerms.find(ngramHash);
+			if (linkedTermIt != linkedTerms.end())
+			{
+				linkedTermIt->second++;
+			}
+			else if (_graph.isTermExist(ngramHash))
+			{
+				linkedTerms.emplace(ngramHash, 1ull);
+			}
 		}
 	}
+	return linkedTerms;
 }
 
-SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& articles)
+
+size_t getTermsCount(std::map<size_t, size_t> const& termsCount)
+{
+	return std::transform_reduce(std::execution::par, termsCount.begin(), termsCount.end(), 0ull, [](size_t a, size_t b) {return a + b; }, [](auto const& pair) {return pair.second; });
+}
+
+SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& sourceArticles)
 {
 	_graph = SemanticGraph();
+	//auto const& articles = sourceArticles;
+	auto articles = concatArticlesWithSameName(sourceArticles);
 	addAllTermsToGraph(articles);
 	calculateTermsUsedDocuments(articles);
 	for (auto&& article : articles)
 	{
 		auto titleHash = Hasher::sortAndCalcHash(article.titleWords);
-		auto& contentWords = article.text;
-		auto linkedTerms = std::map<size_t, size_t>();
-		for (int n = 1; n <= N_FOR_NGRAM; n++) {
-			tryAddNormalizedNgramsToGraph(titleHash, contentWords, linkedTerms, n);
-		}
-		for (auto [neighborHash, linkCount] : linkedTerms)
+		auto const& contentWords = article.text;
+		auto linkedTermsCounts = calcLinkedTermsCounts(contentWords);
+		auto linkedTermsSumCount = getTermsCount(linkedTermsCounts);
+		auto articlesCount = static_cast<double>(articles.size());
+
+		for (auto [termHash, linkCount] : linkedTermsCounts)
 		{
-			auto& term = _graph.nodes[neighborHash].term;
-			auto tf = (double)linkCount / (double)article.text.size();
-			auto idf = log((double)articles.size() / (double)term.numberArticlesThatUseIt);
-			_graph.createLink(titleHash, neighborHash, tf * idf);
+			auto const& term = _graph.nodes[termHash].term;
+			auto tf = static_cast<double>(linkCount) / linkedTermsSumCount;
+			auto idf = std::log(articlesCount / term.numberOfArticlesThatUseIt);
+			_graph.createLink(titleHash, termHash, tf * idf);
 		}
 	}
 	return _graph;

@@ -5,6 +5,7 @@
 #include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
+#include "StringUtils.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 /**
@@ -62,8 +63,8 @@ namespace ThematicAnalysisTests
 		{
 			double weight = 50;
 			auto graph = SemanticGraph();
-			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" } };
-			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ" };
+			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" }, {"СТЕПЕНЬ"}};
+			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ", "СТЕПЕНИ"};
 			std::vector<Term> terms;
 			for (size_t i = 0; i < views.size(); i++)
 			{
@@ -71,9 +72,37 @@ namespace ThematicAnalysisTests
 				graph.addTerm(terms[i]);
 			}
 			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
-			Assert::IsTrue(graph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()) < 1 + eps);
-			graph.addLinkWeight(terms[0].getHashCode(), terms[1].getHashCode(), weight);
-			Assert::IsTrue(graph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()) < 1 + weight + eps);
+			Assert::IsTrue(graph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()) < eps);
+			graph.createLink(terms[1].getHashCode(), terms[2].getHashCode(), 0.5);
+			Assert::IsTrue(graph.getLinkWeight(terms[1].getHashCode(), terms[2].getHashCode()) - 0.5 <  eps);
+		}
+
+		Term getTerm(std::vector<std::string> words = { "диплом" }) const
+		{
+			return { words, StringUtils::concat(words), Hasher::sortAndCalcHash(words) };
+		}
+
+		TEST_METHOD(AddTermTwoTimes)
+		{
+			auto graph = SemanticGraph();
+			auto term = getTerm();
+			graph.addTerm(term);
+			graph.addTerm(term);
+		}
+
+
+		TEST_METHOD(AddLinkTwoTimes)
+		{
+			auto graph = SemanticGraph();
+			auto term1 = getTerm({ "диплом" });
+			auto term2 = getTerm({ "нет", "диплом" });
+			graph.addTerm(term1);
+			graph.addTerm(term2);
+			graph.createLink(term1.getHashCode(), term2.getHashCode());
+			Assert::ExpectException<std::logic_error>([&]
+				{
+					graph.createLink(term1.getHashCode(), term2.getHashCode());
+				});
 		}
 
 		TEST_METHOD(SubgraphR0Test)
@@ -124,34 +153,6 @@ namespace ThematicAnalysisTests
 			Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash({ "алгол" })));
 		}
 
-		TEST_METHOD(exportTest)
-		{
-			auto graph = SemanticGraph();
-			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" },{ "СТЕПЕНЬ" } };
-			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ","СТЕПЕНИ" };
-			std::vector<Term> terms;
-			for (size_t i = 0; i < views.size(); i++)
-			{
-				terms.emplace_back(normWords[i], views[i], Hasher::sortAndCalcHash(normWords[i]));
-				graph.addTerm(terms[i]);
-			}
-			graph.createLink(terms[0].getHashCode(), terms[1].getHashCode());
-			graph.createLink(terms[2].getHashCode(), terms[1].getHashCode(), 2);
-
-			std::stringstream exportSs;
-			graph.exportToStream(exportSs);
-			Assert::AreEqual(exportSs.str(), std::string("3\n"
-				"АБЕЛЕВЫ ГРУППЫ\n"
-				"0 2 АБЕЛЕВА ГРУППА \n"
-				"СТЕПЕНИ\n"
-				"0 1 СТЕПЕНЬ \n"
-				"АБАК\n"
-				"0 1 АБАК \n"
-				"2\n"
-				"0 1 2\n"
-				"0 2 1\n"));
-		}
-
 		TEST_METHOD(exportAndImportTest)
 		{
 			auto exportedGraph = SemanticGraph();
@@ -174,10 +175,13 @@ namespace ThematicAnalysisTests
 			Assert::IsTrue(importedGraph.isTermExist(terms[1].getHashCode()));
 			Assert::IsTrue(importedGraph.isTermExist(terms[2].getHashCode()));
 			Assert::IsTrue(importedGraph.isLinkExist(terms[0].getHashCode(), terms[1].getHashCode()));
+			Assert::IsFalse(importedGraph.isLinkExist(terms[1].getHashCode(), terms[0].getHashCode()));
 			Assert::IsTrue(importedGraph.isLinkExist(terms[2].getHashCode(), terms[1].getHashCode()));
+			Assert::IsFalse(importedGraph.isLinkExist(terms[1].getHashCode(), terms[2].getHashCode()));
 			Assert::IsFalse(importedGraph.isLinkExist(terms[2].getHashCode(), terms[0].getHashCode()));
-			Assert::AreEqual(1., importedGraph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()));
-			Assert::AreEqual(2., importedGraph.getLinkWeight(terms[1].getHashCode(), terms[2].getHashCode()));
+			Assert::IsFalse(importedGraph.isLinkExist(terms[0].getHashCode(), terms[2].getHashCode()));
+			Assert::AreEqual(0., importedGraph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()));
+			Assert::AreEqual(2., importedGraph.getLinkWeight(terms[2].getHashCode(), terms[1].getHashCode()));
 		}
 	};
 }

@@ -1,8 +1,11 @@
 ﻿#include "SemanticGraph.h"
 
+#include <execution>
+
 #include "UGraphviz/UGraphviz.hpp"
 #include <sstream>
 #include <fstream>
+#include <iostream>
 #include <numeric>
 
 #include "FileManager.h"
@@ -29,49 +32,47 @@ double Node::sumLinksWeight()
 	return sum;
 }
 
-Link::Link(size_t hash, double weight)
-	:hash(hash),
-	weight(weight)
+Link::Link(double weight)
+	:weight(weight)
 {
 }
 
-Link::Link()
+Link::Link() : Link(0)
 {
 }
 
 void SemanticGraph::addTerm(Term const& term)
 {
-	if (nodes.find(term.getHashCode()) == nodes.end())
-		nodes.insert({ term.getHashCode() ,  Node(term) });
+	auto const& [_, isInserted] = nodes.emplace(term.getHashCode(), Node(term));
+	if (!isInserted)
+	{
+		std::cout << "Term " + term.view + " already exist!\n";
+	}
 }
 
 void SemanticGraph::createLink(size_t firstTermHash, size_t secondTermHash, double weight)
 {
-	auto& node = nodes[firstTermHash];
-	auto& node2 = nodes[secondTermHash];
-	node.neighbors.insert({ secondTermHash, Link(secondTermHash, weight) });
-	node2.neighbors.insert({ firstTermHash, Link(firstTermHash, weight) });
-}
+	auto& firstNode = nodes.at(firstTermHash);
+	auto const& [_, isInserted] = firstNode.neighbors.emplace(secondTermHash, Link(weight));
+	if (!isInserted) {
+		if (isTermExist(firstTermHash) && isTermExist(secondTermHash)) {
+			auto term1 = nodes.at(firstTermHash).term;
+			auto term2 = nodes.at(secondTermHash).term;
+			throw std::logic_error("Link " + term1.view + " -> " + term2.view + " already exist!");
 
-void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
-{
-	if (!isLinkExist(firstTermHash, secondTermHash))
-	{
-		//todo : what should it do?
-		//maybe "throw std::invalid_argument("invalid hash: link not exist")"?
+		}
+		throw std::logic_error("Link already exist!");
 	}
-	nodes[firstTermHash].neighbors[secondTermHash].weight += weight;
-	nodes[secondTermHash].neighbors[firstTermHash].weight += weight;
 }
 
 void SemanticGraph::addTermWeight(size_t termHash, double weight)
 {
-	nodes[termHash].weight += weight;
+	nodes.at(termHash).weight += weight;
 }
 
-double SemanticGraph::getLinkWeight(size_t firstTermHash, size_t secondTermHash)
+double SemanticGraph::getLinkWeight(size_t firstTermHash, size_t secondTermHash) const
 {
-	return nodes[firstTermHash].neighbors[secondTermHash].weight;
+	return nodes.at(firstTermHash).neighbors.at(secondTermHash).weight;
 }
 
 bool SemanticGraph::isTermExist(size_t termHash) const
@@ -82,11 +83,7 @@ bool SemanticGraph::isTermExist(size_t termHash) const
 bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) const
 {
 	const auto& ptr = nodes.find(firstTermHash);
-	if (ptr == nodes.end() || !isTermExist(secondTermHash))
-	{
-		return false;
-	}
-	return ptr->second.neighbors.find(secondTermHash) != ptr->second.neighbors.end();
+	return ptr != nodes.end() && ptr->second.neighbors.find(secondTermHash) != ptr->second.neighbors.end();
 }
 
 
@@ -96,14 +93,14 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
  * \param radius extraction level (from center term)
  * \return result subGraph
  */
-SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight) const
+SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minWeight) const
 {
 	auto neighbors = SemanticGraph();
 	buildNeighborhood(centerHash, radius, minWeight, neighbors);
 	return neighbors;
 }
 
-void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, unsigned minWeight,
+void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double minWeight,
 	SemanticGraph& neighbors) const
 {
 	if (!isTermExist(curHash)) return;
@@ -126,13 +123,11 @@ std::string doubleToString(double num)
 	return ss.str();
 }
 
-
-
 std::string breakText(std::string const& text, int maxLen)
 {
 	auto words = StringUtils::split(text);
 	std::stringstream ss;
-	int len = 0;
+	size_t len = 0;
 	for (auto& word : words)
 	{
 		ss << word << ' ';
@@ -148,7 +143,7 @@ std::string breakText(std::string const& text, int maxLen)
 
 std::string SemanticGraph::getDotView() const
 {
-	Ubpa::UGraphviz::Graph gr("SemanticGraph");
+	Ubpa::UGraphviz::Graph gr("SemanticGraph", true);
 	auto& reg = gr.GetRegistry();
 	std::map<size_t, size_t> registredNodes;
 	std::map<size_t, bool> visited;
@@ -156,8 +151,8 @@ std::string SemanticGraph::getDotView() const
 	{
 		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6));
 		gr.AddNode(nodeId);
-		registredNodes[hash] = nodeId;
-		visited[hash] = false;
+		registredNodes.emplace(hash, nodeId);
+		visited.emplace(hash, false);
 	}
 
 	for (auto&& [hash, node] : nodes) {
@@ -167,7 +162,7 @@ std::string SemanticGraph::getDotView() const
 				reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight));
 				gr.AddEdge(edgeId);
 			}
-		visited[hash] = true;
+		visited.at(hash) = true;
 	}
 	gr.RegisterGraphAttr("overlap", "false");
 	return gr.Dump();
@@ -205,17 +200,14 @@ void SemanticGraph::exportToStream(std::ostream& out)
 		visited[hash] = false;
 	}
 
-	/// ?????????
-	auto edgesCount = std::accumulate(nodes.begin(), nodes.end(), static_cast<size_t>(0), [](size_t cnt, auto pair)
-		{return cnt + pair.second.neighbors.size(); }) / 2;
+	auto edgesCount = std::transform_reduce(std::execution::par, nodes.begin(), nodes.end(), 0ull,
+		[](size_t cnt, size_t cnt2) {return cnt + cnt2; },
+		[](auto const& pair) {return pair.second.neighbors.size(); });
+
 	out << edgesCount << std::endl;
-	for (auto&& [hash, node] : nodes) {
+	for (auto&& [hash, node] : nodes)
 		for (auto&& [neighborHash, link] : node.neighbors)
-			if (!visited[neighborHash]) {
-				out << indexes[hash] << ' ' << indexes[neighborHash] << ' ' << link.weight << std::endl;
-			}
-		visited[hash] = true;
-	}
+			out << indexes[hash] << ' ' << indexes[neighborHash] << ' ' << link.weight << std::endl;
 }
 
 void SemanticGraph::importFromFile(std::string const& filePath)

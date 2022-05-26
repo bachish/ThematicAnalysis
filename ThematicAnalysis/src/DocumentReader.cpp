@@ -53,7 +53,7 @@ std::string DocumentReader::concatTitlesAndContents(std::vector<std::string> con
 std::vector<std::string> readUntilWord(std::vector<std::string> const& words, size_t& curPos, std::string const& stopWord)
 {
 	std::vector<std::string> title;
-	title.reserve(10);
+	title.reserve(100);
 	while (curPos < words.size())
 	{
 		auto curWord = words[curPos];

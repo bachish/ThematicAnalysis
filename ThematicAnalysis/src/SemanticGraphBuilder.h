@@ -14,7 +14,7 @@ public:
 	static const int N_FOR_NGRAM;
 
 private:
-	void tryAddNormalizedNgramsToGraph(size_t titleTermHash, std::vector<std::string> const& words, std::map<size_t, size_t>& linkedTerms, size_t n);
+	std::map<size_t, size_t> calcLinkedTermsCounts(std::vector<std::string> const& words) const;
 	void addAllTermsToGraph(std::vector<NormalizedArticle> const& articles);
 	void calculateTermsUsedDocuments(std::vector<NormalizedArticle> const& articles);
 

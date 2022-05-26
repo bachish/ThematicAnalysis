@@ -52,7 +52,12 @@ void tags()
 
 int main() {
 	setlocale(LC_ALL, "rus");
-
-	draw();
+	auto a = "о боже";
+	try {
+		draw();
+	}catch (std::exception ex)
+	{
+		std::cout << ex.what();
+	}
 	return 0;
 }
