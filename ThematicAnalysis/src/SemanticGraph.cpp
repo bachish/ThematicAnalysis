@@ -1,13 +1,10 @@
-﻿#include "SemanticGraph.h"
-
-#include <execution>
-
-#include "UGraphviz/UGraphviz.hpp"
+﻿#include <execution>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <numeric>
-
+#include "UGraphviz/UGraphviz.hpp"
+#include "SemanticGraph.h"
 #include "FileManager.h"
 #include "Hasher.h"
 #include "StringUtils.h"
@@ -134,18 +131,16 @@ std::string breakText(std::string const& text, int maxLen)
 		len += word.size();
 		if (len > maxLen)
 		{
-			ss << '\n';
+			//ss << '\n';
 			len = 0;
 		}
 	}
 	return ss.str();
 }
-
-std::string SemanticGraph::getDotView() const
+Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t> & registredNodes) const
 {
 	Ubpa::UGraphviz::Graph gr("SemanticGraph", true);
 	auto& reg = gr.GetRegistry();
-	std::map<size_t, size_t> registredNodes;
 	std::map<size_t, bool> visited;
 	for (auto&& [hash, node] : nodes)
 	{
@@ -165,6 +160,24 @@ std::string SemanticGraph::getDotView() const
 		visited.at(hash) = true;
 	}
 	gr.RegisterGraphAttr("overlap", "false");
+	return gr;
+}
+
+std::string SemanticGraph::getDotView() const
+{
+	std::map<size_t, size_t> registredNodes;
+	return createDotView(registredNodes).Dump();
+}
+
+std::string SemanticGraph::getDotView(size_t centerHash) const
+{
+	std::map<size_t, size_t> registredNodes;
+	auto gr = createDotView(registredNodes);
+	if(nodes.find(centerHash) != nodes.end())
+	{
+		gr.GetRegistry().RegisterNodeAttr(registredNodes[centerHash], "color", "red");
+		gr.GetRegistry().RegisterNodeAttr(registredNodes[centerHash], "fontname", "times-bold");
+	}
 	return gr.Dump();
 }
 
@@ -253,12 +266,24 @@ void SemanticGraph::importFromStream(std::istream& in)
 	}
 }
 
-void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName) const
+
+void drawDotToImage(std::string const& dotView, std::string const& dirPath, std::string const& imageName)
 {
 	std::string dotFile = "temp.dot";
-	FileManager::writeUTF8ToFile(dotFile, getDotView());
+	FileManager::writeUTF8ToFile(dotFile, dotView);
 	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
+}
+
+
+void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName) const
+{
+	drawDotToImage(getDotView(), dirPath, imageName);
+}
+
+void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const
+{
+	drawDotToImage(getDotView(centerHash), dirPath, imageName);
 }
 
