@@ -11,8 +11,8 @@
 #include "Hasher.h"
 #include "MathUtils.h"
 #include "Normalizer.h"
-constexpr double TextAnalyzer::WEIGHT_ADDITION = 1.0;
-constexpr size_t TextAnalyzer::LINK_RADIUS = 1;
+constexpr double TextAnalyzer::DAMP_COEF = 0.05;
+constexpr size_t TextAnalyzer::LINK_RADIUS = 2;
 
 
 void TextAnalyzer::analyze(std::string const& textFilePath, SemanticGraph const& graph)
@@ -47,31 +47,32 @@ void calcTfIdf(SemanticGraph & graph)
 	auto textTermsCount = getNotNullWeightNodesCount(graph);
 	for (auto&& [hash, node] : graph.nodes)
 		if (node.weight > FLT_EPSILON) {
-			node.weight = MathUtils::calcTfIdf(node.weight, textTermsCount, node.term.numberOfArticlesThatUseIt, graph.nodes.size());
+			node.weight = MathUtils::calcTfIdf(node.weight, textTermsCount, node.term.numberOfArticlesThatUseIt, graph.nodes.size() + 1);
 		}
 }
 
-void distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius)
+void TextAnalyzer::distributeTermWeight(SemanticGraph const& sourceGraph, SemanticGraph& graph, size_t centerTermHash, size_t radius)
 {
 	if (radius > 0)
 	{
-		auto node = graph.nodes.at(centerTermHash);
+		auto node = sourceGraph.nodes.at(centerTermHash);
 		const auto weightSum = node.sumLinksWeight();
 		for (auto [neighborHash, link] : node.neighbors)
 		{
-			distributeTermWeight(graph, neighborHash, radius - 1);
-			graph.addTermWeight(neighborHash, node.weight * (link.weight / weightSum));
+			graph.addTermWeight(neighborHash, DAMP_COEF * node.weight * (link.weight / weightSum));
+			distributeTermWeight(sourceGraph, graph, neighborHash, radius - 1);
 		}
 	}
 }
 
-SemanticGraph distributeWeights(SemanticGraph graph)
+SemanticGraph TextAnalyzer::distributeWeights(SemanticGraph const& graph)
 {
+	auto distrGraph = graph;
 	for (auto&& [hash, node] : graph.nodes)
 		if (node.weight > FLT_EPSILON) {
-			distributeTermWeight(graph, hash, 2);
+			distributeTermWeight(graph, distrGraph, hash, LINK_RADIUS);
 		}
-	return graph;
+	return distrGraph;
 }
 
 void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph)
@@ -79,6 +80,7 @@ void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, Seman
 	tagsGraph = graph;
 	calcFrequency(tagsGraph, normalizedText);
 	calcTfIdf(tagsGraph);
+	tagsGraph = distributeWeights(tagsGraph);
 }
 
 

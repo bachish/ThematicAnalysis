@@ -15,7 +15,7 @@ struct SubString
 
 auto GetTermsPositions(std::string const& text)
 {
-	boost::regex regex(R"(\r?\n\r?\n([А-Я]{3,}(?:[—\-\s,.]{1,5}(?:[А-Я]{3,}|[\d]+))*)(?:[^а-я0-9][а-яA-Za-z,.;()\-\s\d]*)?—[\s]*[а-я\d])");
+	boost::regex regex(R"(\r?\n\r?\n([А-Я]{2,}(?:[—\-\s,.]{1,5}(?:[А-Я]{2,}|[\d]+))*)(?:[^а-я0-9][а-яA-Za-z,.;()\-\s\d]*)?—[\s]*[а-я\d])");
 	std::stringstream res;
 	boost::smatch match;
 	std::vector<std::tuple<std::string::const_iterator, std::string::const_iterator>> terms;

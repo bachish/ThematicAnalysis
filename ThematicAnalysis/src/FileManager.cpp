@@ -20,7 +20,10 @@ std::string FileManager::readAllFile(const std::ifstream& fin)
 
 std::string FileManager::readAllFile(std::string const& filePath)
 {
-	return readAllFile(std::ifstream(filePath));
+	std::ifstream fin(filePath);
+	auto text = readAllFile(fin);
+	fin.close();
+	return text;
 }
 
 std::string cp1251ToUTF8(const std::string& str)

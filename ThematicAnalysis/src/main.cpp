@@ -42,7 +42,7 @@ void tags()
 	auto graph = getMathGraph();
 
 	TextAnalyzer analyzer;
-	analyzer.analyze("resources/mathText.txt", graph);
+	analyzer.analyze("resources/giperbola.txt", graph);
 	auto tags = analyzer.getRelevantTags(150);
 	for (auto& tag : tags)
 	{
