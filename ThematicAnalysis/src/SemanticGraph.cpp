@@ -40,11 +40,7 @@ Link::Link() : Link(0)
 
 void SemanticGraph::addTerm(Term const& term)
 {
-	auto const& [_, isInserted] = nodes.emplace(term.getHashCode(), Node(term));
-	if (!isInserted)
-	{
-		std::cout << "Term " + term.view + " already exist!\n";
-	}
+	nodes.emplace(term.getHashCode(), Node(term));
 }
 
 void SemanticGraph::createLink(size_t firstTermHash, size_t secondTermHash, double weight)
@@ -137,30 +133,26 @@ std::string breakText(std::string const& text, int maxLen)
 	}
 	return ss.str();
 }
-Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t> & registredNodes) const
+Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& registredNodes) const
 {
-	Ubpa::UGraphviz::Graph gr("SemanticGraph", true);
-	auto& reg = gr.GetRegistry();
-	std::map<size_t, bool> visited;
+	Ubpa::UGraphviz::Graph dotGraph("SemanticGraph", true);
+	auto& reg = dotGraph.GetRegistry();
 	for (auto&& [hash, node] : nodes)
 	{
 		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6));
-		gr.AddNode(nodeId);
+		dotGraph.AddNode(nodeId);
 		registredNodes.emplace(hash, nodeId);
-		visited.emplace(hash, false);
 	}
 
 	for (auto&& [hash, node] : nodes) {
-		for (auto&& [neighbor_hash, link] : node.neighbors)
-			if (!visited[neighbor_hash]) {
-				auto edgeId = reg.RegisterEdge(registredNodes[hash], registredNodes[neighbor_hash]);
-				reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight));
-				gr.AddEdge(edgeId);
-			}
-		visited.at(hash) = true;
+		for (auto&& [neighbor_hash, link] : node.neighbors) {
+			auto edgeId = reg.RegisterEdge(registredNodes[hash], registredNodes[neighbor_hash]);
+			reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight));
+			dotGraph.AddEdge(edgeId);
+		}
 	}
-	gr.RegisterGraphAttr("overlap", "false");
-	return gr;
+	dotGraph.RegisterGraphAttr("overlap", "false");
+	return dotGraph;
 }
 
 std::string SemanticGraph::getDotView() const
@@ -173,7 +165,7 @@ std::string SemanticGraph::getDotView(size_t centerHash) const
 {
 	std::map<size_t, size_t> registredNodes;
 	auto gr = createDotView(registredNodes);
-	if(nodes.find(centerHash) != nodes.end())
+	if (nodes.find(centerHash) != nodes.end())
 	{
 		gr.GetRegistry().RegisterNodeAttr(registredNodes[centerHash], "color", "red");
 		gr.GetRegistry().RegisterNodeAttr(registredNodes[centerHash], "fontname", "times-bold");
@@ -199,10 +191,10 @@ void SemanticGraph::exportToFile(std::string const& filePath)
 
 void SemanticGraph::exportToStream(std::ostream& out)
 {
-	std::map<size_t, bool> visited;
 	std::map<size_t, int> indexes;
 	out << nodes.size() << std::endl;
 	int index = 0;
+
 	for (auto&& [hash, node] : nodes)
 	{
 		out << node.term.view << '\n' << node.weight << ' ' << node.term.normalizedWords.size() << ' ';
@@ -210,7 +202,6 @@ void SemanticGraph::exportToStream(std::ostream& out)
 			out << word << ' ';
 		out << std::endl;
 		indexes[hash] = index++;
-		visited[hash] = false;
 	}
 
 	auto edgesCount = std::transform_reduce(std::execution::par, nodes.begin(), nodes.end(), 0ull,
