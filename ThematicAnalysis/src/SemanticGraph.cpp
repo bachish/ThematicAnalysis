@@ -1,6 +1,5 @@
 ﻿#include "SemanticGraph.h"
 
-#include "UGraphviz/UGraphviz.hpp"
 #include <sstream>
 #include <fstream>
 #include <numeric>
@@ -139,18 +138,16 @@ std::string breakText(std::string const& text, int maxLen)
 		len += word.size();
 		if (len > maxLen)
 		{
-			ss << '\n';
+			//ss << '\n';
 			len = 0;
 		}
 	}
 	return ss.str();
 }
-
-std::string SemanticGraph::getDotView() const
+Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t> & registredNodes) const
 {
 	Ubpa::UGraphviz::Graph gr("SemanticGraph");
 	auto& reg = gr.GetRegistry();
-	std::map<size_t, size_t> registredNodes;
 	std::map<size_t, bool> visited;
 	for (auto&& [hash, node] : nodes)
 	{
@@ -170,6 +167,24 @@ std::string SemanticGraph::getDotView() const
 		visited[hash] = true;
 	}
 	gr.RegisterGraphAttr("overlap", "false");
+	return gr;
+}
+
+std::string SemanticGraph::getDotView() const
+{
+	std::map<size_t, size_t> registredNodes;
+	return createDotView(registredNodes).Dump();
+}
+
+std::string SemanticGraph::getDotView(size_t centerHash) const
+{
+	std::map<size_t, size_t> registredNodes;
+	auto gr = createDotView(registredNodes);
+	if(nodes.find(centerHash) != nodes.end())
+	{
+		gr.GetRegistry().RegisterNodeAttr(registredNodes[centerHash], "color", "red");
+		gr.GetRegistry().RegisterNodeAttr(registredNodes[centerHash], "fontname", "times-bold");
+	}
 	return gr.Dump();
 }
 
@@ -268,5 +283,14 @@ void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& i
 	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
+}
+
+void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const
+{
+	std::string dotFile = "temp.dot";
+	FileManager::writeUTF8ToFile(dotFile, getDotView(centerHash));
+	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	system(command.c_str());
+//	std::remove(dotFile.c_str());
 }
 

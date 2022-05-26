@@ -32,8 +32,9 @@ void draw()
 {
 	auto graph = getMathGraph();
 	Normalizer normalizer;
-	auto subgr = graph.getNeighborhood(Hasher::sortAndCalcHash(normalizer.normalize("первообразная")), 1, 3);
-	subgr.drawToImage("", "image");
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("первообразная"));
+	auto subgr = graph.getNeighborhood(hash, 3, 15);
+	subgr.drawToImage("", "image", hash);
 }
 
 void tags()

@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <map>
+#include "UGraphviz/UGraphviz.hpp"
+
 #include "Term.h"
 class Link;
 
@@ -38,13 +40,16 @@ public:
 	bool isLinkExist(size_t firstTermHash, size_t secondTermHash) const;
 	SemanticGraph getNeighborhood(size_t centerHash, unsigned radius, unsigned minWeight = 1) const;
 	std::string getDotView() const;
+	std::string getDotView(size_t centerHash) const;
 
 	void exportToFile(std::string const& filePath);
 	void exportToStream(std::ostream& out);
 	void importFromFile(std::string const& filePath);
 	void importFromStream(std::istream& in);
 	void drawToImage(std::string const& dirPath, std::string const& imageName) const;
+	void drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const;
 
 private:
 	void buildNeighborhood(size_t curHash, unsigned radius, unsigned minWeight, SemanticGraph& current) const;
+	Ubpa::UGraphviz::Graph createDotView(std::map<size_t, size_t> &registredNodes) const;
 };
