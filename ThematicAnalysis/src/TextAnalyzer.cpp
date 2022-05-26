@@ -1,6 +1,7 @@
 #include "TextAnalyzer.h"
 
 #include <algorithm>
+#include <execution>
 #include <iostream>
 #include <iterator>
 
@@ -8,8 +9,9 @@
 #include "FileManager.h"
 #include "SemanticGraphBuilder.h"
 #include "Hasher.h"
+#include "MathUtils.h"
 #include "Normalizer.h"
-constexpr double TextAnalyzer::WEIGHT_ADDITION = 3.0;
+constexpr double TextAnalyzer::WEIGHT_ADDITION = 1.0;
 constexpr size_t TextAnalyzer::LINK_RADIUS = 1;
 
 
@@ -20,21 +22,65 @@ void TextAnalyzer::analyze(std::string const& textFilePath, SemanticGraph const&
 	analyze(normText, graph);
 }
 
-void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph)
+size_t getNotNullWeightNodesCount(SemanticGraph const& graph)
 {
-	tagsGraph = SemanticGraph();
-	_sourceGraph = graph;
-	for (int n = 1; n <= SemanticGraphBuilder::N_FOR_NGRAM; n++) {
+	return std::transform_reduce(std::execution::par, graph.nodes.begin(), graph.nodes.end(), 0ull,
+		[](size_t a, size_t b) {return a + b; },
+		[](std::pair<size_t, Node> const& pair) {return pair.second.weight > FLT_EPSILON ? 1ull : 0ull; });
+}
+
+
+
+void calcFrequency(SemanticGraph & graph, std::vector<std::string> const& normalizedText)
+{
+	for (int n = 1; n <= SemanticGraphBuilder::N_FOR_NGRAM; n++)
 		for (size_t i = 0; i < normalizedText.size() - n; i++)
 		{
 			auto termHash = Hasher::sortAndCalcHash(normalizedText, i, n);
 			if (graph.isTermExist(termHash))
-			{
-				rebuildTagsGraph(termHash);
-			}
+				graph.addTermWeight(termHash, 1);
+		}
+}
+
+void calcTfIdf(SemanticGraph & graph)
+{
+	auto textTermsCount = getNotNullWeightNodesCount(graph);
+	for (auto&& [hash, node] : graph.nodes)
+		if (node.weight > FLT_EPSILON) {
+			node.weight = MathUtils::calcTfIdf(node.weight, textTermsCount, node.term.numberOfArticlesThatUseIt, graph.nodes.size());
+		}
+}
+
+void distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius)
+{
+	if (radius > 0)
+	{
+		auto node = graph.nodes.at(centerTermHash);
+		const auto weightSum = node.sumLinksWeight();
+		for (auto [neighborHash, link] : node.neighbors)
+		{
+			distributeTermWeight(graph, neighborHash, radius - 1);
+			graph.addTermWeight(neighborHash, node.weight * (link.weight / weightSum));
 		}
 	}
 }
+
+SemanticGraph distributeWeights(SemanticGraph graph)
+{
+	for (auto&& [hash, node] : graph.nodes)
+		if (node.weight > FLT_EPSILON) {
+			distributeTermWeight(graph, hash, 2);
+		}
+	return graph;
+}
+
+void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph)
+{
+	tagsGraph = graph;
+	calcFrequency(tagsGraph, normalizedText);
+	calcTfIdf(tagsGraph);
+}
+
 
 std::vector<std::string> TextAnalyzer::getRelevantTags(int tagsCount)
 {
@@ -52,37 +98,4 @@ std::vector<std::string> TextAnalyzer::getRelevantTags(int tagsCount)
 
 }
 
-void TextAnalyzer::rebuildTagsGraph(size_t metTermHash)
-{
-	auto local = _sourceGraph.getNeighborhood(metTermHash, LINK_RADIUS);
-	mergeGraphs(local);
-	recalculateTermWeight(metTermHash, LINK_RADIUS);
-}
-void TextAnalyzer::mergeGraphs(SemanticGraph src)
-{
-	for (auto [hash, node] : src.nodes)
-	{
-		tagsGraph.addTerm(node.term);
-	}
-	for (auto [hash, node] : src.nodes)
-	{
-		for (auto [hash2, link] : node.neighbors)
-		{
-			if (tagsGraph.isTermExist(hash2))
-				tagsGraph.createLink(hash, hash2, link.weight);
-		}
-	}
-}
-void TextAnalyzer::recalculateTermWeight(size_t centerTermHash, size_t radius, double delta)
-{
-	tagsGraph.addTermWeight(centerTermHash, delta);
-	if (radius > 0)
-	{
-		auto node = tagsGraph.nodes.at(centerTermHash);
-		const auto weightSum = node.sumLinksWeight();
-		for (auto [neighbor_hash, link] : node.neighbors)
-		{
-			recalculateTermWeight(neighbor_hash, radius - 1, link.weight / weightSum);
-		}
-	}
-}
+

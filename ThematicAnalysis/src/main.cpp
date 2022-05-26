@@ -32,8 +32,8 @@ void draw()
 {
 	auto graph = getMathGraph();
 	Normalizer normalizer;
-	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("первообразная"));
-	auto subgr = graph.getNeighborhood(hash, 3, 15);
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("бэра классы"));
+	auto subgr = graph.getNeighborhood(hash, 1, 0.05);
 	subgr.drawToImage("", "image", hash);
 }
 
@@ -43,7 +43,7 @@ void tags()
 
 	TextAnalyzer analyzer;
 	analyzer.analyze("resources/mathText.txt", graph);
-	auto tags = analyzer.getRelevantTags(50);
+	auto tags = analyzer.getRelevantTags(150);
 	for (auto& tag : tags)
 	{
 		//std::cout << tag << '\n';
@@ -53,12 +53,7 @@ void tags()
 
 int main() {
 	setlocale(LC_ALL, "rus");
-	auto a = "о боже";
-	try {
-		draw();
-	}catch (std::exception ex)
-	{
-		std::cout << ex.what();
-	}
+	//create();
+	tags();
 	return 0;
 }

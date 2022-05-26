@@ -11,7 +11,6 @@ public:
 	std::vector<std::string> getRelevantTags(int tagsCount);
 private:
 	void rebuildTagsGraph(size_t termHash);
-	void recalculateTermWeight(size_t centerTermHash, size_t radius, double delta = 1.);
 	void mergeGraphs(SemanticGraph src);
 	static const double WEIGHT_ADDITION;
 	static const size_t LINK_RADIUS;

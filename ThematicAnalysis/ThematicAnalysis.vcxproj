@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\FileManager.cpp" />
     <ClCompile Include="src\Hasher.cpp" />
+    <ClCompile Include="src\MathUtils.cpp" />
     <ClCompile Include="src\Normalizer.cpp" />
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
     <ClCompile Include="src\NormalizedArticle.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\DocumentReader.h" />
     <ClInclude Include="src\FileManager.h" />
     <ClInclude Include="src\Hasher.h" />
+    <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\XmlConverter\IXmlConverter.h" />
     <ClInclude Include="src\Normalizer.h" />
@@ -54,7 +56,7 @@
     <Content Include="external\lemmatizator\x64\lemmatizer.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-	<Content Include="external\mystem.exe">
+    <Content Include="external\mystem.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -7,6 +7,7 @@
 
 #include "DocumentReader.h"
 #include "Hasher.h"
+#include "MathUtils.h"
 
 constexpr double SemanticGraphBuilder::WEIGHT_ADDITION = 1.0;
 constexpr int SemanticGraphBuilder::N_FOR_NGRAM = 4;
@@ -119,13 +120,8 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 		for (auto [termHash, linkCount] : linkedTermsCounts)
 			if (titleHash != termHash) {
 				auto const& term = _graph.nodes[termHash].term;
-				auto tf = static_cast<double>(linkCount) / linkedTermsSumCount;
-				double idf;
-				if (articlesCount == 0 || term.numberOfArticlesThatUseIt == 0)
-					idf = std::log(static_cast<double>(articlesCount + 1) / (term.numberOfArticlesThatUseIt + 1));
-				else
-					idf = std::log(static_cast<double>(articlesCount) / term.numberOfArticlesThatUseIt);
-				_graph.createLink(titleHash, termHash, tf * idf);
+				auto tfIdf = MathUtils::calcTfIdf(linkCount, linkedTermsSumCount, term.numberOfArticlesThatUseIt, articlesCount);
+				_graph.createLink(titleHash, termHash, tfIdf);
 			}
 	}
 	return _graph;

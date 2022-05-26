@@ -177,7 +177,7 @@ std::string SemanticGraph::getDotView(size_t centerHash) const
 ///	EXPORT/IMPORT FORMAT
 /// <vertexes count>
 /// <view>
-/// <weight> <normalized words count> <word 1> ...
+/// <weight> <numberOfArticles> <normalized words count> <word 1> ...
 /// ...
 /// <edges count>
 ///	<first term index> <second term index> <weight>
@@ -197,7 +197,7 @@ void SemanticGraph::exportToStream(std::ostream& out)
 
 	for (auto&& [hash, node] : nodes)
 	{
-		out << node.term.view << '\n' << node.weight << ' ' << node.term.normalizedWords.size() << ' ';
+		out << node.term.view << '\n' << node.weight << ' ' << node.term.numberOfArticlesThatUseIt << ' ' << node.term.normalizedWords.size() << ' ';
 		for (auto&& word : node.term.normalizedWords)
 			out << word << ' ';
 		out << std::endl;
@@ -226,14 +226,17 @@ Term readTerm(std::istream& in)
 {
 	std::string view;
 	double weight;
-	size_t wordsCount;
+	size_t wordsCount, numberOfArticlesThatUseIt;
 	std::ws(in);
 	std::getline(in, view);
-	in >> weight >> wordsCount;
+	in >> weight >> numberOfArticlesThatUseIt >> wordsCount;
 	std::vector<std::string> words(wordsCount);
 	for (size_t i = 0; i < wordsCount; i++)
 		in >> words[i];
-	return { words, view, Hasher::sortAndCalcHash(words) };
+
+	Term term = { words, view, Hasher::sortAndCalcHash(words) };
+	term.numberOfArticlesThatUseIt = numberOfArticlesThatUseIt;
+	return term;
 }
 
 void SemanticGraph::importFromStream(std::istream& in)
