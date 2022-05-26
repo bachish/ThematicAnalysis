@@ -117,12 +117,12 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 		auto articlesCount = static_cast<double>(articles.size());
 
 		for (auto [termHash, linkCount] : linkedTermsCounts)
-		{
-			auto const& term = _graph.nodes[termHash].term;
-			auto tf = static_cast<double>(linkCount) / linkedTermsSumCount;
-			auto idf = std::log(articlesCount / term.numberOfArticlesThatUseIt);
-			_graph.createLink(titleHash, termHash, tf * idf);
-		}
+			if (titleHash != termHash) {
+				auto const& term = _graph.nodes[termHash].term;
+				auto tf = static_cast<double>(linkCount) / linkedTermsSumCount;
+				auto idf = std::log(articlesCount / term.numberOfArticlesThatUseIt);
+				_graph.createLink(titleHash, termHash, tf * idf);
+			}
 	}
 	return _graph;
 }

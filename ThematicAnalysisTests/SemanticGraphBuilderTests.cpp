@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <CppUnitTest.h>
+#include <set>
 
 #include "Hasher.h"
 #include "SemanticGraphBuilder.h"
@@ -16,7 +17,7 @@ namespace ThematicAnalysisTests
 {
 	TEST_CLASS(SemanticGraphBuilderTests)
 	{
-		TEST_METHOD(buildTest)
+		TEST_METHOD(build)
 		{
 			SemanticGraphBuilder builder;
 			std::vector<NormalizedArticle> articles = {
@@ -48,6 +49,25 @@ namespace ThematicAnalysisTests
 			Assert::AreEqual(0.4055, graph.getLinkWeight(articlesHashes[2], articlesHashes[0]), 0.0001);
 		}
 
+		TEST_METHOD(buildWithDuplicates)
+		{
+			SemanticGraphBuilder builder;
+			std::vector<NormalizedArticle> articles = {
+				{ {"второй"}, "второй", {"третий", "терм"} },
+				{ {"второй"}, "второй", {"второй", "терм"} },
+				{ {"третий"}, "третий", {"второй", "терм"} },
+			};
+			std::vector<size_t> articlesHashes = {Hasher::sortAndCalcHash(articles[0].titleWords), Hasher::sortAndCalcHash(articles[2].titleWords)};
 
+			auto graph = builder.build(articles);
+			Assert::AreEqual(2ull, graph.nodes.size());
+			for (auto termHash : articlesHashes) {
+				Assert::IsTrue(graph.isTermExist(termHash));
+			Assert::IsFalse(graph.isLinkExist(termHash,termHash));
+			}
+
+			Assert::IsTrue(graph.isLinkExist(articlesHashes[0], articlesHashes[1]));
+			Assert::IsTrue(graph.isLinkExist(articlesHashes[1], articlesHashes[0]));
+		}
 	};
 }

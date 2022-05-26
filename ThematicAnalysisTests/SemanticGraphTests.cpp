@@ -171,6 +171,7 @@ namespace ThematicAnalysisTests
 			exportedGraph.exportToStream(exportSs);
 			SemanticGraph importedGraph;
 			importedGraph.importFromStream(exportSs);
+
 			Assert::IsTrue(importedGraph.isTermExist(terms[0].getHashCode()));
 			Assert::IsTrue(importedGraph.isTermExist(terms[1].getHashCode()));
 			Assert::IsTrue(importedGraph.isTermExist(terms[2].getHashCode()));
@@ -183,5 +184,7 @@ namespace ThematicAnalysisTests
 			Assert::AreEqual(0., importedGraph.getLinkWeight(terms[0].getHashCode(), terms[1].getHashCode()));
 			Assert::AreEqual(2., importedGraph.getLinkWeight(terms[2].getHashCode(), terms[1].getHashCode()));
 		}
+
+		
 	};
 }
