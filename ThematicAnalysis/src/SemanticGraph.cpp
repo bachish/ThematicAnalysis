@@ -19,14 +19,18 @@ Node::Node()
 {
 }
 
-double Node::sumLinksWeight()
+double Node::sumLinksWeight() const
 {
-	double sum = 0;
-	for (auto [hash, link] : neighbors)
+	//if (isSumLinksWeightsChanged) {
+	sumLinksWeights = 0;
+	for (auto&& [hash, link] : neighbors)
 	{
-		sum += link.weight;
+		sumLinksWeights += link.weight;
 	}
-	return sum;
+	isSumLinksWeightsChanged = false;
+	//	}
+	return sumLinksWeights;
+
 }
 
 Link::Link(double weight)

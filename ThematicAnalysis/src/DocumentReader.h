@@ -10,7 +10,7 @@ public:
 	// throw std::ifstream::failure when i/o error
 	std::vector<NormalizedArticle> readAndNormalizeArticles(std::string const& xmlPath) const;
 	std::vector<NormalizedArticle> readAndNormalizeArticles(std::string const& filePath, IXmlConverter const& xmlConverter) const;
-	std::vector<std::string> readAndNormalizeText(std::string const& filePath) const;
+	std::vector<std::string> readAndNormalizeText(std::string const& text) const;
 private:
 	std::string concatTitlesAndContents(std::vector<std::string> const& titles, std::vector<std::string> const& contents, size_t approxSize) const;
 	std::vector<std::string> getTitle(std::vector<std::string> const& words, size_t& curPos);

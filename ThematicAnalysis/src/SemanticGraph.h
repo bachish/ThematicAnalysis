@@ -13,7 +13,11 @@ public:
 	Term term;
 	double weight;
 	std::map<size_t, Link> neighbors;
-	double sumLinksWeight();
+	double sumLinksWeight() const;
+
+	mutable bool isSumLinksWeightsChanged = true;
+	mutable double sumLinksWeights = true;
+
 };
 
 class Link

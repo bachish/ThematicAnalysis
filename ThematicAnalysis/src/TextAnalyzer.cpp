@@ -11,14 +11,15 @@
 #include "Hasher.h"
 #include "MathUtils.h"
 #include "Normalizer.h"
-constexpr double TextAnalyzer::DAMP_COEF = 0.05;
-constexpr size_t TextAnalyzer::LINK_RADIUS = 2;
+constexpr double TextAnalyzer::DISTRIBUTION_COEF = 1.;
+constexpr double TextAnalyzer::ABSORPTION_COEF = 0.5;
+constexpr size_t TextAnalyzer::LINK_RADIUS = 1;
 
 
-void TextAnalyzer::analyze(std::string const& textFilePath, SemanticGraph const& graph)
+void TextAnalyzer::analyze(std::string const& text, SemanticGraph const& graph)
 {
 	DocumentReader reader;
-	auto normText = reader.readAndNormalizeText(textFilePath);
+	auto normText = reader.readAndNormalizeText(text);
 	analyze(normText, graph);
 }
 
@@ -31,7 +32,7 @@ size_t getNotNullWeightNodesCount(SemanticGraph const& graph)
 
 
 
-void calcFrequency(SemanticGraph & graph, std::vector<std::string> const& normalizedText)
+void calcFrequency(SemanticGraph& graph, std::vector<std::string> const& normalizedText)
 {
 	for (int n = 1; n <= SemanticGraphBuilder::N_FOR_NGRAM; n++)
 		for (size_t i = 0; i < normalizedText.size() - n; i++)
@@ -42,7 +43,7 @@ void calcFrequency(SemanticGraph & graph, std::vector<std::string> const& normal
 		}
 }
 
-void calcTfIdf(SemanticGraph & graph)
+void calcTfIdf(SemanticGraph& graph)
 {
 	auto textTermsCount = getNotNullWeightNodesCount(graph);
 	for (auto&& [hash, node] : graph.nodes)
@@ -51,16 +52,17 @@ void calcTfIdf(SemanticGraph & graph)
 		}
 }
 
-void TextAnalyzer::distributeTermWeight(SemanticGraph const& sourceGraph, SemanticGraph& graph, size_t centerTermHash, size_t radius)
+void TextAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight)
 {
 	if (radius > 0)
 	{
-		auto node = sourceGraph.nodes.at(centerTermHash);
+		auto node = graph.nodes.at(centerTermHash);
 		const auto weightSum = node.sumLinksWeight();
 		for (auto [neighborHash, link] : node.neighbors)
 		{
-			graph.addTermWeight(neighborHash, DAMP_COEF * node.weight * (link.weight / weightSum));
-			distributeTermWeight(sourceGraph, graph, neighborHash, radius - 1);
+			auto neighborWeight = weight * (link.weight / weightSum);
+			graph.addTermWeight(neighborHash, neighborWeight * ABSORPTION_COEF);
+			distributeTermWeight(graph, neighborHash, radius - 1, neighborWeight * (1-ABSORPTION_COEF));
 		}
 	}
 }
@@ -70,7 +72,7 @@ SemanticGraph TextAnalyzer::distributeWeights(SemanticGraph const& graph)
 	auto distrGraph = graph;
 	for (auto&& [hash, node] : graph.nodes)
 		if (node.weight > FLT_EPSILON) {
-			distributeTermWeight(graph, distrGraph, hash, LINK_RADIUS);
+			distributeTermWeight(distrGraph, hash, LINK_RADIUS, node.weight * DISTRIBUTION_COEF);
 		}
 	return distrGraph;
 }

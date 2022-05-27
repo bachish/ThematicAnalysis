@@ -85,11 +85,9 @@ std::vector<NormalizedArticle> DocumentReader::normalizeArticles(std::string con
 	return result;
 }
 
-std::vector<std::string> DocumentReader::readAndNormalizeText(std::string const& filePath) const
+std::vector<std::string> DocumentReader::readAndNormalizeText(std::string const& text) const
 {
-	auto fin = OpenFileWithUsingExceptions(filePath);
-	auto documentText = FileManager::readAllFile(fin);
-	return _normalizer.normalize(documentText);
+	return _normalizer.normalize(text);
 }
 
 

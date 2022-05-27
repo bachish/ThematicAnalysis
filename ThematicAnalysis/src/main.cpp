@@ -8,6 +8,7 @@
 #include <boost/regex.hpp>
 
 #include "DocumentReader.h"
+#include "FileManager.h"
 #include "Hasher.h"
 #include "Normalizer.h"
 #include "SemanticGraphBuilder.h"
@@ -42,8 +43,9 @@ void tags()
 	auto graph = getMathGraph();
 
 	TextAnalyzer analyzer;
-	analyzer.analyze("resources/giperbola.txt", graph);
-	auto tags = analyzer.getRelevantTags(150);
+
+	analyzer.analyze(FileManager::readAllUTF8File("resources/integral.txt"), graph);
+	auto tags = analyzer.getRelevantTags(100);
 	for (auto& tag : tags)
 	{
 		//std::cout << tag << '\n';

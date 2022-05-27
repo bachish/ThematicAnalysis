@@ -18,6 +18,8 @@ std::string FileManager::readAllFile(const std::ifstream& fin)
 	return wss.str();
 }
 
+
+
 std::string FileManager::readAllFile(std::string const& filePath)
 {
 	std::ifstream fin(filePath);
@@ -26,21 +28,40 @@ std::string FileManager::readAllFile(std::string const& filePath)
 	return text;
 }
 
-std::string cp1251ToUTF8(const std::string& str)
+std::string convertEncodings(std::string const& str, UINT encodingFrom, UINT encodingTo)
 {
-	auto wsize = MultiByteToWideChar(1251, 0, str.c_str(), -1, nullptr, 0);
+		auto wsize = MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, nullptr, 0);
 	auto wres = new WCHAR[wsize];
-	MultiByteToWideChar(1251, 0, str.c_str(), -1, wres, wsize);
+	MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, wres, wsize);
 
-	auto usize = WideCharToMultiByte(CP_UTF8, 0, wres, -1, nullptr, 0, nullptr, nullptr);
+	auto usize = WideCharToMultiByte(encodingTo, 0, wres, -1, nullptr, 0, nullptr, nullptr);
 	auto ures = new char[usize];
-	WideCharToMultiByte(CP_UTF8, 0, wres, -1, ures, usize, nullptr, nullptr);
+	WideCharToMultiByte(encodingTo, 0, wres, -1, ures, usize, nullptr, nullptr);
 	std::string res = ures;
 
 	delete[] ures;
 	delete[] wres;
 
 	return res;
+}
+
+
+std::string UTF8ToCp1251(const std::string& str)
+{
+	return convertEncodings(str, CP_UTF8, 1251);
+}
+
+std::string cp1251ToUTF8(const std::string& str)
+{
+		return convertEncodings(str, 1251, CP_UTF8);
+
+}
+
+std::string FileManager::readAllUTF8File(std::string const& filePath)
+{
+	auto text = readAllFile(filePath);
+	text = UTF8ToCp1251(text);
+	return text;
 }
 
 void FileManager::writeUTF8ToFile(std::string const& filePath, std::string const& text)
