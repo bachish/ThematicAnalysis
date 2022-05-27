@@ -41,12 +41,6 @@ namespace ThematicAnalysisTests
 			Assert::IsFalse(graph.isLinkExist(articlesHashes[1], articlesHashes[2]));
 			Assert::IsTrue(graph.isLinkExist(articlesHashes[2], articlesHashes[0]));
 			Assert::IsFalse(graph.isLinkExist(articlesHashes[2], articlesHashes[1]));
-
-
-			Assert::AreEqual(0.5493, graph.getLinkWeight(articlesHashes[0], articlesHashes[1]), 0.0001);
-			Assert::AreEqual(0.5493, graph.getLinkWeight(articlesHashes[0], articlesHashes[2]), 0.0001);
-			Assert::AreEqual(0.4055, graph.getLinkWeight(articlesHashes[1], articlesHashes[0]), 0.0001);
-			Assert::AreEqual(0.4055, graph.getLinkWeight(articlesHashes[2], articlesHashes[0]), 0.0001);
 		}
 
 		TEST_METHOD(buildWithDuplicates)

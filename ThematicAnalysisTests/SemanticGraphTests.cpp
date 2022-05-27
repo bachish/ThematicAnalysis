@@ -2,6 +2,7 @@
 #include <fstream>
 #include "CppUnitTest.h"
 #include "DocumentReader.h"
+#include "FileManager.h"
 #include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
@@ -149,7 +150,7 @@ namespace ThematicAnalysisTests
 		{
 			auto builder = SemanticGraphBuilder();
 			auto reader = DocumentReader();
-			auto graph = builder.build(reader.readAndNormalizeArticles("resources/MiddleMath.txt"));
+			auto graph = builder.build(reader.readAndNormalizeArticles(FileManager::readAllFile("resources/MiddleMath.txt")));
 			Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash({ "алгол" })));
 		}
 

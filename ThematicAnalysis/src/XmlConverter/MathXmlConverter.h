@@ -4,5 +4,5 @@
 class MathXmlConverter: public IXmlConverter
 {
 public:
-	std::string convertFileToXml(std::string const& filePath) const override;
+	std::string convertTextToXml(std::string const& text) const override;
 };

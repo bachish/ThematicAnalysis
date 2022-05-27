@@ -34,13 +34,7 @@ size_t Hasher::sortAndCalcHash(std::vector<std::string>::const_iterator const& w
 		seed ^= _hashCalculator(*strIt) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 	}
 	return seed;
-
-	//	return calculateHashCode(sortAndConcatWords({ wordsBegin, wordsEnd }));
 }
 
 
-size_t Hasher::calculateHashCode(std::string const& text)
-{
-	static std::hash<std::string> _hashCalculator;
-	return _hashCalculator(text);
-}
+

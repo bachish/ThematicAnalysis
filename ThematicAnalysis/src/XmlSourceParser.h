@@ -8,8 +8,8 @@
 class XmlSourceParser
 {
 public:
-	std::tuple<std::vector<std::string>, std::vector<std::string>> parseTitlesAndContents(std::string const & xmlText);
-	std::tuple<std::vector<std::string>, std::vector<std::string>> parseTitlesAndContentsFromFile(std::string const & filePath, IXmlConverter const& xmlConverter);
+	std::tuple<std::vector<std::string>, std::vector<std::string>> parseTitlesAndContentsFromXml(std::string const & xmlText);
+	std::tuple<std::vector<std::string>, std::vector<std::string>> parseTitlesAndContents(std::string const & text, IXmlConverter const& xmlConverter);
 private:
 	std::vector<std::string> _titles;
 	std::vector<std::string> _contents;

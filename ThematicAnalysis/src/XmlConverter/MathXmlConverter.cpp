@@ -1,12 +1,9 @@
-﻿#include "MathXmlConverter.h"
-
-#include <fstream>
-#include <boost/regex.hpp>
+﻿#include <boost/regex.hpp>
 #include <iostream>
 #include <regex>
 #include <sstream>
 
-#include "FileManager.h"
+#include "MathXmlConverter.h"
 
 struct SubString
 {
@@ -27,16 +24,16 @@ auto GetTermsPositions(std::string const& text)
 	return terms;
 }
 
-std::string MathXmlConverter::convertFileToXml(std::string const& filePath) const
+std::string MathXmlConverter::convertTextToXml(std::string const& sourceText) const
 {
-	auto text = FileManager::readAllFile(filePath);
+	auto text = sourceText;
 	text.erase(std::remove(text.begin(), text.end(), '<'), text.end());
 	text.erase(std::remove(text.begin(), text.end(), '>'), text.end());
 	text.erase(std::remove(text.begin(), text.end(), '/'), text.end());
 	auto termsPositions = GetTermsPositions(text);
 	std::stringstream ss;
 	std::string::const_iterator prevTermEnd;
-	for (int i = 0; i < termsPositions.size(); i++)
+	for (size_t i = 0; i < termsPositions.size(); i++)
 	{
 		auto& [termStart, termEnd] = termsPositions[i];
 		if (i != 0)

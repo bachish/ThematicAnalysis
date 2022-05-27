@@ -4,6 +4,6 @@
 class IXmlConverter
 {
 public:
-	virtual std::string convertFileToXml(std::string const& filePath) const = 0;
+	virtual std::string convertTextToXml(std::string const& text) const = 0;
 	virtual ~IXmlConverter() = default;
 };

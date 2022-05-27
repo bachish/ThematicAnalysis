@@ -44,7 +44,7 @@ void tags()
 
 	TextAnalyzer analyzer;
 
-	analyzer.analyze(FileManager::readAllUTF8File("resources/integral.txt"), graph);
+	analyzer.analyze(FileManager::readAllFile("resources/voevoda.txt"), graph);
 	auto tags = analyzer.getRelevantTags(100);
 	for (auto& tag : tags)
 	{

@@ -133,8 +133,8 @@ SemanticGraph SemanticGraphBuilder::build(std::string const& xmlFilePath)
 	return build(reader.readAndNormalizeArticles(xmlFilePath));
 }
 
-SemanticGraph SemanticGraphBuilder::build(std::string const& articlesFilePath, IXmlConverter const& xmlConverter)
+SemanticGraph SemanticGraphBuilder::build(std::string const& articlesText, IXmlConverter const& xmlConverter)
 {
 	DocumentReader reader;
-	return build(reader.readAndNormalizeArticles(articlesFilePath, xmlConverter));
+	return build(reader.readAndNormalizeArticles(articlesText, xmlConverter));
 }

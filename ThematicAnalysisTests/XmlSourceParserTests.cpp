@@ -27,7 +27,7 @@ namespace ThematicAnalysisTests
 		{
 			auto parser = XmlSourceParser();
 			auto text = readTestFile("OnePaper.txt");
-			auto [titles, contents] = parser.parseTitlesAndContents(text);
+			auto [titles, contents] = parser.parseTitlesAndContentsFromXml(text);
 			Assert::AreEqual((size_t)1, titles.size());
 			Assert::AreEqual((size_t)1, contents.size());
 			Assert::AreEqual(std::string("¿¡¿ "), titles[0]);
@@ -38,7 +38,7 @@ namespace ThematicAnalysisTests
 		{
 			auto parser = XmlSourceParser();
 			auto text = readTestFile("TwoPaper.txt");
-			auto [titles, contents] = parser.parseTitlesAndContents(text);
+			auto [titles, contents] = parser.parseTitlesAndContentsFromXml(text);
 			Assert::AreEqual((size_t)2, titles.size());
 			Assert::AreEqual((size_t)2, contents.size());
 			Assert::AreEqual(std::string("¿¡¿ "), titles[0]);

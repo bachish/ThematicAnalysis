@@ -8,7 +8,7 @@
  * \param xmlText - source text in xml
  * \return tuple vectors of article titles and it's content
  */
-std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContents(
+std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContentsFromXml(
 	std::string const& xmlText)
 {
 	_text = xmlText;
@@ -20,11 +20,11 @@ std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::
 	return std::make_tuple(_titles, _contents);
 }
 
-std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContentsFromFile(
-	std::string const& filePath, IXmlConverter const& xmlConverter)
+std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContents(
+	std::string const& text, IXmlConverter const& xmlConverter)
 {
-	auto xmlText = xmlConverter.convertFileToXml(filePath);
-	return parseTitlesAndContents(xmlText);
+	auto xmlText = xmlConverter.convertTextToXml(text);
+	return parseTitlesAndContentsFromXml(xmlText);
 }
 
 
