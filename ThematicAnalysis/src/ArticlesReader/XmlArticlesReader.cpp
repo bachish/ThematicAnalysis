@@ -1,17 +1,16 @@
-﻿#include "XmlSourceParser.h"
+﻿#include "XmlArticlesReader.h"
 
 #include <algorithm>
 #include <locale>
 
 /**
  * \brief Extract from text only titles and content
- * \param xmlText - source text in xml
+ * \param text - source text in xml
  * \return tuple vectors of article titles and it's content
  */
-std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContentsFromXml(
-	std::string const& xmlText)
+std::tuple<std::vector<std::string>, std::vector<std::string>> XmlArticlesReader::read(std::string const& text) const
 {
-	_text = xmlText;
+	_text = text;
 	_size = _text.size();
 	_ptr = 0;
 	_titles = std::vector<std::string>();
@@ -19,14 +18,6 @@ std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::
 	parse();
 	return std::make_tuple(_titles, _contents);
 }
-
-std::tuple<std::vector<std::string>, std::vector<std::string>> XmlSourceParser::parseTitlesAndContents(
-	std::string const& text, IXmlConverter const& xmlConverter)
-{
-	auto xmlText = xmlConverter.convertTextToXml(text);
-	return parseTitlesAndContentsFromXml(xmlText);
-}
-
 
 void clearString(std::string& s)
 {
@@ -52,7 +43,7 @@ bool isLetter(char c)
 	return std::isalpha(c, loc);
 }
 
-void XmlSourceParser::parsePaper()
+void XmlArticlesReader::parsePaper() const
 {
 	std::string title, content;
 	while (_ptr < _size)
@@ -87,7 +78,7 @@ void XmlSourceParser::parsePaper()
 	}
 }
 
-void XmlSourceParser::parse()
+void XmlArticlesReader::parse() const
 {
 	int i = 0;
 
@@ -108,7 +99,7 @@ void XmlSourceParser::parse()
 	;
 }
 
-std::string XmlSourceParser::readWord()
+std::string XmlArticlesReader::readWord() const
 {
 	skipSpace();
 	const auto start = _ptr;
@@ -117,7 +108,7 @@ std::string XmlSourceParser::readWord()
 	return _text.substr(start, _ptr - start);
 }
 
-std::tuple<std::string, bool> XmlSourceParser::readTag()
+std::tuple<std::string, bool> XmlArticlesReader::readTag() const
 {
 	bool isClosed = false;
 	while (_ptr < _size && _text[_ptr++] != '<') {}
@@ -131,7 +122,7 @@ std::tuple<std::string, bool> XmlSourceParser::readTag()
 	return std::make_tuple(tag, isClosed);
 }
 
-void XmlSourceParser::skipSpace()
+void XmlArticlesReader::skipSpace() const
 {
 	while (_ptr < _size && (_text[_ptr] == ' ' || _text[_ptr] == '\t' || _text[_ptr] == '\n'))
 		++_ptr;
@@ -139,7 +130,8 @@ void XmlSourceParser::skipSpace()
 
 
 
-std::string XmlSourceParser::readToEnd(const std::string& tagName)
+
+std::string XmlArticlesReader::readToEnd(const std::string& tagName) const
 {
 	const auto start = _ptr;
 	while (_ptr < _size)

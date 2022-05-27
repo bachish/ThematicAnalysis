@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iterator>
 
-#include "DocumentReader.h"
+#include "ArticlesNormalizer.h"
 #include "SemanticGraphBuilder.h"
 #include "Hasher.h"
 #include "MathUtils.h"
@@ -17,8 +17,8 @@ constexpr size_t TextAnalyzer::LINK_RADIUS = 1;
 
 void TextAnalyzer::analyze(std::string const& text, SemanticGraph const& graph)
 {
-	DocumentReader reader;
-	auto normText = reader.readAndNormalizeText(text);
+	TextNormalizer normalizer;
+	auto normText = normalizer.normalize(text);
 	analyze(normText, graph);
 }
 

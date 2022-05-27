@@ -101,7 +101,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;..\ThematicAnalysis\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MathUtils.obj;StringUtils.obj;FileManager.obj;Hasher.obj;Normalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;DocumentReader.obj;lemmatizator.lib;NormalizedArticle.obj;XmlSourceParser.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ArticlesNormalizer.obj;MathUtils.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;lemmatizator.lib;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -171,7 +171,7 @@
     </ClCompile>
     <ClCompile Include="SemanticGraphBuilderTests.cpp" />
     <ClCompile Include="SemanticGraphTests.cpp" />
-    <ClCompile Include="XmlSourceParserTests.cpp" />
+    <ClCompile Include="XmlArticlesReaderTests.cpp" />
     <ClCompile Include="UtilsTests.cpp" />
   </ItemGroup>
   <ItemGroup>

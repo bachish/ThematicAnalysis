@@ -1,14 +1,15 @@
 ﻿#pragma once
 #include "NormalizedArticle.h"
 #include "SemanticGraph.h"
-#include "XmlConverter/IXmlConverter.h"
+
+class IArticlesReader;
 
 class SemanticGraphBuilder
 {
 public:
 	SemanticGraph build(std::vector<NormalizedArticle> const& articles);
 	SemanticGraph build(std::string const& xmlFilePath);
-	SemanticGraph build(std::string const& articlesText, IXmlConverter const& xmlConverter);
+	SemanticGraph build(std::string const& articlesText, IArticlesReader const& articlesReader);
 
 	static const double WEIGHT_ADDITION;
 	static const int N_FOR_NGRAM;

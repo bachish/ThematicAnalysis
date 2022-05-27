@@ -1,24 +1,21 @@
 ﻿#pragma once
 #include "Lemmatizer.h"
 #include "NormalizedArticle.h"
-#include "Normalizer.h"
-#include "XmlSourceParser.h"
+#include "TextNormalizer.h"
+#include "ArticlesReader/IArticlesReader.h"
 
-class DocumentReader
+class ArticlesNormalizer
 {
 public:
 	// throw std::ifstream::failure when i/o error
-	std::vector<NormalizedArticle> readAndNormalizeArticles(std::string const& xmlText) const;
-	std::vector<NormalizedArticle> readAndNormalizeArticles(std::string const& articlesText, IXmlConverter const& xmlConverter) const;
-	std::vector<std::string> readAndNormalizeText(std::string const& text) const;
+	std::vector<NormalizedArticle> readAndNormalizeArticles(std::string const& articlesText, IArticlesReader const& articlesReader) const;
 private:
 	std::string concatTitlesAndContentsWithTags(std::vector<std::string> const& titles, std::vector<std::string> const& contents, size_t approxSize) const;
 	std::vector<std::string> getTitle(std::vector<std::string> const& words, size_t& curPos);
-	std::vector<NormalizedArticle> normalizeArticles(std::string const& xmlText) const;
+	std::vector<NormalizedArticle> normalizeArticles(std::vector<std::string> const& titles, std::vector<std::string> const& contents) const;
 	NormalizedArticle createNormalizedArticle(std::string const& title, std::string const& content) const;
 
-	Normalizer _normalizer;
-	XmlSourceParser _parser;
+	TextNormalizer _normalizer;
 
 	std::string termEndTag = "termendtag";
 	std::string contentEndTag = "contentendtag";

@@ -3,7 +3,7 @@
 #include <regex>
 #include <sstream>
 
-#include "MathXmlConverter.h"
+#include "MathArticlesReader.h"
 
 struct SubString
 {
@@ -24,23 +24,23 @@ auto GetTermsPositions(std::string const& text)
 	return terms;
 }
 
-std::string MathXmlConverter::convertTextToXml(std::string const& sourceText) const
+std::tuple<std::vector<std::string>, std::vector<std::string>> MathArticlesReader::read(std::string const& sourceText) const
 {
 	auto text = sourceText;
 	text.erase(std::remove(text.begin(), text.end(), '<'), text.end());
 	text.erase(std::remove(text.begin(), text.end(), '>'), text.end());
 	text.erase(std::remove(text.begin(), text.end(), '/'), text.end());
 	auto termsPositions = GetTermsPositions(text);
-	std::stringstream ss;
+	std::vector<std::string> titles, contents;
+	titles.reserve(termsPositions.size()), contents.reserve(termsPositions.size());
 	std::string::const_iterator prevTermEnd;
-	for (size_t i = 0; i < termsPositions.size(); i++)
+	for (auto it = termsPositions.cbegin(); it != termsPositions.cend(); ++it)
 	{
-		auto& [termStart, termEnd] = termsPositions[i];
-		if (i != 0)
-			ss << "\n<content>\n" << std::string(prevTermEnd, termStart) << "\n</content>\n</paper>\n";
-		ss << "\n<paper>\n<name>\n" << std::string(termStart, termEnd) << "\n</name>\n";
-		prevTermEnd = termEnd;
+		auto& [termStart, termEnd] = *it;
+		auto& nextTermStart = std::next(it) == termsPositions.end() ? text.cend() : std::get<0>(*std::next(it));
+		titles.emplace_back(termStart, termEnd);
+		contents.emplace_back(termEnd, nextTermStart);
 	}
-	ss << "\n<content>\n" << std::string(prevTermEnd, text.cend()) << "\n</content>\n</paper>\n";
-	return ss.str();
+
+	return { titles, contents };
 }

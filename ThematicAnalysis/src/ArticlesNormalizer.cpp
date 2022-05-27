@@ -1,6 +1,5 @@
-﻿#include "DocumentReader.h"
+﻿#include "ArticlesNormalizer.h"
 
-#include "XmlSourceParser.h"
 #include <fstream>
 #include <iostream>
 
@@ -14,35 +13,25 @@ std::ifstream OpenFileWithUsingExceptions(std::string const& filePath)
 	return fin;
 }
 
-NormalizedArticle DocumentReader::createNormalizedArticle(std::string const& title, std::string const& content) const
+NormalizedArticle ArticlesNormalizer::createNormalizedArticle(std::string const& title, std::string const& content) const
 {
 	return { _normalizer.normalize(title), title, _normalizer.normalize(content) };
 }
 
-std::vector<NormalizedArticle> DocumentReader::readAndNormalizeArticles(std::string const& xmlText) const
+std::vector<NormalizedArticle> ArticlesNormalizer::readAndNormalizeArticles(std::string const& articlesText,
+	IArticlesReader const& articlesReader) const
 {
-	return normalizeArticles(xmlText);
-}
-
-std::vector<NormalizedArticle> DocumentReader::readAndNormalizeArticles(std::string const& articlesText,
-	IXmlConverter const& xmlConverter) const
-{
-	auto xmlText = xmlConverter.convertTextToXml(articlesText);
-	return normalizeArticles(xmlText);
-}
-
-std::vector<std::string> DocumentReader::readAndNormalizeText(std::string const& text) const
-{
-	return _normalizer.normalize(text);
+	auto [titles, contents] = articlesReader.read(articlesText);
+	return normalizeArticles(titles, contents);
 }
 
 
 
-std::string DocumentReader::concatTitlesAndContentsWithTags(std::vector<std::string> const& titles, std::vector<std::string> const& contents, size_t approxSize) const
+std::string ArticlesNormalizer::concatTitlesAndContentsWithTags(std::vector<std::string> const& titles, std::vector<std::string> const& contents, size_t approxSize) const
 {
 	std::string res;
 	res.reserve(approxSize);
-	for (int i = 0; i < titles.size(); i++)
+	for (size_t i = 0; i < titles.size(); i++)
 	{
 		res += titles[i];
 		res += ' ' + termEndTag + ' ';
@@ -62,11 +51,10 @@ std::vector<std::string> readUntilWord(std::vector<std::string> const& words, St
 	return subWords;
 }
 
-std::vector<NormalizedArticle> DocumentReader::normalizeArticles(std::string const& xmlText) const
+std::vector<NormalizedArticle> ArticlesNormalizer::normalizeArticles(std::vector<std::string> const& titles, std::vector<std::string> const& contents) const
 {
-	auto [titles, contents] = XmlSourceParser().parseTitlesAndContentsFromXml(xmlText);
 	std::vector<NormalizedArticle> result;
-	auto text = concatTitlesAndContentsWithTags(titles, contents, xmlText.size());
+	auto text = concatTitlesAndContentsWithTags(titles, contents, titles.size());
 	auto words = _normalizer.normalize(text);
 
 	size_t curTitle = 0;

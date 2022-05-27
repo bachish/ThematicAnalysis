@@ -1,4 +1,4 @@
-﻿#include "Normalizer.h"
+﻿#include "TextNormalizer.h"
 
 #include <algorithm>
 #include <execution>
@@ -38,7 +38,7 @@ std::string toLowerText(std::string  word)
 }
 
 
-std::vector<std::string> Normalizer::normalize(std::string text) const
+std::vector<std::string> TextNormalizer::normalize(std::string text) const
 {
 	text = deleteMultipleBlanks(text);
 	text = clearText(text);

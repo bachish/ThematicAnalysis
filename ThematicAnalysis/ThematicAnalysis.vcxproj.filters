@@ -33,16 +33,16 @@
     <ClCompile Include="src\SemanticGraphBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DocumentReader.cpp">
+    <ClCompile Include="src\ArticlesNormalizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\XmlSourceParser.cpp">
+    <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Hasher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Normalizer.cpp">
+    <ClCompile Include="src\TextNormalizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\FileManager.cpp">
@@ -51,7 +51,7 @@
     <ClCompile Include="src\TextAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp">
+    <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\StringUtils.cpp">
@@ -77,16 +77,16 @@
     <ClInclude Include="src\SemanticGraphBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DocumentReader.h">
+    <ClInclude Include="src\ArticlesNormalizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\XmlSourceParser.h">
+    <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Hasher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Normalizer.h">
+    <ClInclude Include="src\TextNormalizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\FileManager.h">
@@ -95,10 +95,10 @@
     <ClInclude Include="src\TextAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\XmlConverter\IXmlConverter.h">
+    <ClInclude Include="src\ArticlesReader\IArticlesReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\XmlConverter\MathXmlConverter.h">
+    <ClInclude Include="src\ArticlesReader\MathArticlesReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\StringUtils.h">

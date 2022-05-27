@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
-#include "Normalizer.h"
-#include "XmlSourceParser.h"
+#include "TextNormalizer.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -15,7 +14,7 @@ namespace ThematicAnalysisTests
 		}
 		TEST_METHOD(WordsTest)
 		{
-			Normalizer normalizer;
+			TextNormalizer normalizer;
 			std::string text = "Сижу x- и. <, *стою на дороге#";
 			std::vector<std::string> normWords = { "сидеть",  "стоять", "дорога"};
 			auto resWords = normalizer.normalize(text);

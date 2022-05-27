@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
 #include "Lemmatizer.h"
-#include "XmlSourceParser.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

@@ -2,7 +2,7 @@
 #include <fstream>
 #include "CppUnitTest.h"
 #include "FileManager.h"
-#include "XmlSourceParser.h"
+#include "ArticlesReader/XmlArticlesReader.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 /**
@@ -12,7 +12,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace ThematicAnalysisTests
 {
 
-	TEST_CLASS(XmlSourceParserTests)
+	TEST_CLASS(XmlArticlesReaderTests)
 	{
 		TEST_CLASS_INITIALIZE(setLocale)
 		{
@@ -25,9 +25,9 @@ namespace ThematicAnalysisTests
 		}
 		TEST_METHOD(OnePaper)
 		{
-			auto parser = XmlSourceParser();
+			auto reader = XmlArticlesReader();
 			auto text = readTestFile("OnePaper.txt");
-			auto [titles, contents] = parser.parseTitlesAndContentsFromXml(text);
+			auto [titles, contents] = reader.read(text);
 			Assert::AreEqual((size_t)1, titles.size());
 			Assert::AreEqual((size_t)1, contents.size());
 			Assert::AreEqual(std::string("¿¡¿ "), titles[0]);
@@ -36,9 +36,9 @@ namespace ThematicAnalysisTests
 		}
 		TEST_METHOD(TwoPaper)
 		{
-			auto parser = XmlSourceParser();
+			auto reader =  XmlArticlesReader();
 			auto text = readTestFile("TwoPaper.txt");
-			auto [titles, contents] = parser.parseTitlesAndContentsFromXml(text);
+			auto [titles, contents] = reader.read(text);
 			Assert::AreEqual((size_t)2, titles.size());
 			Assert::AreEqual((size_t)2, contents.size());
 			Assert::AreEqual(std::string("¿¡¿ "), titles[0]);

@@ -1,12 +1,13 @@
 ﻿#include "pch.h"
 #include <fstream>
 #include "CppUnitTest.h"
-#include "DocumentReader.h"
+#include "ArticlesNormalizer.h"
 #include "FileManager.h"
 #include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
 #include "StringUtils.h"
+#include "ArticlesReader/XmlArticlesReader.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 /**
@@ -149,8 +150,8 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(SubgraphOfBigGraph)
 		{
 			auto builder = SemanticGraphBuilder();
-			auto reader = DocumentReader();
-			auto graph = builder.build(reader.readAndNormalizeArticles(FileManager::readAllFile("resources/MiddleMath.txt")));
+			auto reader = ArticlesNormalizer();
+			auto graph = builder.build(reader.readAndNormalizeArticles(FileManager::readAllFile("resources/MiddleMath.txt"), XmlArticlesReader()));
 			Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash({ "алгол" })));
 		}
 

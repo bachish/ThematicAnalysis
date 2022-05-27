@@ -4,7 +4,7 @@
 
 #include "Lemmatizer.h"
 
-class Normalizer
+class TextNormalizer
 {
 public:
 	std::vector<std::string> normalize(std::string text) const;

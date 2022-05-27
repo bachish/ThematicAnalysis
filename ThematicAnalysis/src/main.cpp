@@ -7,18 +7,18 @@
 #include <regex>
 #include <boost/regex.hpp>
 
-#include "DocumentReader.h"
+#include "ArticlesNormalizer.h"
 #include "FileManager.h"
 #include "Hasher.h"
-#include "Normalizer.h"
+#include "TextNormalizer.h"
 #include "SemanticGraphBuilder.h"
 #include "TextAnalyzer.h"
-#include "XmlConverter/MathXmlConverter.h"
+#include "ArticlesReader/MathArticlesReader.h"
 
 
 void create() {
 	auto builder = SemanticGraphBuilder();
-	auto graph = builder.build("resources/math/math.txt", MathXmlConverter());
+	auto graph = builder.build("resources/math/math.txt", MathArticlesReader());
 	graph.exportToFile("resources/coolAllMath.gr");
 }
 
@@ -32,7 +32,7 @@ SemanticGraph getMathGraph()
 void draw()
 {
 	auto graph = getMathGraph();
-	Normalizer normalizer;
+	TextNormalizer normalizer;
 	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("бэра классы"));
 	auto subgr = graph.getNeighborhood(hash, 1, 0.05);
 	subgr.drawToImage("", "image", hash);

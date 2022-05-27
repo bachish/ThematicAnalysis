@@ -22,34 +22,34 @@
     <ClCompile Include="src\FileManager.cpp" />
     <ClCompile Include="src\Hasher.cpp" />
     <ClCompile Include="src\MathUtils.cpp" />
-    <ClCompile Include="src\Normalizer.cpp" />
+    <ClCompile Include="src\TextNormalizer.cpp" />
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
     <ClCompile Include="src\NormalizedArticle.cpp" />
     <ClCompile Include="src\SemanticGraph.cpp" />
-    <ClCompile Include="src\DocumentReader.cpp" />
+    <ClCompile Include="src\ArticlesNormalizer.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\StringUtils.cpp" />
-    <ClCompile Include="src\XmlConverter\MathXmlConverter.cpp" />
-    <ClCompile Include="src\XmlSourceParser.cpp" />
+    <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp" />
+    <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
     <ClCompile Include="src\Term.cpp" />
     <ClCompile Include="src\TextAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DocumentReader.h" />
+    <ClInclude Include="src\ArticlesNormalizer.h" />
     <ClInclude Include="src\FileManager.h" />
     <ClInclude Include="src\Hasher.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\StringUtils.h" />
-    <ClInclude Include="src\XmlConverter\IXmlConverter.h" />
-    <ClInclude Include="src\Normalizer.h" />
+    <ClInclude Include="src\ArticlesReader\IArticlesReader.h" />
+    <ClInclude Include="src\TextNormalizer.h" />
     <ClInclude Include="src\SemanticGraphBuilder.h" />
     <ClInclude Include="src\NormalizedArticle.h" />
     <ClInclude Include="src\SemanticGraph.h" />
     <ClInclude Include="src\Lemmatizer.h" />
     <ClInclude Include="src\Term.h" />
-    <ClInclude Include="src\XmlConverter\MathXmlConverter.h" />
-    <ClInclude Include="src\XmlSourceParser.h" />
+    <ClInclude Include="src\ArticlesReader\MathArticlesReader.h" />
+    <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h" />
     <ClInclude Include="src\TextAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>

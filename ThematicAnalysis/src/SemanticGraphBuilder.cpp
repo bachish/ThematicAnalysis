@@ -5,9 +5,10 @@
 #include <cmath>
 #include <iterator>
 
-#include "DocumentReader.h"
+#include "ArticlesNormalizer.h"
 #include "Hasher.h"
 #include "MathUtils.h"
+#include "ArticlesReader/XmlArticlesReader.h"
 
 constexpr double SemanticGraphBuilder::WEIGHT_ADDITION = 1.0;
 constexpr int SemanticGraphBuilder::N_FOR_NGRAM = 4;
@@ -129,12 +130,12 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 
 SemanticGraph SemanticGraphBuilder::build(std::string const& xmlFilePath)
 {
-	DocumentReader reader;
-	return build(reader.readAndNormalizeArticles(xmlFilePath));
+	ArticlesNormalizer articlesNormalizer;
+	return build(articlesNormalizer.readAndNormalizeArticles(xmlFilePath, XmlArticlesReader()));
 }
 
-SemanticGraph SemanticGraphBuilder::build(std::string const& articlesText, IXmlConverter const& xmlConverter)
+SemanticGraph SemanticGraphBuilder::build(std::string const& articlesText, IArticlesReader const& articlesReader)
 {
-	DocumentReader reader;
-	return build(reader.readAndNormalizeArticles(articlesText, xmlConverter));
+	ArticlesNormalizer reader;
+	return build(reader.readAndNormalizeArticles(articlesText, articlesReader));
 }
