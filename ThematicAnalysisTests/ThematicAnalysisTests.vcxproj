@@ -100,8 +100,8 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;..\ThematicAnalysis\external\lemmatizator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ArticlesNormalizer.obj;MathUtils.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;lemmatizator.lib;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ArticlesNormalizer.obj;MathUtils.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

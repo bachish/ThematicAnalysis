@@ -1,5 +1,4 @@
 #pragma once
-#include "lemmatizator_engine.h"
 #include <string>
 #include <vector>
 
