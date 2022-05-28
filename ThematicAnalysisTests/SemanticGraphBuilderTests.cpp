@@ -5,6 +5,7 @@
 #include <set>
 
 #include "Hasher.h"
+#include "MathUtils.h"
 #include "SemanticGraphBuilder.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -43,10 +44,10 @@ namespace ThematicAnalysisTests
 			Assert::IsFalse(graph.isLinkExist(articlesHashes[2], articlesHashes[1]));
 
 
-			Assert::AreEqual(0.5493, graph.getLinkWeight(articlesHashes[0], articlesHashes[1]), 0.0001);
-			Assert::AreEqual(0.5493, graph.getLinkWeight(articlesHashes[0], articlesHashes[2]), 0.0001);
-			Assert::AreEqual(0.4055, graph.getLinkWeight(articlesHashes[1], articlesHashes[0]), 0.0001);
-			Assert::AreEqual(0.4055, graph.getLinkWeight(articlesHashes[2], articlesHashes[0]), 0.0001);
+			Assert::AreEqual(MathUtils::calcTfIdf(1,2,1,3), graph.getLinkWeight(articlesHashes[0], articlesHashes[1]), 0.0001);
+			Assert::AreEqual(MathUtils::calcTfIdf(1, 2, 1, 3), graph.getLinkWeight(articlesHashes[0], articlesHashes[2]), 0.0001);
+			Assert::AreEqual(MathUtils::calcTfIdf(1, 1, 2, 3), graph.getLinkWeight(articlesHashes[1], articlesHashes[0]), 0.0001);
+			Assert::AreEqual(MathUtils::calcTfIdf(1, 1, 2, 3), graph.getLinkWeight(articlesHashes[2], articlesHashes[0]), 0.0001);
 		}
 
 		TEST_METHOD(buildWithDuplicates)

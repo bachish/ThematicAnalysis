@@ -19,7 +19,7 @@ std::string deleteMultipleBlanks(std::string text)
 
 std::vector<std::string> eraseStopWords(std::vector<std::string> words)
 {
-	words.erase(std::remove_if(words.begin(), words.end(), [](std::string& word) { return word.size() < 3; }), words.end());
+	words.erase(std::remove_if(words.begin(), words.end(), [](std::string& word) { return word.size() < 2; }), words.end());
 	return words;
 }
 
