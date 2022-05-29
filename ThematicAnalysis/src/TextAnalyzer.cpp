@@ -85,19 +85,18 @@ void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, Seman
 }
 
 
-std::vector<std::string> TextAnalyzer::getRelevantTags(size_t tagsCount)
+std::vector<Tag> TextAnalyzer::getRelevantTags(size_t tagsCount)
 {
 	std::vector<Node> nodes;
 	nodes.reserve(tagsGraph.nodes.size());
 	std::transform(tagsGraph.nodes.begin(), tagsGraph.nodes.end(), std::back_inserter(nodes), [](auto el) {return el.second; });
 	std::sort(nodes.begin(), nodes.end(), [](Node& n1, Node& n2) {return n1.weight > n2.weight; });
 	tagsCount = tagsCount <= nodes.size() ? tagsCount : nodes.size();
-	for (size_t i = 0; i < tagsCount; i++)
-		std::cout << nodes[i].term.view << ' ' << nodes[i].weight << "\n";
-	std::vector<std::string> terms;
-	terms.reserve(tagsCount);
-	std::transform(nodes.begin(), nodes.begin() + tagsCount, std::back_inserter(terms), [](Node& el) {return el.term.view; });
-	return terms;
+	
+	std::vector<Tag> tags;
+	tags.reserve(tagsCount);
+	std::transform(nodes.begin(), nodes.begin() + tagsCount, std::back_inserter(tags), [](Node& el) {return Tag{el.term.view, el.weight}; });
+	return tags;
 
 }
 

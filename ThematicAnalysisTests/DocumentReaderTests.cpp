@@ -10,7 +10,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ThematicAnalysisTests
 {
-	TEST_CLASS(DocumentReaderTests)
+	TEST_CLASS(ArticlesNormalizerTests)
 	{
 	public:
 

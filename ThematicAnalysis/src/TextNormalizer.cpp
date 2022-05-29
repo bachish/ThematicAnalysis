@@ -2,16 +2,17 @@
 
 #include <algorithm>
 #include <execution>
+#include <iostream>
 #include <locale>
 #include <numeric>
 
 #include "FileManager.h"
 #include "StringUtils.h"
 
-std::string deleteMultipleBlanks(std::string text)
+std::string clearText(std::string text)
 {
 	static std::locale loc("ru-RU");
-	std::transform(std::execution::par, text.begin(), text.end(), text.begin(), [](char ch) {return isalpha(ch, loc) || isdigit(ch) ? ch : ' '; });
+	std::transform(std::execution::par, text.begin(), text.end(), text.begin(), [](char ch) {return isalpha(ch, loc) || isdigit(ch, loc) ? ch : ' '; });
 	text.erase(std::unique(text.begin(), text.end(), [](char ch, char ch2) {return ch == ch2 && ch == ' '; }), text.end());
 	return text;
 }
@@ -21,13 +22,6 @@ std::vector<std::string> eraseStopWords(std::vector<std::string> words)
 {
 	words.erase(std::remove_if(words.begin(), words.end(), [](std::string& word) { return word.size() < 3; }), words.end());
 	return words;
-}
-
-std::string clearText(std::string  word)
-{
-	static std::locale loc("ru-RU");
-	word.erase(std::remove_if(word.begin(), word.end(), [](char ch) {return !isblank(ch, loc) && !std::isdigit(ch, loc) && !std::isalpha(ch, loc); }), word.end());
-	return word;
 }
 
 std::string toLowerText(std::string  word)
@@ -40,7 +34,10 @@ std::string toLowerText(std::string  word)
 
 std::vector<std::string> TextNormalizer::normalize(std::string text) const
 {
-	text = deleteMultipleBlanks(text);
+	if(text == "АБАК")
+	{
+		std::cout << "";
+	}
 	text = clearText(text);
 	text = toLowerText(text);
 	auto words = StringUtils::split(text);

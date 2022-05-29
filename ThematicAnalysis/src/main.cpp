@@ -18,7 +18,7 @@
 
 void create() {
 	auto builder = SemanticGraphBuilder();
-	auto graph = builder.build("resources/math/math.txt", MathArticlesReader());
+	auto graph = builder.build(FileManager::readAllFile("resources/math/math.txt"), MathArticlesReader());
 	graph.exportToFile("resources/coolAllMath.gr");
 }
 
@@ -55,7 +55,7 @@ void tags()
 
 int main() {
 	setlocale(LC_ALL, "rus");
-	//create();
-	tags();
+	create();
+	//tags();
 	return 0;
 }

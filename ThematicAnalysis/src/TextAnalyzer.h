@@ -1,6 +1,13 @@
 #pragma once
 #include "SemanticGraph.h"
 
+
+struct Tag
+{
+	std::string termView;
+	double weight;
+};
+
 class TextAnalyzer
 {
 public:
@@ -9,7 +16,7 @@ public:
 	void analyze(std::string const& text, SemanticGraph const& graph);
 	void analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph);
 
-	std::vector<std::string> getRelevantTags(size_t tagsCount);
+	std::vector<Tag> getRelevantTags(size_t tagsCount);
 
 private:
 	static void distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight);
