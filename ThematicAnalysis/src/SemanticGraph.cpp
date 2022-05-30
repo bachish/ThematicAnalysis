@@ -4,9 +4,9 @@
 #include <numeric>
 #include "UGraphviz/UGraphviz.hpp"
 #include "SemanticGraph.h"
-#include "FileUtils.h"
+#include "Utils/FileUtils.h"
 #include "Hasher.h"
-#include "StringUtils.h"
+#include "Utils/StringUtils.h"
 
 Node::Node(Term term) :
 	term(term),

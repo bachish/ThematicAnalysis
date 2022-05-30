@@ -6,10 +6,10 @@
 
 #include "CppUnitTest.h"
 #include "ArticlesNormalizer.h"
-#include "FileUtils.h"
+#include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "SemanticGraph.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

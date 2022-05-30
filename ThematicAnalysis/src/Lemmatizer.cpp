@@ -2,8 +2,8 @@
 #include <locale>
 #include <filesystem>
 
-#include "FileUtils.h"
-#include "StringUtils.h"
+#include "Utils/FileUtils.h"
+#include "Utils/StringUtils.h"
 
 std::string runMyStem(std::string const& tempFile)
 {

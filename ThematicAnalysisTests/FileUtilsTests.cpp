@@ -3,7 +3,7 @@
 #include "ArticlesNormalizer.h"
 #include <fstream>
 #include <filesystem>
-#include "FileUtils.h"
+#include "Utils/FileUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

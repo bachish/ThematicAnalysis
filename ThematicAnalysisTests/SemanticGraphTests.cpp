@@ -2,11 +2,11 @@
 #include <fstream>
 #include "CppUnitTest.h"
 #include "ArticlesNormalizer.h"
-#include "FileUtils.h"
+#include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
-#include "StringUtils.h"
+#include "Utils/StringUtils.h"
 #include "ArticlesReader/XmlArticlesReader.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

@@ -5,7 +5,7 @@
 #include <set>
 
 #include "Hasher.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 #include "SemanticGraphBuilder.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

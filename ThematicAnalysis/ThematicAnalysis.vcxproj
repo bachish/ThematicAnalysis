@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileUtils.cpp" />
+    <ClCompile Include="src\Utils\FileUtils.cpp" />
     <ClCompile Include="src\Hasher.cpp" />
-    <ClCompile Include="src\TermsUtils.cpp" />
+    <ClCompile Include="src\Utils\TermsUtils.cpp" />
     <ClCompile Include="src\TextNormalizer.cpp" />
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
     <ClCompile Include="src\NormalizedArticle.cpp" />
@@ -29,7 +29,7 @@
     <ClCompile Include="src\ArticlesNormalizer.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\StringUtils.cpp" />
+    <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp" />
     <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
     <ClCompile Include="src\Term.cpp" />
@@ -37,10 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ArticlesNormalizer.h" />
-    <ClInclude Include="src\FileUtils.h" />
+    <ClInclude Include="src\Utils\FileUtils.h" />
     <ClInclude Include="src\Hasher.h" />
-    <ClInclude Include="src\TermsUtils.h" />
-    <ClInclude Include="src\StringUtils.h" />
+    <ClInclude Include="src\Utils\TermsUtils.h" />
+    <ClInclude Include="src\Utils\StringUtils.h" />
     <ClInclude Include="src\ArticlesReader\IArticlesReader.h" />
     <ClInclude Include="src\TextNormalizer.h" />
     <ClInclude Include="src\SemanticGraphBuilder.h" />

@@ -5,11 +5,11 @@
 #include <iostream>
 #include <boost/regex.hpp>
 
-#include "FileUtils.h"
+#include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "TextNormalizer.h"
 #include "SemanticGraphBuilder.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 #include "TagsAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
 

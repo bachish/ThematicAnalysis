@@ -2,7 +2,7 @@
 #include <vector>
 #include "CppUnitTest.h"
 #include "Hasher.h"
-#include "StringUtils.h"
+#include "Utils/StringUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

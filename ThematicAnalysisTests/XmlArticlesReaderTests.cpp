@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <fstream>
 #include "CppUnitTest.h"
-#include "FileUtils.h"
+#include "Utils/FileUtils.h"
 #include "ArticlesReader/XmlArticlesReader.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

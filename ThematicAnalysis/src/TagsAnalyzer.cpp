@@ -6,7 +6,7 @@
 
 #include "ArticlesNormalizer.h"
 #include "SemanticGraphBuilder.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 
 constexpr double TagsAnalyzer::DISTRIBUTION_COEF = 1.;
 constexpr double TagsAnalyzer::ABSORPTION_COEF = 0.5;
