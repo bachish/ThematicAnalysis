@@ -8,7 +8,7 @@
 #include "ArticlesNormalizer.h"
 #include "SemanticGraphBuilder.h"
 #include "Hasher.h"
-#include "MathUtils.h"
+#include "TermsUtils.h"
 
 constexpr double TextAnalyzer::DISTRIBUTION_COEF = 1.;
 constexpr double TextAnalyzer::ABSORPTION_COEF = 0.5;
@@ -33,7 +33,7 @@ size_t getNotNullWeightNodesCount(SemanticGraph const& graph)
 
 void calcFrequency(SemanticGraph& graph, std::vector<std::string> const& normalizedText)
 {
-	auto termsCounts = extractAndCalculateTerms(graph, normalizedText);
+	auto termsCounts = TermsUtils::extractTermsCounts(graph, normalizedText);
 	std::map<std::string, size_t> termsViewsCounts;
 	std::transform(termsCounts.begin(), termsCounts.end(), std::inserter(termsViewsCounts,termsViewsCounts.begin()), [&graph](std::pair<size_t, size_t> const& pair){return std::pair{graph.nodes.at(pair.first).term.view, pair.second};});
 	for(auto&& [termhash, count]: termsCounts)
@@ -48,7 +48,7 @@ void calcTfIdf(SemanticGraph& graph)
 	auto textTermsCount = getNotNullWeightNodesCount(graph);
 	for (auto&& [hash, node] : graph.nodes)
 		if (node.weight > FLT_EPSILON) {
-			node.weight = MathUtils::calcTfIdf(static_cast<size_t>(node.weight), textTermsCount, node.term.numberOfArticlesThatUseIt, graph.nodes.size() + 1);
+			node.weight = TermsUtils::calcTfIdf(static_cast<size_t>(node.weight), textTermsCount, node.term.numberOfArticlesThatUseIt, graph.nodes.size() + 1);
 		}
 }
 

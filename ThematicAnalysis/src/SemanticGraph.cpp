@@ -1,7 +1,6 @@
 ﻿#include <execution>
 #include <sstream>
 #include <fstream>
-#include <iostream>
 #include <numeric>
 #include "UGraphviz/UGraphviz.hpp"
 #include "SemanticGraph.h"
@@ -15,7 +14,7 @@ Node::Node(Term term) :
 {
 }
 
-Node::Node()
+Node::Node(): weight(0)
 {
 }
 
@@ -39,6 +38,15 @@ Link::Link(double weight)
 }
 
 Link::Link() : Link(0)
+{
+}
+
+size_t SemanticGraph::getNForNgram() const
+{
+	return _nForNgram;
+}
+
+SemanticGraph::SemanticGraph(size_t nForNgrams): _nForNgram(nForNgrams)
 {
 }
 
@@ -120,7 +128,7 @@ std::string doubleToString(double num)
 	return ss.str();
 }
 
-std::string breakText(std::string const& text, int maxLen)
+std::string breakText(std::string const& text, size_t maxLen)
 {
 	auto words = StringUtils::split(text);
 	std::stringstream ss;

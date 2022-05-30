@@ -3,15 +3,14 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <regex>
 #include <boost/regex.hpp>
 
-#include "ArticlesNormalizer.h"
 #include "FileManager.h"
 #include "Hasher.h"
 #include "TextNormalizer.h"
 #include "SemanticGraphBuilder.h"
+#include "TermsUtils.h"
 #include "TextAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
 
@@ -60,7 +59,7 @@ void terms()
 			return node.second.term.view == "КО---ПРОСТРАНСТВО";
 		});
 
-	for (auto& tag : extractAndCalculateTerms(graph, TextNormalizer().normalize(
+	for (auto& tag : TermsUtils::extractTermsCounts(graph, TextNormalizer().normalize(
 		                                          FileManager::readAllUTF8File("resources/integral.txt"))))
 	{
 		std::cout << graph.nodes[tag.first].term.view << " " << tag.second << '\n';
