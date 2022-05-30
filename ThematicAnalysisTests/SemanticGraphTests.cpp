@@ -2,7 +2,7 @@
 #include <fstream>
 #include "CppUnitTest.h"
 #include "ArticlesNormalizer.h"
-#include "FileManager.h"
+#include "FileUtils.h"
 #include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
@@ -63,7 +63,6 @@ namespace ThematicAnalysisTests
 
 		TEST_METHOD(LinkWeightTest)
 		{
-			double weight = 50;
 			auto graph = SemanticGraph();
 			std::vector<std::vector<std::string>> normWords = { { "АБАК" },{ "АБЕЛЕВА", "ГРУППА" }, {"СТЕПЕНЬ"}};
 			std::vector<std::string> views = { "АБАК", "АБЕЛЕВЫ ГРУППЫ", "СТЕПЕНИ"};
@@ -151,7 +150,7 @@ namespace ThematicAnalysisTests
 		{
 			auto builder = SemanticGraphBuilder();
 			auto reader = ArticlesNormalizer();
-			auto graph = builder.build(reader.readAndNormalizeArticles(FileManager::readAllFile("resources/MiddleMath.txt"), XmlArticlesReader()));
+			auto graph = builder.build(reader.readAndNormalizeArticles(FileUtils::readAllFile("resources/MiddleMath.txt"), XmlArticlesReader()));
 			Assert::IsTrue(graph.isTermExist(Hasher::sortAndCalcHash({ "алгол" })));
 		}
 

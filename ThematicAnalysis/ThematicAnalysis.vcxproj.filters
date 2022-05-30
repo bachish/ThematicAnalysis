@@ -45,10 +45,10 @@
     <ClCompile Include="src\TextNormalizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileManager.cpp">
+    <ClCompile Include="src\FileUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextAnalyzer.cpp">
+    <ClCompile Include="src\TagsAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp">
@@ -89,10 +89,10 @@
     <ClInclude Include="src\TextNormalizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileManager.h">
+    <ClInclude Include="src\FileUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TextAnalyzer.h">
+    <ClInclude Include="src\TagsAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ArticlesReader\IArticlesReader.h">

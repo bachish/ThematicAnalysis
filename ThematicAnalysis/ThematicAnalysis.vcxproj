@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileManager.cpp" />
+    <ClCompile Include="src\FileUtils.cpp" />
     <ClCompile Include="src\Hasher.cpp" />
     <ClCompile Include="src\TermsUtils.cpp" />
     <ClCompile Include="src\TextNormalizer.cpp" />
@@ -33,11 +33,11 @@
     <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp" />
     <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
     <ClCompile Include="src\Term.cpp" />
-    <ClCompile Include="src\TextAnalyzer.cpp" />
+    <ClCompile Include="src\TagsAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ArticlesNormalizer.h" />
-    <ClInclude Include="src\FileManager.h" />
+    <ClInclude Include="src\FileUtils.h" />
     <ClInclude Include="src\Hasher.h" />
     <ClInclude Include="src\TermsUtils.h" />
     <ClInclude Include="src\StringUtils.h" />
@@ -50,7 +50,7 @@
     <ClInclude Include="src\Term.h" />
     <ClInclude Include="src\ArticlesReader\MathArticlesReader.h" />
     <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h" />
-    <ClInclude Include="src\TextAnalyzer.h" />
+    <ClInclude Include="src\TagsAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\mystem.exe">

@@ -4,7 +4,7 @@
 #include <numeric>
 #include "UGraphviz/UGraphviz.hpp"
 #include "SemanticGraph.h"
-#include "FileManager.h"
+#include "FileUtils.h"
 #include "Hasher.h"
 #include "StringUtils.h"
 
@@ -14,7 +14,7 @@ Node::Node(Term term) :
 {
 }
 
-Node::Node(): weight(0)
+Node::Node() : weight(0)
 {
 }
 
@@ -46,7 +46,7 @@ size_t SemanticGraph::getNForNgram() const
 	return _nForNgram;
 }
 
-SemanticGraph::SemanticGraph(size_t nForNgrams): _nForNgram(nForNgrams)
+SemanticGraph::SemanticGraph(size_t nForNgrams) : _nForNgram(nForNgrams)
 {
 }
 
@@ -229,7 +229,7 @@ void SemanticGraph::exportToStream(std::ostream& out)
 void SemanticGraph::importFromFile(std::string const& filePath)
 {
 	std::ifstream fin(filePath);
-	std::stringstream ss(FileManager::readAllFile(fin));
+	std::stringstream ss(FileUtils::readAllFile(fin));
 	importFromStream(ss);
 	fin.close();
 }
@@ -272,16 +272,14 @@ void SemanticGraph::importFromStream(std::istream& in)
 	}
 }
 
-
 void drawDotToImage(std::string const& dotView, std::string const& dirPath, std::string const& imageName)
 {
 	std::string dotFile = "temp.dot";
-	FileManager::writeUTF8ToFile(dotFile, dotView);
+	FileUtils::writeUTF8ToFile(dotFile, dotView);
 	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
 }
-
 
 void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName) const
 {
@@ -292,4 +290,3 @@ void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& i
 {
 	drawDotToImage(getDotView(centerHash), dirPath, imageName);
 }
-
