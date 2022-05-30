@@ -4,7 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstdio>
-#include <iostream>
+#include <filesystem>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -83,28 +83,11 @@ void FileManager::writeToFile(std::string const& filePath, std::string const& te
 
 bool FileManager::executeExeWithParams(std::string exe, std::string params, std::string& output)
 {
-	/*DWORD exitCode = 0;
-	SHELLEXECUTEINFOA ShExecInfo;
-	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-	ShExecInfo.hwnd = NULL;
-	ShExecInfo.lpVerb = "open";
-	ShExecInfo.lpFile = exe.c_str();
-	ShExecInfo.lpParameters = params.c_str();
-	ShExecInfo.lpDirectory = workingDir.c_str();
-	ShExecInfo.nShow = SW_HIDE;
-	ShExecInfo.hInstApp = NULL;
-	ShellExecuteExA(&ShExecInfo);
-
-	auto res = WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
-	if (res == 0)
-		GetExitCodeProcess(ShExecInfo.hProcess, &exitCode);
-	return res == 0 && exitCode == 0;*/
-
+		if(!std::filesystem::exists(exe)) return false;
 		auto cmd = exe + " " + params;
 		std::array<char, 128> buffer;
 		std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.c_str(), "r"), _pclose);
-		if (!pipe) {
+		if (pipe == nullptr) {
 			return false;
 		}
 		while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
