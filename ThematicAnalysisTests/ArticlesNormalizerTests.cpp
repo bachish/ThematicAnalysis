@@ -20,7 +20,7 @@ namespace ThematicAnalysisTests
 			auto articles = reader.readAndNormalizeArticles(
 				"<paper>\n"
 				"<name>\n"
-				"Термин		.\n"
+				"\t Термин\t\n		.\n"
 				"</name>\n"
 				"<content>\n"
 				"	Нет термина  важней, чем  термин  \n"

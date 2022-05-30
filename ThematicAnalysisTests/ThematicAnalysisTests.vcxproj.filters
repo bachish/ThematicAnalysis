@@ -21,7 +21,7 @@
     <ClCompile Include="UtilsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DocumentReaderTests.cpp">
+    <ClCompile Include="ArticlesNormalizerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XmlArticlesReaderTests.cpp">

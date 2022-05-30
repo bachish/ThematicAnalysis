@@ -160,7 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DocumentReaderTests.cpp" />
+    <ClCompile Include="ArticlesNormalizerTests.cpp" />
     <ClCompile Include="LemmatizerTests.cpp" />
     <ClCompile Include="NormalizerTests.cpp" />
     <ClCompile Include="pch.cpp">
