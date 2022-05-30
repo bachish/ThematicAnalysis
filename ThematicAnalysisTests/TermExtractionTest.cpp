@@ -10,6 +10,7 @@
 #include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
+#include "TermsUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -44,7 +45,7 @@ namespace ThematicAnalysisTests
 		{
 			auto graph = getMathGraph();
 
-			auto terms = extractAndCalculateTerms(graph,
+			auto terms = TermsUtils::extractTermsCounts(graph,
 			                                      getTextVector(R"( лючевые  слова: регул€ризации, система граничных
 					интегральных
 					уравнений, метод

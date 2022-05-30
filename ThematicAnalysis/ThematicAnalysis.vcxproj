@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\FileManager.cpp" />
     <ClCompile Include="src\Hasher.cpp" />
-    <ClCompile Include="src\MathUtils.cpp" />
+    <ClCompile Include="src\TermsUtils.cpp" />
     <ClCompile Include="src\TextNormalizer.cpp" />
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
     <ClCompile Include="src\NormalizedArticle.cpp" />
@@ -39,7 +39,7 @@
     <ClInclude Include="src\ArticlesNormalizer.h" />
     <ClInclude Include="src\FileManager.h" />
     <ClInclude Include="src\Hasher.h" />
-    <ClInclude Include="src\MathUtils.h" />
+    <ClInclude Include="src\TermsUtils.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\ArticlesReader\IArticlesReader.h" />
     <ClInclude Include="src\TextNormalizer.h" />
