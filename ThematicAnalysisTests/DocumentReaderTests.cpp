@@ -29,7 +29,7 @@ namespace ThematicAnalysisTests
 			Assert::AreEqual(1ull, articles.size());
 			Assert::AreEqual(1ull, articles[0].titleWords.size());
 			Assert::AreEqual(std::string("термин"), articles[0].titleWords[0]);
-			Assert::AreEqual(std::string("Термин ."), articles[0].titleView);
+			Assert::AreEqual(std::string("Термин"), articles[0].titleView);
 			Assert::AreEqual(5ull, articles[0].text.size());
 			auto normText = TextNormalizer().normalize("	Нет термина  важней, чем  термин  \n");
 			Assert::AreEqual(normText.size(), articles[0].text.size());

@@ -172,6 +172,7 @@
     <ClCompile Include="SemanticGraphBuilderTests.cpp" />
     <ClCompile Include="SemanticGraphTests.cpp" />
     <ClCompile Include="XmlArticlesReaderTests.cpp" />
+    <ClCompile Include="TermExtractionTest.cpp" />
     <ClCompile Include="UtilsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\XmlSourceParser\OnePaper.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\coolAllMath.gr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -33,13 +33,14 @@ size_t getNotNullWeightNodesCount(SemanticGraph const& graph)
 
 void calcFrequency(SemanticGraph& graph, std::vector<std::string> const& normalizedText)
 {
-	for (int n = 1; n <= SemanticGraphBuilder::N_FOR_NGRAM; n++)
-		for (size_t i = 0; i < normalizedText.size() - n; i++)
-		{
-			auto termHash = Hasher::sortAndCalcHash(normalizedText, i, n);
-			if (graph.isTermExist(termHash))
-				graph.addTermWeight(termHash, 1);
-		}
+	auto termsCounts = extractAndCalculateTerms(graph, normalizedText);
+	std::map<std::string, size_t> termsViewsCounts;
+	std::transform(termsCounts.begin(), termsCounts.end(), std::inserter(termsViewsCounts,termsViewsCounts.begin()), [&graph](std::pair<size_t, size_t> const& pair){return std::pair{graph.nodes.at(pair.first).term.view, pair.second};});
+	for(auto&& [termhash, count]: termsCounts)
+	{
+		graph.addTermWeight(termhash, count);
+	}
+	
 }
 
 void calcTfIdf(SemanticGraph& graph)

@@ -12,7 +12,7 @@ public:
 private:
 	std::string concatTitlesAndContentsWithTags(std::vector<std::string> const& titles, std::vector<std::string> const& contents, size_t approxSize) const;
 	std::vector<std::string> getTitle(std::vector<std::string> const& words, size_t& curPos);
-	std::vector<NormalizedArticle> normalizeArticles(std::vector<std::string> const& titles, std::vector<std::string> const& contents) const;
+	std::vector<NormalizedArticle> normalizeArticles(std::vector<std::string> titles, std::vector<std::string> const& contents) const;
 	NormalizedArticle createNormalizedArticle(std::string const& title, std::string const& content) const;
 
 	TextNormalizer _normalizer;

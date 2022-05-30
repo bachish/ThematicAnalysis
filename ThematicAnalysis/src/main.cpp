@@ -44,18 +44,52 @@ void tags()
 
 	TextAnalyzer analyzer;
 
-	analyzer.analyze(FileManager::readAllFile("resources/voevoda.txt"), graph);
+	analyzer.analyze(FileManager::readAllUTF8File("resources/temp.txt"), graph);
 	auto tags = analyzer.getRelevantTags(100);
 	for (auto& tag : tags)
 	{
-		//std::cout << tag << '\n';
+		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << ", ";
 	}
 }
 
+void terms()
+{
+	auto graph = getMathGraph();
+	auto koko = std::find_if(graph.nodes.begin(), graph.nodes.end(), [](decltype(graph.nodes)::const_reference node)
+		{
+			return node.second.term.view == "КО---ПРОСТРАНСТВО";
+		});
+
+	for (auto& tag : extractAndCalculateTerms(graph, TextNormalizer().normalize(
+		                                          FileManager::readAllUTF8File("resources/integral.txt"))))
+	{
+		std::cout << graph.nodes[tag.first].term.view << " " << tag.second << '\n';
+	}
+}
+void calcTerms()
+{
+	auto graph = getMathGraph();
+	auto count = std::map<size_t, size_t>();
+	for (int i = 0; i < 3500; i++)
+		count[i] = 0;
+	for (auto [hash, node] : graph.nodes)
+	{
+		count[node.neighbors.size()]++;
+		if (node.neighbors.size() > 200)
+			std::cout << node.term.view << std::endl;
+	}
+	std::ofstream out = std::ofstream("statres.txt");
+	for (auto value : count)
+	{
+		out << value.second << std::endl;
+
+	}
+}
 
 int main() {
 	setlocale(LC_ALL, "rus");
-	create();
-	//tags();
+	//create();
+	//calcTerms();
+	tags();
 	return 0;
 }

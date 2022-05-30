@@ -1,5 +1,7 @@
 ﻿#include "ArticlesNormalizer.h"
 
+#include <algorithm>
+#include <execution>
 #include <fstream>
 #include <iostream>
 
@@ -51,14 +53,15 @@ std::vector<std::string> readUntilWord(std::vector<std::string> const& words, St
 	return subWords;
 }
 
-std::vector<NormalizedArticle> ArticlesNormalizer::normalizeArticles(std::vector<std::string> const& titles, std::vector<std::string> const& contents) const
+std::vector<NormalizedArticle> ArticlesNormalizer::normalizeArticles(std::vector<std::string> titles, std::vector<std::string> const& contents) const
 {
-	std::vector<NormalizedArticle> result;
+	std::transform(std::execution::par, titles.begin(), titles.end(), titles.begin(), [this](std::string const& title) {return this->_normalizer.clearText(title); });
 	auto text = concatTitlesAndContentsWithTags(titles, contents, titles.size());
 	auto words = _normalizer.normalize(text);
 
 	size_t curTitle = 0;
 	StrVecIt curIt = words.begin();
+	std::vector<NormalizedArticle> result;
 	while (curIt != words.end())
 	{
 		auto titleWords = readUntilWord(words, curIt, termEndTag);

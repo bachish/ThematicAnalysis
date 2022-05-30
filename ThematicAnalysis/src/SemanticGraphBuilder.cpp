@@ -4,6 +4,7 @@
 #include <set>
 #include <cmath>
 #include <iterator>
+#include <list>
 
 #include "ArticlesNormalizer.h"
 #include "Hasher.h"
@@ -11,7 +12,7 @@
 #include "ArticlesReader/XmlArticlesReader.h"
 
 constexpr double SemanticGraphBuilder::WEIGHT_ADDITION = 1.0;
-constexpr int SemanticGraphBuilder::N_FOR_NGRAM = 4;
+constexpr size_t SemanticGraphBuilder::N_FOR_NGRAM = 4;
 
 void SemanticGraphBuilder::addAllTermsToGraph(std::vector<NormalizedArticle> const& articles)
 {
@@ -97,6 +98,48 @@ std::map<size_t, size_t> SemanticGraphBuilder::calcLinkedTermsCounts(std::vector
 	return linkedTerms;
 }
 
+/**
+ * \brief extract and calculate terms in text
+ * \return pairs vector of term hash and count term in text
+ */
+std::map<size_t, size_t> extractAndCalculateTerms(SemanticGraph const& graph, std::vector<std::string> const& allWords)
+{
+	std::map<size_t, size_t> termsCounts;
+	std::list<std::pair<size_t, size_t>> termsPlaces;
+	for (size_t n = std::min(SemanticGraphBuilder::N_FOR_NGRAM, allWords.size()); n > 0; n--)
+	{
+		for (size_t pos = 0; pos < allWords.size() - n + 1; pos++)
+		{
+			auto ngramHash = Hasher::sortAndCalcHash(allWords, pos, n);
+			auto term = termsCounts.find(ngramHash);
+			if (term != termsCounts.end() || graph.isTermExist(ngramHash))
+			{
+				auto isIntersect = [pos, n](auto& a)
+				{
+					auto [start, end] = a;
+					auto endPos = pos + n - 1;
+					return start <= pos && pos <= end || start <= endPos && endPos <= end;
+				};
+				auto intersectionIt = std::find_if(termsPlaces.begin(), termsPlaces.end(), isIntersect);
+				if (intersectionIt == termsPlaces.end())
+				{
+					auto it = std::find_if(termsPlaces.begin(), termsPlaces.end(),
+						[pos](auto& a) {return a.first > pos; });
+					termsPlaces.insert(it, { pos, pos + n - 1 });
+					if (term != termsCounts.end())
+					{
+						term->second++;
+					}
+					else
+					{
+						termsCounts.emplace(ngramHash, 1ull);
+					}
+				}
+			}
+		}
+	}
+	return termsCounts;
+}
 
 size_t getTermsCount(std::map<size_t, size_t> const& termsCount)
 {
@@ -128,10 +171,10 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 	return _graph;
 }
 
-SemanticGraph SemanticGraphBuilder::build(std::string const& xmlFilePath)
+SemanticGraph SemanticGraphBuilder::build(std::string const& xmlText)
 {
 	ArticlesNormalizer articlesNormalizer;
-	return build(articlesNormalizer.readAndNormalizeArticles(xmlFilePath, XmlArticlesReader()));
+	return build(articlesNormalizer.readAndNormalizeArticles(xmlText, XmlArticlesReader()));
 }
 
 SemanticGraph SemanticGraphBuilder::build(std::string const& articlesText, IArticlesReader const& articlesReader)

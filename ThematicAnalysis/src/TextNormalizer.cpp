@@ -9,22 +9,26 @@
 #include "FileManager.h"
 #include "StringUtils.h"
 
-std::string clearText(std::string text)
+std::string TextNormalizer::clearText(std::string text) const
 {
 	static std::locale loc("ru-RU");
 	std::transform(std::execution::par, text.begin(), text.end(), text.begin(), [](char ch) {return isalpha(ch, loc) || isdigit(ch, loc) ? ch : ' '; });
 	text.erase(std::unique(text.begin(), text.end(), [](char ch, char ch2) {return ch == ch2 && ch == ' '; }), text.end());
+	if(text.size() > 0 && text.front() == ' ') text.erase(text.begin());
+	if(text.size() > 0 && text.back() == ' ') text.erase(text.end()-1);
+
 	return text;
 }
 
 
-std::vector<std::string> eraseStopWords(std::vector<std::string> words)
+std::string TextNormalizer::eraseStopWords(std::string text) const
 {
-	words.erase(std::remove_if(words.begin(), words.end(), [](std::string& word) { return word.size() < 3; }), words.end());
-	return words;
+	auto words = StringUtils::split(text);
+	words.erase(std::remove_if(words.begin(), words.end(), [](std::string& word) { return word.size() < 2; }), words.end());
+	return StringUtils::concat(words, " ");
 }
 
-std::string toLowerText(std::string  word)
+std::string TextNormalizer::toLowerText(std::string  word) const
 {
 	static std::locale loc("ru-RU");
 	std::transform(std::execution::par, word.begin(), word.end(), word.begin(), [](char ch) {return tolower(ch, loc); });
@@ -34,13 +38,8 @@ std::string toLowerText(std::string  word)
 
 std::vector<std::string> TextNormalizer::normalize(std::string text) const
 {
-	if(text == "АБАК")
-	{
-		std::cout << "";
-	}
 	text = clearText(text);
 	text = toLowerText(text);
-	auto words = StringUtils::split(text);
-	words = eraseStopWords(words);
-	return _lemmatizer.lemmatizeText(StringUtils::concat(words, " "));
+	text = eraseStopWords(text);
+	return _lemmatizer.lemmatizeText(text);
 }
