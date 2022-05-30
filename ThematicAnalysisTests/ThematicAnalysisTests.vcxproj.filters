@@ -21,7 +21,7 @@
     <ClCompile Include="UtilsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DocumentReaderTests.cpp">
+    <ClCompile Include="ArticlesNormalizerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XmlArticlesReaderTests.cpp">
@@ -40,6 +40,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TermExtractionTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUtilsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

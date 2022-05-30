@@ -160,7 +160,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DocumentReaderTests.cpp" />
+    <ClCompile Include="ArticlesNormalizerTests.cpp" />
+    <ClCompile Include="FileUtilsTests.cpp" />
     <ClCompile Include="LemmatizerTests.cpp" />
     <ClCompile Include="NormalizerTests.cpp" />
     <ClCompile Include="pch.cpp">
@@ -174,8 +175,6 @@
     <ClCompile Include="XmlArticlesReaderTests.cpp" />
     <ClCompile Include="TermExtractionTest.cpp" />
     <ClCompile Include="UtilsTests.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -187,18 +186,21 @@
     <Content Include="resources\XmlSourceParser\OnePaper.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="resources\FileUtils\Test.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\FileUtils\1251.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\FileUtils\utf8.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\coolAllMath.gr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="resources\XmlSourceParser\TwoPaper.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="resources\MiddleMath.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
