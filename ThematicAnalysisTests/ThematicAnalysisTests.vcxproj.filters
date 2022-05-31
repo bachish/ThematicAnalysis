@@ -24,9 +24,6 @@
     <ClCompile Include="ArticlesNormalizerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="XmlArticlesReaderTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LemmatizerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,6 +45,9 @@
     <ClCompile Include="TagsAnalyzerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ArticlesReaderTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -55,7 +55,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="resources\XmlSourceParser\TwoPaper.txt" />
     <Text Include="resources\MiddleMath.txt" />
   </ItemGroup>
 </Project>

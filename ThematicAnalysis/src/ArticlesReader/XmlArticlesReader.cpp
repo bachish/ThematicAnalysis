@@ -50,20 +50,18 @@ void XmlArticlesReader::parsePaper() const
 	{
 		if (_text[_ptr] == '<')
 		{
-			auto tag = readTag();
-			std::string tag_name = std::get<std::string>(tag);
+			auto [tag_name, isClosed] = readTag();
 			if (tag_name == nameTag)
 			{
 				title = readToEnd(nameTag);
 			}
 			else if (tag_name == contentTag || tag_name == definitionTag)
 			{
-				content += " ";
 				content += readToEnd(tag_name);
 			}
 			else if (tag_name == paperTag)
 			{
-				if (std::get<bool>(tag)) break;
+				if (isClosed) break;
 				parsePaper();
 			}
 		}
@@ -71,8 +69,8 @@ void XmlArticlesReader::parsePaper() const
 	}
 	if (!title.empty())
 	{
-		clearString(title);
-		clearString(content);
+		//	clearString(title);
+		//	clearString(content);
 		_titles.push_back(title);
 		_contents.push_back(content);
 	}
@@ -86,9 +84,8 @@ void XmlArticlesReader::parse() const
 	{
 		if (_text[_ptr] == '<')
 		{
-			auto tag = readTag();
-			if (std::get<std::string>(tag) == paperTag &&
-				!std::get<bool>(tag))
+			auto [tag, isClosed] = readTag();
+			if (tag == paperTag && !isClosed)
 			{
 				i++;
 				parsePaper();
@@ -119,7 +116,7 @@ std::tuple<std::string, bool> XmlArticlesReader::readTag() const
 	}
 	auto tag = readWord();
 	while (_ptr < _size && _text[_ptr++] != '>') {}
-	return std::make_tuple(tag, isClosed);
+	return { tag, isClosed };
 }
 
 void XmlArticlesReader::skipSpace() const
@@ -139,10 +136,10 @@ std::string XmlArticlesReader::readToEnd(const std::string& tagName) const
 		if (_text[_ptr] == '<')
 		{
 			auto tmp = _ptr;
-			auto tag = readTag();
-			if (std::get<std::string>(tag) == tagName)
+			auto [tag, isClosed] = readTag();
+			if (tag == tagName)
 			{
-				if (std::get<bool>(tag))
+				if (isClosed)
 					return _text.substr(start, tmp - start);
 			}
 		}

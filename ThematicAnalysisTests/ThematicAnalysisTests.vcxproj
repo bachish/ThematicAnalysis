@@ -101,7 +101,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TermsUtils;TextAnalyzer.obj;ArticlesNormalizer.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MathArticlesReader.obj;TermsUtils;TextAnalyzer.obj;ArticlesNormalizer.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -156,11 +156,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TermsUtils;TextAnalyzer.obj;ArticlesNormalizer.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_core.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MathArticlesReader.obj;TermsUtils;TextAnalyzer.obj;ArticlesNormalizer.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_core.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArticlesNormalizerTests.cpp" />
+    <ClCompile Include="ArticlesReaderTests.cpp" />
     <ClCompile Include="FileUtilsTests.cpp" />
     <ClCompile Include="LemmatizerTests.cpp" />
     <ClCompile Include="NormalizerTests.cpp" />
@@ -173,7 +174,6 @@
     <ClCompile Include="SemanticGraphBuilderTests.cpp" />
     <ClCompile Include="SemanticGraphTests.cpp" />
     <ClCompile Include="TagsAnalyzerTests.cpp" />
-    <ClCompile Include="XmlArticlesReaderTests.cpp" />
     <ClCompile Include="TermExtractionTest.cpp" />
     <ClCompile Include="UtilsTests.cpp" />
     <ClInclude Include="pch.h" />
@@ -184,9 +184,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\XmlSourceParser\OnePaper.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="resources\FileUtils\Test.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -199,16 +196,12 @@
     <Content Include="resources\coolAllMath.gr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\XmlSourceParser\TwoPaper.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="resources\MiddleMath.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\MiddleMath.txt" />
-    <Text Include="resources\XmlSourceParser\TwoPaper.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
