@@ -36,10 +36,10 @@
     <ClCompile Include="SemanticGraphBuilderTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TermExtractionTest.cpp">
+    <ClCompile Include="FileUtilsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileUtilsTests.cpp">
+    <ClCompile Include="TermsUtilsTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TagsAnalyzerTests.cpp">

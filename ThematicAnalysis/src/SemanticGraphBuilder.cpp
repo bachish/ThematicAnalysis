@@ -5,7 +5,7 @@
 
 #include "ArticlesNormalizer.h"
 #include "Hasher.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 #include "ArticlesReader/XmlArticlesReader.h"
 
 constexpr double SemanticGraphBuilder::WEIGHT_ADDITION = 1.0;

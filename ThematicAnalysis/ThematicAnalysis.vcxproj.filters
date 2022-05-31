@@ -45,19 +45,19 @@
     <ClCompile Include="src\TextNormalizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileManager.cpp">
+    <ClCompile Include="src\Utils\FileUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextAnalyzer.cpp">
+    <ClCompile Include="src\TagsAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\StringUtils.cpp">
+    <ClCompile Include="src\Utils\StringUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TermsUtils.cpp">
+    <ClCompile Include="src\Utils\TermsUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,10 +89,10 @@
     <ClInclude Include="src\TextNormalizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileManager.h">
+    <ClInclude Include="src\Utils\FileUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TextAnalyzer.h">
+    <ClInclude Include="src\TagsAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ArticlesReader\IArticlesReader.h">
@@ -101,10 +101,10 @@
     <ClInclude Include="src\ArticlesReader\MathArticlesReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\StringUtils.h">
+    <ClInclude Include="src\Utils\StringUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TermsUtils.h">
+    <ClInclude Include="src\Utils\TermsUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

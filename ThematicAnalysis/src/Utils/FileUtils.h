@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <string>
 
-class FileManager
+class FileUtils
 {
 public:
 	static std::string readAllFile(const std::ifstream & fin);

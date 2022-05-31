@@ -8,7 +8,7 @@ struct Tag
 	double weight;
 };
 
-class TextAnalyzer
+class TagsAnalyzer
 {
 public:
 	//why public?

@@ -2,12 +2,9 @@
 
 #include <algorithm>
 #include <execution>
-#include <iostream>
 #include <locale>
-#include <numeric>
 
-#include "FileManager.h"
-#include "StringUtils.h"
+#include "Utils/StringUtils.h"
 
 std::string TextNormalizer::clearText(std::string text) const
 {

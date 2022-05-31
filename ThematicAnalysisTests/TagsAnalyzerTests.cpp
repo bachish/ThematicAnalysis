@@ -1,8 +1,7 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
 #include "Hasher.h"
-
-#include "TextAnalyzer.h"
+#include "TagsAnalyzer.h"
 #include "TextNormalizer.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -34,7 +33,7 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(simpleAnalyze)
 		{
 
-			TextAnalyzer analyzer;
+			TagsAnalyzer analyzer;
 			analyzer.analyze("В тексте есть термин центр и нет соседей", gr);
 			auto tagsGr = analyzer.tagsGraph;
 			Assert::AreEqual(4ull, tagsGr.nodes.size());
@@ -47,7 +46,7 @@ namespace ThematicAnalysisTests
 		TEST_METHOD(relevantTags)
 		{
 
-			TextAnalyzer analyzer;
+			TagsAnalyzer analyzer;
 			analyzer.analyze("В тексте есть термин центр и нет соседей", gr);
 			auto tags = analyzer.getRelevantTags(3);
 			std::vector<Tag> expected = { {"Центр", 0}, {"Сосед второй", 0}, {"Сосед первый", 0} };

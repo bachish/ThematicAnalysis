@@ -1,21 +1,19 @@
-#include "TextAnalyzer.h"
+#include "TagsAnalyzer.h"
 
 #include <algorithm>
 #include <execution>
-#include <iostream>
 #include <iterator>
 
 #include "ArticlesNormalizer.h"
 #include "SemanticGraphBuilder.h"
-#include "Hasher.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 
-constexpr double TextAnalyzer::DISTRIBUTION_COEF = 1.;
-constexpr double TextAnalyzer::ABSORPTION_COEF = 0.5;
-constexpr size_t TextAnalyzer::LINK_RADIUS = 1;
+constexpr double TagsAnalyzer::DISTRIBUTION_COEF = 1.;
+constexpr double TagsAnalyzer::ABSORPTION_COEF = 0.5;
+constexpr size_t TagsAnalyzer::LINK_RADIUS = 1;
 
 
-void TextAnalyzer::analyze(std::string const& text, SemanticGraph const& graph)
+void TagsAnalyzer::analyze(std::string const& text, SemanticGraph const& graph)
 {
 	TextNormalizer normalizer;
 	auto normText = normalizer.normalize(text);
@@ -52,7 +50,7 @@ void calcTfIdf(SemanticGraph& graph)
 		}
 }
 
-void TextAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight)
+void TagsAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight)
 {
 	if (radius > 0)
 	{
@@ -67,7 +65,7 @@ void TextAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermH
 	}
 }
 
-SemanticGraph TextAnalyzer::distributeTermsWeights(SemanticGraph const& graph)
+SemanticGraph TagsAnalyzer::distributeTermsWeights(SemanticGraph const& graph)
 {
 	auto distrGraph = graph;
 	for (auto&& [hash, node] : graph.nodes)
@@ -77,7 +75,7 @@ SemanticGraph TextAnalyzer::distributeTermsWeights(SemanticGraph const& graph)
 	return distrGraph;
 }
 
-void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph)
+void TagsAnalyzer::analyze(std::vector<std::string> const& normalizedText, SemanticGraph const& graph)
 {
 	tagsGraph = graph;
 	calcFrequency(tagsGraph, normalizedText);
@@ -86,7 +84,7 @@ void TextAnalyzer::analyze(std::vector<std::string> const& normalizedText, Seman
 }
 
 
-std::vector<Tag> TextAnalyzer::getRelevantTags(size_t tagsCount)
+std::vector<Tag> TagsAnalyzer::getRelevantTags(size_t tagsCount)
 {
 	std::vector<Node> nodes;
 	nodes.reserve(tagsGraph.nodes.size());

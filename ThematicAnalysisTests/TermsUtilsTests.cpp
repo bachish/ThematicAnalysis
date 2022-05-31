@@ -6,11 +6,10 @@
 
 #include "CppUnitTest.h"
 #include "ArticlesNormalizer.h"
-#include "FileManager.h"
+#include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "SemanticGraph.h"
-#include "SemanticGraphBuilder.h"
-#include "TermsUtils.h"
+#include "Utils/TermsUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -20,18 +19,19 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
  */
 namespace ThematicAnalysisTests
 {
-	TEST_CLASS(TermExtractionTest)
+	
+	TEST_CLASS(TermsUtilsTests)
 	{
-
-		SemanticGraph getMathGraph()
+		static SemanticGraph graph;
+		TEST_CLASS_INITIALIZE(TermsUtilsInitialize)
 		{
-			SemanticGraph graph;
 			graph.importFromFile("resources/coolAllMath.gr");
-			return graph;
+	
 		}
-		std::vector<std::string> getTextVector()
+		
+		std::vector<std::string> getTextVectorFromFS(std::string pathFile)
 		{
-			auto text = FileManager::readAllUTF8File("resources/integral.txt");
+			auto text = FileUtils::readAllUTF8File(pathFile);
 			TextNormalizer reader;
 			return reader.normalize(text);
 		}
@@ -41,12 +41,11 @@ namespace ThematicAnalysisTests
 			return reader.normalize(text);
 		}
 		double eps = 1e-5;
-		TEST_METHOD(TwoTermTest)
+		TEST_METHOD(TwoTermsExtractionTest)
 		{
-			auto graph = getMathGraph();
-
 			auto terms = TermsUtils::extractTermsCounts(graph,
-			                                      getTextVector(R"( лючевые  слова: регул€ризации, система граничных
+			                                      getTextVector(R"( лючевые  слова: 
+					регул€ризации, система граничных
 					интегральных
 					уравнений, метод
 					регул€ризации, голоморфный
@@ -64,4 +63,5 @@ namespace ThematicAnalysisTests
 			Assert::AreEqual(2ull, terms[Hasher::sortAndCalcHash(term)]);
 		}
 	};
+	SemanticGraph TermsUtilsTests::graph = SemanticGraph();
 }

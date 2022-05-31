@@ -6,7 +6,7 @@
 #include <sstream>
 #include <vector>
 
-#include "StringUtils.h"
+#include "Utils/StringUtils.h"
 
 
 size_t Hasher::sortAndCalcHash(std::vector<std::string> const& words)

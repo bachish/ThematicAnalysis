@@ -1,4 +1,4 @@
-﻿#include "FileManager.h"
+﻿#include "FileUtils.h"
 
 #include <Windows.h>
 #include <sstream>
@@ -6,12 +6,11 @@
 #include <cstdio>
 #include <filesystem>
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <array>
 
 
-std::string FileManager::readAllFile(const std::ifstream& fin)
+std::string FileUtils::readAllFile(const std::ifstream& fin)
 {
 	std::stringstream wss;
 	wss << fin.rdbuf();
@@ -20,7 +19,7 @@ std::string FileManager::readAllFile(const std::ifstream& fin)
 
 
 
-std::string FileManager::readAllFile(std::string const& filePath)
+std::string FileUtils::readAllFile(std::string const& filePath)
 {
 	std::ifstream fin(filePath);
 	auto text = readAllFile(fin);
@@ -57,14 +56,14 @@ std::string cp1251ToUTF8(const std::string& str)
 
 }
 
-std::string FileManager::readAllUTF8File(std::string const& filePath)
+std::string FileUtils::readAllUTF8File(std::string const& filePath)
 {
 	auto text = readAllFile(filePath);
 	text = UTF8ToCp1251(text);
 	return text;
 }
 
-void FileManager::writeUTF8ToFile(std::string const& filePath, std::string const& text)
+void FileUtils::writeUTF8ToFile(std::string const& filePath, std::string const& text)
 {
 	std::ofstream fout(filePath);
 	fout.imbue(std::locale(""));
@@ -73,7 +72,7 @@ void FileManager::writeUTF8ToFile(std::string const& filePath, std::string const
 	fout.close();
 }
 
-void FileManager::writeToFile(std::string const& filePath, std::string const& text)
+void FileUtils::writeToFile(std::string const& filePath, std::string const& text)
 {
 	std::ofstream fout(filePath);
 	fout.imbue(std::locale(""));
@@ -81,7 +80,7 @@ void FileManager::writeToFile(std::string const& filePath, std::string const& te
 	fout.close();
 }
 
-bool FileManager::executeExeWithParams(std::string exe, std::string params, std::string& output)
+bool FileUtils::executeExeWithParams(std::string exe, std::string params, std::string& output)
 {
 		if(!std::filesystem::exists(exe)) return false;
 		auto cmd = exe + " " + params;

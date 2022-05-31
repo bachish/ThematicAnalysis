@@ -3,21 +3,20 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <regex>
 #include <boost/regex.hpp>
 
-#include "FileManager.h"
+#include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "TextNormalizer.h"
 #include "SemanticGraphBuilder.h"
-#include "TermsUtils.h"
-#include "TextAnalyzer.h"
+#include "Utils/TermsUtils.h"
+#include "TagsAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
 
 
 void create() {
 	auto builder = SemanticGraphBuilder();
-	auto graph = builder.build(FileManager::readAllFile("resources/math/math.txt"), MathArticlesReader());
+	auto graph = builder.build(FileUtils::readAllFile("resources/math/math.txt"), MathArticlesReader());
 	graph.exportToFile("resources/coolAllMath.gr");
 }
 
@@ -41,9 +40,9 @@ void tags()
 {
 	auto graph = getMathGraph();
 
-	TextAnalyzer analyzer;
+	TagsAnalyzer analyzer;
 
-	analyzer.analyze(FileManager::readAllUTF8File("resources/temp.txt"), graph);
+	analyzer.analyze(FileUtils::readAllUTF8File("resources/temp.txt"), graph);
 	auto tags = analyzer.getRelevantTags(100);
 	for (auto& tag : tags)
 	{
@@ -60,7 +59,7 @@ void terms()
 		});
 
 	for (auto& tag : TermsUtils::extractTermsCounts(graph, TextNormalizer().normalize(
-		                                          FileManager::readAllUTF8File("resources/integral.txt"))))
+		FileUtils::readAllUTF8File("resources/integral.txt"))))
 	{
 		std::cout << graph.nodes[tag.first].term.view << " " << tag.second << '\n';
 	}

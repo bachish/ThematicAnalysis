@@ -2,13 +2,13 @@
 #include <locale>
 #include <filesystem>
 
-#include "FileManager.h"
-#include "StringUtils.h"
+#include "Utils/FileUtils.h"
+#include "Utils/StringUtils.h"
 
 std::string runMyStem(std::string const& tempFile)
 {
 	std::string output;
-	auto isExecuted = FileManager::executeExeWithParams("external\\mystem.exe", "-e cp1251 -nl " + tempFile, output);
+	auto isExecuted = FileUtils::executeExeWithParams("external\\mystem.exe", "-e cp1251 -nl " + tempFile, output);
 	if (!isExecuted)
 	{
 		throw std::runtime_error("Can't run mystem.exe!");
@@ -29,9 +29,7 @@ std::string useMyStem(const std::string& text)
 {
 	std::filesystem::create_directory("temp");
 	std::string tempFile = "temp/temp.txt";
-
-	FileManager::writeToFile(tempFile, text);
-
+	FileUtils::writeToFile(tempFile, text);
 	auto resStr = runMyStem(tempFile);
 	std::filesystem::remove(tempFile);
 	return resStr;
@@ -50,6 +48,3 @@ std::vector<std::string> Lemmatizer::lemmatizeTextWithMyStem(const std::string& 
 	std::transform(lines.begin(), lines.end(), lines.begin(), [](std::string& line) {return handleMyStemLine(line); });
 	return lines;
 }
-
-
-
