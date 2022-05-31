@@ -56,6 +56,9 @@
     <Content Include="external\mystem.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\coolAllMath.gr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\AllMath.txt" />
