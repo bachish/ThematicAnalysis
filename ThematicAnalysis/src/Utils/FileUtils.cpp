@@ -29,7 +29,7 @@ std::string FileUtils::readAllFile(std::string const& filePath)
 
 std::string convertEncodings(std::string const& str, UINT encodingFrom, UINT encodingTo)
 {
-		auto wsize = MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, nullptr, 0);
+	auto wsize = MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, nullptr, 0);
 	auto wres = new WCHAR[wsize];
 	MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, wres, wsize);
 
@@ -52,7 +52,7 @@ std::string UTF8ToCp1251(const std::string& str)
 
 std::string cp1251ToUTF8(const std::string& str)
 {
-		return convertEncodings(str, 1251, CP_UTF8);
+	return convertEncodings(str, 1251, CP_UTF8);
 
 }
 
@@ -82,16 +82,16 @@ void FileUtils::writeToFile(std::string const& filePath, std::string const& text
 
 bool FileUtils::executeExeWithParams(std::string exe, std::string params, std::string& output)
 {
-		if(!std::filesystem::exists(exe)) return false;
-		auto cmd = exe + " " + params;
-		std::array<char, 128> buffer;
-		std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.c_str(), "r"), _pclose);
-		if (pipe == nullptr) {
-			return false;
-		}
-		while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-			output += buffer.data();
-		}
+	if (!std::filesystem::exists(exe)) return false;
+	auto cmd = exe + " " + params;
+	std::array<char, 128> buffer;
+	std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.c_str(), "r"), _pclose);
+	if (pipe == nullptr) {
+		return false;
+	}
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+		output += buffer.data();
+	}
 
-		return true;
+	return true;
 }

@@ -100,9 +100,10 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>MathArticlesReader.obj;TermsUtils;TagsAnalyzer.obj;ArticlesNormalizer.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalDependencies>ArticlesNormalizer.obj;StringUtils.obj;TagsAnalyzer.obj;FileUtils.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_cored.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;TermsUtils.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -156,8 +157,9 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\ThematicAnalysis\external\graphviz\lib;$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MathArticlesReader.obj;TermsUtils;TextAnalyzer.obj;ArticlesNormalizer.obj;StringUtils.obj;FileManager.obj;Hasher.obj;TextNormalizer.obj;UGraphviz_core.lib;Lemmatizer.obj;Term.obj;SemanticGraph.obj;SemanticGraphBuilder.obj;NormalizedArticle.obj;XmlArticlesReader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;..\ThematicAnalysis\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -176,7 +178,6 @@
     <ClCompile Include="SemanticGraphTests.cpp" />
     <ClCompile Include="TermsUtilsTests.cpp" />
     <ClCompile Include="TagsAnalyzerTests.cpp" />
-    <ClCompile Include="TermExtractionTest.cpp" />
     <ClCompile Include="UtilsTests.cpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

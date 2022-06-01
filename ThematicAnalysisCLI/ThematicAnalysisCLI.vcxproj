@@ -18,54 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Utils\FileUtils.cpp" />
-    <ClCompile Include="src\Hasher.cpp" />
-    <ClCompile Include="src\Utils\TermsUtils.cpp" />
-    <ClCompile Include="src\TextNormalizer.cpp" />
-    <ClCompile Include="src\SemanticGraphBuilder.cpp" />
-    <ClCompile Include="src\NormalizedArticle.cpp" />
-    <ClCompile Include="src\SemanticGraph.cpp" />
-    <ClCompile Include="src\ArticlesNormalizer.cpp" />
-    <ClCompile Include="src\Lemmatizer.cpp" />
-    <ClCompile Include="src\Utils\StringUtils.cpp" />
-    <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp" />
-    <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
-    <ClCompile Include="src\Term.cpp" />
-    <ClCompile Include="src\TagsAnalyzer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\ArticlesNormalizer.h" />
-    <ClInclude Include="src\Utils\FileUtils.h" />
-    <ClInclude Include="src\Hasher.h" />
-    <ClInclude Include="src\Utils\TermsUtils.h" />
-    <ClInclude Include="src\Utils\StringUtils.h" />
-    <ClInclude Include="src\ArticlesReader\IArticlesReader.h" />
-    <ClInclude Include="src\TextNormalizer.h" />
-    <ClInclude Include="src\SemanticGraphBuilder.h" />
-    <ClInclude Include="src\NormalizedArticle.h" />
-    <ClInclude Include="src\SemanticGraph.h" />
-    <ClInclude Include="src\Lemmatizer.h" />
-    <ClInclude Include="src\Term.h" />
-    <ClInclude Include="src\ArticlesReader\MathArticlesReader.h" />
-    <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h" />
-    <ClInclude Include="src\TagsAnalyzer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="external\mystem.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="external\mystem.exe">
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e7074491-1114-4b02-8b0e-eaa28b5c3fd3}</ProjectGuid>
-    <RootNamespace>ThematicAnalysis</RootNamespace>
+    <ProjectGuid>{379608cb-066c-4286-90e6-c2887036537f}</ProjectGuid>
+    <RootNamespace>ThematicAnalysisCLI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -83,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -159,19 +116,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;$(ProjectDir)\external\boost_regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>..\ThematicAnalysis\src</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\external\graphviz\lib;$(ProjectDir)\external\boost_regex\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>external\graphviz\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_cored.lib</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,7 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src;$(ProjectDir)\external\lemmatizator\x64\include\lem\solarix;$(ProjectDir)\external\graphviz\include;$(ProjectDir)\external\boost_regex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThematicAnalysis\src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -189,14 +140,22 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\external\graphviz\lib;$(ProjectDir)\external\boost_regex\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>external\graphviz\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_core.lib</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <Content Include="resources\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="resources\AllMath.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThematicAnalysis\ThematicAnalysis.vcxproj">
+      <Project>{e7074491-1114-4b02-8b0e-eaa28b5c3fd3}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

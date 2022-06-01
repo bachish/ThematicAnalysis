@@ -6,6 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThematicAnalysis", "ThematicAnalysis\ThematicAnalysis.vcxproj", "{E7074491-1114-4B02-8B0E-EAA28B5C3FD3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThematicAnalysisTests", "ThematicAnalysisTests\ThematicAnalysisTests.vcxproj", "{586F362C-5E31-44F1-88CD-FF3370BAC934}"
+	ProjectSection(ProjectDependencies) = postProject
+		{379608CB-066C-4286-90E6-C2887036537F} = {379608CB-066C-4286-90E6-C2887036537F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThematicAnalysisCLI", "ThematicAnalysisCLI\ThematicAnalysisCLI.vcxproj", "{379608CB-066C-4286-90E6-C2887036537F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +36,14 @@ Global
 		{586F362C-5E31-44F1-88CD-FF3370BAC934}.Release|x64.Build.0 = Release|x64
 		{586F362C-5E31-44F1-88CD-FF3370BAC934}.Release|x86.ActiveCfg = Release|Win32
 		{586F362C-5E31-44F1-88CD-FF3370BAC934}.Release|x86.Build.0 = Release|Win32
+		{379608CB-066C-4286-90E6-C2887036537F}.Debug|x64.ActiveCfg = Debug|x64
+		{379608CB-066C-4286-90E6-C2887036537F}.Debug|x64.Build.0 = Debug|x64
+		{379608CB-066C-4286-90E6-C2887036537F}.Debug|x86.ActiveCfg = Debug|Win32
+		{379608CB-066C-4286-90E6-C2887036537F}.Debug|x86.Build.0 = Debug|Win32
+		{379608CB-066C-4286-90E6-C2887036537F}.Release|x64.ActiveCfg = Release|x64
+		{379608CB-066C-4286-90E6-C2887036537F}.Release|x64.Build.0 = Release|x64
+		{379608CB-066C-4286-90E6-C2887036537F}.Release|x86.ActiveCfg = Release|Win32
+		{379608CB-066C-4286-90E6-C2887036537F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
