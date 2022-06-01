@@ -174,6 +174,7 @@ namespace ThematicAnalysisTests
 			importedGraph.importFromStream(exportSs);
 
 			Assert::IsTrue(importedGraph.isTermExist(terms[0].getHashCode()));
+			Assert::AreEqual(importedGraph.getNGramLength(), exportedGraph.getNGramLength());
 			Assert::IsTrue(importedGraph.isTermExist(terms[1].getHashCode()));
 			Assert::IsTrue(importedGraph.isTermExist(terms[2].getHashCode()));
 			Assert::IsTrue(importedGraph.isLinkExist(terms[0].getHashCode(), terms[1].getHashCode()));

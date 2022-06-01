@@ -31,7 +31,8 @@ void calcFrequency(SemanticGraph& graph, std::vector<std::string> const& normali
 {
 	auto termsCounts = TermsUtils::extractTermsCounts(graph, normalizedText);
 	std::map<std::string, size_t> termsViewsCounts;
-	std::transform(termsCounts.begin(), termsCounts.end(), std::inserter(termsViewsCounts, termsViewsCounts.begin()), [&graph](std::pair<size_t, size_t> const& pair) {return std::pair{ graph.nodes.at(pair.first).term.view, pair.second }; });
+	std::transform(termsCounts.begin(), termsCounts.end(), std::inserter(termsViewsCounts, termsViewsCounts.begin()), 
+		[&graph](std::pair<size_t, size_t> const& pair) {return std::pair{ graph.nodes.at(pair.first).term.view, pair.second }; });
 	for (auto&& [termhash, count] : termsCounts)
 	{
 		graph.addTermWeight(termhash, count);

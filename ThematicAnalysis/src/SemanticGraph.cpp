@@ -41,12 +41,12 @@ Link::Link() : Link(0)
 {
 }
 
-size_t SemanticGraph::getNForNgram() const
+size_t SemanticGraph::getNGramLength() const
 {
-	return _nForNgram;
+	return _nGramLength;
 }
 
-SemanticGraph::SemanticGraph(size_t nForNgrams) : _nForNgram(nForNgrams)
+SemanticGraph::SemanticGraph(size_t nForNgrams) : _nGramLength(nForNgrams)
 {
 }
 
@@ -100,7 +100,7 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
  */
 SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minWeight) const
 {
-	auto neighbors = SemanticGraph();
+	auto neighbors = SemanticGraph(_nGramLength);
 	buildNeighborhood(centerHash, radius, minWeight, neighbors);
 	return neighbors;
 }
@@ -187,6 +187,7 @@ std::string SemanticGraph::getDotView(size_t centerHash) const
 
 
 ///	EXPORT/IMPORT FORMAT
+///	<ngram length>
 /// <vertexes count>
 /// <view>
 /// <weight> <numberOfArticles> <normalized words count> <word 1> ...
@@ -204,6 +205,7 @@ void SemanticGraph::exportToFile(std::string const& filePath)
 void SemanticGraph::exportToStream(std::ostream& out)
 {
 	std::map<size_t, int> indexes;
+	out << _nGramLength << std::endl;
 	out << nodes.size() << std::endl;
 	int index = 0;
 
@@ -254,7 +256,7 @@ Term readTerm(std::istream& in)
 void SemanticGraph::importFromStream(std::istream& in)
 {
 	int termsCount, linksCount;
-	in >> termsCount;
+	in >> _nGramLength >> termsCount;
 	std::vector<Term> terms;
 	terms.reserve(termsCount);
 	for (int i = 0; i < termsCount; i++) {

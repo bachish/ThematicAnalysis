@@ -35,11 +35,13 @@ namespace ThematicAnalysisTests
 			TextNormalizer reader;
 			return reader.normalize(text);
 		}
+
 		std::vector<std::string> getTextVector(std::string text)
 		{
 			TextNormalizer reader;
 			return reader.normalize(text);
 		}
+
 		double eps = 1e-5;
 		TEST_METHOD(TwoTermsExtractionTest)
 		{

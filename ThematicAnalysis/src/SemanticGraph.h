@@ -35,7 +35,7 @@ class SemanticGraph
 {
 public:
 	std::map<size_t, Node> nodes;
-	size_t getNForNgram() const;
+	size_t getNGramLength() const;
 	SemanticGraph(size_t nForNgrams = 4);
 	void addTerm(Term const& term);
 	void createLink(size_t firstTermHash, size_t secondTermHash, double weight = 0);
@@ -55,7 +55,7 @@ public:
 	void drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const;
 
 private:
-	size_t _nForNgram = 4;
+	size_t _nGramLength;
 	void buildNeighborhood(size_t curHash, unsigned radius, double minWeight, SemanticGraph& current) const;
 	Ubpa::UGraphviz::Graph createDotView(std::map<size_t, size_t>& registredNodes) const;
 };

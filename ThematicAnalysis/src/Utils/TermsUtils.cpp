@@ -22,7 +22,7 @@ std::map<size_t, size_t> TermsUtils::extractTermsCounts(SemanticGraph const& gra
 {
 	std::map<size_t, size_t> termsCounts;
 	std::list<std::pair<size_t, size_t>> termsPlaces;
-	for (size_t n = std::min(graph.getNForNgram(), allWords.size()); n > 0; n--)
+	for (size_t n = std::min(graph.getNGramLength(), allWords.size()); n > 0; n--)
 	{
 		for (size_t pos = 0; pos < allWords.size() - n + 1; pos++)
 		{

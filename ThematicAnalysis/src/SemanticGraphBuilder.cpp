@@ -8,7 +8,6 @@
 #include "Utils/TermsUtils.h"
 #include "ArticlesReader/XmlArticlesReader.h"
 
-constexpr double SemanticGraphBuilder::WEIGHT_ADDITION = 1.0;
 
 void SemanticGraphBuilder::addAllTermsToGraph(std::vector<NormalizedArticle> const& articles)
 {
@@ -52,7 +51,7 @@ void SemanticGraphBuilder::countTermsUsedDocuments(std::vector<NormalizedArticle
 	for (auto&& article : articles)
 	{
 		auto terms = std::set<size_t>();
-		for (size_t n = 1; n < _graph.getNForNgram(); n++)
+		for (size_t n = 1; n < _graph.getNGramLength(); n++)
 		{
 			if (article.text.size() < n)
 				break;
@@ -81,9 +80,13 @@ size_t getTermsCountsSum(std::map<size_t, size_t> const& termsCount)
 	return std::transform_reduce(std::execution::par, termsCount.begin(), termsCount.end(), 0ull, [](size_t a, size_t b) {return a + b; }, [](auto const& pair) {return pair.second; });
 }
 
+SemanticGraphBuilder::SemanticGraphBuilder(size_t nGramLenght): _graph(nGramLenght), nGramLenght(nGramLenght)
+{
+}
+
 SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& sourceArticles)
 {
-	_graph = SemanticGraph();
+	_graph = SemanticGraph(nGramLenght);
 	auto articles = concatArticlesWithSameName(sourceArticles);
 	addAllTermsToGraph(articles);
 	countTermsUsedDocuments(articles);
