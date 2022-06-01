@@ -18,9 +18,9 @@ public:
 
 	std::vector<Tag> getRelevantTags(size_t tagsCount);
 
-	const double DISTRIBUTION_COEF = 1.;		// the percent of the central vertex weight, transfer to the neighbors in the distribution
-	const double ABSORPTION_COEF = 0.5;		// percent of weight absorbed by the vertex in distribution
-	const size_t LINK_RADIUS = 1;
+	 double DISTRIBUTION_COEF = 1.;		// the percent of the central vertex weight, transfer to the neighbors in the distribution
+	 double ABSORPTION_COEF = 0.5;		// percent of weight absorbed by the vertex in distribution
+	 size_t LINK_RADIUS = 1;
 
 private:
 	void distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight) const;
