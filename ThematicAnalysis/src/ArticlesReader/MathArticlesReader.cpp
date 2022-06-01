@@ -1,5 +1,4 @@
 ﻿#include <boost/regex.hpp>
-#include <iostream>
 #include <regex>
 #include <sstream>
 
@@ -12,7 +11,7 @@ struct SubString
 
 auto GetTermsPositions(std::string const& text)
 {
-	boost::regex regex(R"(\r?\n\r?\n([А-Я]{3,}(?:[—\-\s,.]{1,5}(?:[А-Я\d]{2,}))*|[А-Я]{2}(?:[—\-\s,.]{1,5}(?:[А-Я\d]{2,}))+)(?:[^а-я0-9][а-яA-Za-z,.;()\-\s\d]*)?—[\s]*[а-я\d])");
+	boost::regex regex(R"(\r?\n\r?\n([А-Я]{3,}(?:[—\-\s,.]{1,5}(?:[А-Я\d]{2,}))*|[А-Я]{2}(?:[—\-\s,.]{1,5}(?:[А-Я\d]{2,}))+)(?:[^а-я0-9][а-яA-Za-z,.;()\-\s\d]*)?[-—][\s]*[а-я\d])");
 	std::stringstream res;
 	boost::smatch match;
 	std::vector<std::tuple<std::string::const_iterator, std::string::const_iterator>> terms;
@@ -27,9 +26,6 @@ auto GetTermsPositions(std::string const& text)
 std::tuple<std::vector<std::string>, std::vector<std::string>> MathArticlesReader::read(std::string const& sourceText) const
 {
 	auto text = sourceText;
-	text.erase(std::remove(text.begin(), text.end(), '<'), text.end());
-	text.erase(std::remove(text.begin(), text.end(), '>'), text.end());
-	text.erase(std::remove(text.begin(), text.end(), '/'), text.end());
 	auto termsPositions = GetTermsPositions(text);
 	std::vector<std::string> titles, contents;
 	titles.reserve(termsPositions.size()), contents.reserve(termsPositions.size());
