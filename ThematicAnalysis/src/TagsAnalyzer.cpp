@@ -8,9 +8,7 @@
 #include "SemanticGraphBuilder.h"
 #include "Utils/TermsUtils.h"
 
-constexpr double TagsAnalyzer::DISTRIBUTION_COEF = 1.;
-constexpr double TagsAnalyzer::ABSORPTION_COEF = 0.5;
-constexpr size_t TagsAnalyzer::LINK_RADIUS = 1;
+
 
 
 void TagsAnalyzer::analyze(std::string const& text, SemanticGraph const& graph)
@@ -33,12 +31,12 @@ void calcFrequency(SemanticGraph& graph, std::vector<std::string> const& normali
 {
 	auto termsCounts = TermsUtils::extractTermsCounts(graph, normalizedText);
 	std::map<std::string, size_t> termsViewsCounts;
-	std::transform(termsCounts.begin(), termsCounts.end(), std::inserter(termsViewsCounts,termsViewsCounts.begin()), [&graph](std::pair<size_t, size_t> const& pair){return std::pair{graph.nodes.at(pair.first).term.view, pair.second};});
-	for(auto&& [termhash, count]: termsCounts)
+	std::transform(termsCounts.begin(), termsCounts.end(), std::inserter(termsViewsCounts, termsViewsCounts.begin()), [&graph](std::pair<size_t, size_t> const& pair) {return std::pair{ graph.nodes.at(pair.first).term.view, pair.second }; });
+	for (auto&& [termhash, count] : termsCounts)
 	{
 		graph.addTermWeight(termhash, count);
 	}
-	
+
 }
 
 void calcTfIdf(SemanticGraph& graph)
@@ -50,7 +48,7 @@ void calcTfIdf(SemanticGraph& graph)
 		}
 }
 
-void TagsAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight)
+void TagsAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight) const
 {
 	if (radius > 0)
 	{
@@ -60,12 +58,12 @@ void TagsAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermH
 		{
 			auto neighborWeight = weight * (link.weight / weightSum);
 			graph.addTermWeight(neighborHash, neighborWeight * ABSORPTION_COEF);
-			distributeTermWeight(graph, neighborHash, radius - 1, neighborWeight * (1-ABSORPTION_COEF));
+			distributeTermWeight(graph, neighborHash, radius - 1, neighborWeight * (1 - ABSORPTION_COEF));
 		}
 	}
 }
 
-SemanticGraph TagsAnalyzer::distributeTermsWeights(SemanticGraph const& graph)
+SemanticGraph TagsAnalyzer::distributeTermsWeights(SemanticGraph const& graph) const
 {
 	auto distrGraph = graph;
 	for (auto&& [hash, node] : graph.nodes)
@@ -91,10 +89,10 @@ std::vector<Tag> TagsAnalyzer::getRelevantTags(size_t tagsCount)
 	std::transform(tagsGraph.nodes.begin(), tagsGraph.nodes.end(), std::back_inserter(nodes), [](auto el) {return el.second; });
 	std::sort(nodes.begin(), nodes.end(), [](Node& n1, Node& n2) {return n1.weight > n2.weight; });
 	tagsCount = tagsCount <= nodes.size() ? tagsCount : nodes.size();
-	
+
 	std::vector<Tag> tags;
 	tags.reserve(tagsCount);
-	std::transform(nodes.begin(), nodes.begin() + tagsCount, std::back_inserter(tags), [](Node& el) {return Tag{el.term.view, el.weight}; });
+	std::transform(nodes.begin(), nodes.begin() + tagsCount, std::back_inserter(tags), [](Node& el) {return Tag{ el.term.view, el.weight }; });
 	return tags;
 
 }

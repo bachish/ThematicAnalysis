@@ -18,13 +18,14 @@ public:
 
 	std::vector<Tag> getRelevantTags(size_t tagsCount);
 
-private:
-	static void distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight);
-	static SemanticGraph distributeTermsWeights(SemanticGraph const& graph);
+	const double DISTRIBUTION_COEF = 1.;		// the percent of the central vertex weight, transfer to the neighbors in the distribution
+	const double ABSORPTION_COEF = 0.5;		// percent of weight absorbed by the vertex in distribution
+	const size_t LINK_RADIUS = 1;
 
-	static const double DISTRIBUTION_COEF;	// the percent of the central vertex weight, transfer to the neighbors in the distribution
-	static const double ABSORPTION_COEF;	// percent of weight absorbed by the vertex in distribution
-	static const size_t LINK_RADIUS;
+private:
+	void distributeTermWeight(SemanticGraph& graph, size_t centerTermHash, size_t radius, double weight) const;
+	 SemanticGraph distributeTermsWeights(SemanticGraph const& graph) const;
+
 	SemanticGraph _sourceGraph;
 };
 
