@@ -28,6 +28,7 @@
     <ClCompile Include="src\SemanticGraph.cpp" />
     <ClCompile Include="src\ArticlesNormalizer.cpp" />
     <ClCompile Include="src\Lemmatizer.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\ArticlesReader\MathArticlesReader.cpp" />
     <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
@@ -55,6 +56,12 @@
     <Content Include="external\mystem.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\coolAllMath.gr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="resources\AllMath.txt" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="external\mystem.exe">
@@ -83,13 +90,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -168,10 +175,6 @@
       <AdditionalLibraryDirectories>$(ProjectDir)\external\graphviz\lib;$(ProjectDir)\external\boost_regex\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>UGraphviz_cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>external\graphviz\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_cored.lib</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -192,10 +195,6 @@
       <AdditionalLibraryDirectories>$(ProjectDir)\external\graphviz\lib;$(ProjectDir)\external\boost_regex\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>UGraphviz_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>external\graphviz\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UGraphviz_core.lib</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

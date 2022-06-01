@@ -8,14 +8,13 @@
 std::string runMyStem(std::string const& tempFile)
 {
 	std::string output;
-	auto isExecuted = FileUtils::executeExeWithParams("mystem.exe", "-e cp1251 -nl " + tempFile, output);
+	auto isExecuted = FileUtils::executeExeWithParams("external\\mystem.exe", "-e cp1251 -nl " + tempFile, output);
 	if (!isExecuted)
 	{
 		throw std::runtime_error("Can't run mystem.exe!");
 	}
 	return output;
 }
-
 
 std::string handleMyStemLine(std::string line)
 {

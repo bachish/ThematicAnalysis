@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <boost/regex.hpp>
+
 #include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "TextNormalizer.h"
