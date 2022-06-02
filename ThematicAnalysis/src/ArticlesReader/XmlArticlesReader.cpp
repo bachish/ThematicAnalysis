@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <locale>
+#include <sstream>
 
 /**
  * \brief Extract from text only titles and content
@@ -19,6 +20,19 @@ std::tuple<std::vector<std::string>, std::vector<std::string>> XmlArticlesReader
 	return std::make_tuple(_titles, _contents);
 }
 
+std::string XmlArticlesReader::exportToXml(std::vector<std::string> titles, std::vector<std::string> contents) const
+{
+	std::stringstream xmlText;
+	for (size_t i = 0; i < titles.size(); i++)
+	{
+		xmlText << "<" << paperTag << ">\n";
+		xmlText << "<" << nameTag << ">\n" << titles[i] << "\n</" << nameTag << ">\n";
+		xmlText << "<" << contentTag << ">\n" << contents[i] << "\n</" << contentTag << ">\n";
+		xmlText << "</" << paperTag << ">\n";
+	}
+	return xmlText.str();
+}
+
 void clearString(std::string& s)
 {
 	for (auto& i : s)
@@ -26,7 +40,6 @@ void clearString(std::string& s)
 		if (i == '\t' || i == '\n')
 			i = ' ';
 	}
-
 	auto isTwoSpaces = [](wchar_t a, wchar_t b) {return a == b && a == ' '; };
 	s.erase(std::unique(s.begin(), s.end(), isTwoSpaces), s.end());
 

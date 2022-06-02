@@ -12,6 +12,7 @@
 #include "Utils/TermsUtils.h"
 #include "TagsAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
+#include "ArticlesReader/XmlArticlesReader.h"
 
 
 void create() {
@@ -83,11 +84,18 @@ void calcTerms()
 
 	}
 }
+void makeXml() {
+	auto builder = SemanticGraphBuilder();
+	auto mathReader = MathArticlesReader();
+	auto xml = XmlArticlesReader();
+	auto [titles, contents] = mathReader.read(FileUtils::readAllFile("resources/math/math.txt"));
+	auto res = xml.exportToXml(titles, contents);
+	std::cout << res;
+}
 
 int main() {
 	setlocale(LC_ALL, "rus");
 	//create();
-	//calcTerms();
 	tags();
 	return 0;
 }
