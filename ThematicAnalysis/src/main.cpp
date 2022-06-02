@@ -31,9 +31,9 @@ void draw()
 {
 	auto graph = getMathGraph();
 	TextNormalizer normalizer;
-	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("бэра классы"));
-	auto subgr = graph.getNeighborhood(hash, 1, 0.05);
-	subgr.drawToImage("", "image", hash);
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("факториал"));
+	auto subgr = graph.getNeighborhood(hash, 2, 0.1);
+	subgr.drawToImage("temp/", "image", hash);
 }
 
 void tags()
@@ -41,13 +41,23 @@ void tags()
 	auto graph = getMathGraph();
 
 	TagsAnalyzer analyzer;
+	analyzer.DISTRIBUTION_COEF = 3;
 
-	analyzer.analyze(FileUtils::readAllUTF8File("resources/temp.txt"), graph);
-	auto tags = analyzer.getRelevantTags(100);
+	analyzer.analyze(FileUtils::readAllFile("resources/voevoda.txt"), graph);
+	auto tags = analyzer.getRelevantTags(20);
 	for (auto& tag : tags)
 	{
-		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << ", ";
+		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << "\n";
 	}
+		auto gr = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView)), 15, 0.08, 0.1);
+
+
+	/*for (int i = 0; i < tags.size(); i++) {
+		auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.4);
+		gr.merge(gr2);
+	}*/
+	gr.drawToImage("temp/", "temp2");
+
 }
 
 void terms()
@@ -89,5 +99,6 @@ int main() {
 	//create();
 	//calcTerms();
 	tags();
+	//draw();
 	return 0;
 }

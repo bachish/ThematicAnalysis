@@ -8,6 +8,7 @@ class Node
 {
 public:
 	Node(Term term);
+	Node(Term term, double weight);
 	Node();
 	Node(Node const& node) = default;
 	Term term;
@@ -37,13 +38,14 @@ public:
 	std::map<size_t, Node> nodes;
 	size_t getNGramLength() const;
 	SemanticGraph(size_t nForNgrams = 4);
-	void addTerm(Term const& term);
+	void addTerm(Term const& term, double weight = 0);
 	void createLink(size_t firstTermHash, size_t secondTermHash, double weight = 0);
 	void addTermWeight(size_t termHash, double weight);
 	double getLinkWeight(size_t firstTermHash, size_t secondTermHash) const;
 	bool isTermExist(size_t termHash) const;
 	bool isLinkExist(size_t firstTermHash, size_t secondTermHash) const;
-	SemanticGraph getNeighborhood(size_t centerHash, unsigned radius, double minWeight = 0) const;
+	void merge(SemanticGraph const& src);
+	SemanticGraph getNeighborhood(size_t centerHash, unsigned radius, double minEdgeWeight = 0, double minNodeWeight = 0) const;
 	std::string getDotView() const;
 	std::string getDotView(size_t centerHash) const;
 
@@ -56,6 +58,6 @@ public:
 
 private:
 	size_t _nGramLength;
-	void buildNeighborhood(size_t curHash, unsigned radius, double minWeight, SemanticGraph& current) const;
+	void buildNeighborhood(size_t curHash, unsigned radius, double minEdgeWeight, double minNodeWeight, SemanticGraph& current) const;
 	Ubpa::UGraphviz::Graph createDotView(std::map<size_t, size_t>& registredNodes) const;
 };

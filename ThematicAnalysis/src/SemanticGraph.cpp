@@ -4,6 +4,9 @@
 #include <numeric>
 #include "UGraphviz/UGraphviz.hpp"
 #include "SemanticGraph.h"
+
+#include <iomanip>
+
 #include "Utils/FileUtils.h"
 #include "Hasher.h"
 #include "Utils/StringUtils.h"
@@ -11,6 +14,12 @@
 Node::Node(Term term) :
 	term(term),
 	weight(0)
+{
+}
+
+Node::Node(Term term, double weight) :
+	term(term),
+	weight(weight)
 {
 }
 
@@ -50,9 +59,9 @@ SemanticGraph::SemanticGraph(size_t nForNgrams) : _nGramLength(nForNgrams)
 {
 }
 
-void SemanticGraph::addTerm(Term const& term)
+void SemanticGraph::addTerm(Term const& term, double weight)
 {
-	nodes.emplace(term.getHashCode(), Node(term));
+	nodes.emplace(term.getHashCode(), Node(term, weight));
 }
 
 void SemanticGraph::createLink(size_t firstTermHash, size_t secondTermHash, double weight)
@@ -91,6 +100,22 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
 	return ptr != nodes.end() && ptr->second.neighbors.find(secondTermHash) != ptr->second.neighbors.end();
 }
 
+void SemanticGraph::merge(SemanticGraph const& src)
+{
+	for (auto [hash, node] : src.nodes)
+	{
+		addTerm(node.term, node.weight);
+	}
+	for (auto [hash, node] : src.nodes)
+	{
+		for (auto [hash2, link] : node.neighbors)
+		{
+			if (isTermExist(hash2) && !isLinkExist(hash, hash2))
+				createLink(hash, hash2, link.weight);
+		}
+	}
+}
+
 
 /**
  * \brief Extract subGraph
@@ -98,33 +123,34 @@ bool SemanticGraph::isLinkExist(size_t firstTermHash, size_t secondTermHash) con
  * \param radius extraction level (from center term)
  * \return result subGraph
  */
-SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minWeight) const
+SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minEdgeWeight, double minNodeWeight) const
 {
 	auto neighbors = SemanticGraph(_nGramLength);
-	buildNeighborhood(centerHash, radius, minWeight, neighbors);
+	buildNeighborhood(centerHash, radius, minEdgeWeight,minNodeWeight, neighbors);
 	return neighbors;
 }
 
-void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double minWeight,
-	SemanticGraph& neighbors) const
+void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double minEdgeWeight,
+                                      double minNodeWeight, SemanticGraph& neighbors) const
 {
 	if (!isTermExist(curHash)) return;
 	const auto& termNode = nodes.find(curHash)->second;
-	neighbors.addTerm(termNode.term);
+	if(termNode.weight < minNodeWeight) return;
+	neighbors.addTerm(termNode.term, termNode.weight);
 	if (radius == 0) return;
 	for (auto&& [hash, link] : termNode.neighbors)
 	{
-		if (!neighbors.isTermExist(hash) && link.weight >= minWeight) {
-			buildNeighborhood(hash, radius - 1, minWeight, neighbors);
+		if (!neighbors.isLinkExist(curHash, hash) && link.weight >= minEdgeWeight) {
 			neighbors.createLink(curHash, hash, link.weight);
+			buildNeighborhood(hash, radius - 1, minEdgeWeight,minNodeWeight, neighbors);
 		}
 	}
 }
 
-std::string doubleToString(double num)
+std::string doubleToString(double num, int precision = 3)
 {
 	std::stringstream ss;
-	ss << num;
+	ss << std::setprecision(precision) << num;
 	return ss.str();
 }
 
@@ -151,7 +177,7 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 	auto& reg = dotGraph.GetRegistry();
 	for (auto&& [hash, node] : nodes)
 	{
-		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6));
+		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6) + "\n" + doubleToString(node.weight));
 		dotGraph.AddNode(nodeId);
 		registredNodes.emplace(hash, nodeId);
 	}
@@ -159,11 +185,13 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 	for (auto&& [hash, node] : nodes) {
 		for (auto&& [neighbor_hash, link] : node.neighbors) {
 			auto edgeId = reg.RegisterEdge(registredNodes[hash], registredNodes[neighbor_hash]);
-			reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight));
+			reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight, 2));
+			reg.RegisterEdgeAttr(edgeId, "weight", std::to_string(int(link.weight*100)));
 			dotGraph.AddEdge(edgeId);
 		}
 	}
 	dotGraph.RegisterGraphAttr("overlap", "false");
+	dotGraph.RegisterGraphAttr("splines", "true");
 	return dotGraph;
 }
 
@@ -236,7 +264,7 @@ void SemanticGraph::importFromFile(std::string const& filePath)
 	fin.close();
 }
 
-Term readTerm(std::istream& in)
+Node readNode(std::istream& in)
 {
 	std::string view;
 	double weight;
@@ -248,9 +276,9 @@ Term readTerm(std::istream& in)
 	for (size_t i = 0; i < wordsCount; i++)
 		in >> words[i];
 
-	Term term = { words, view, Hasher::sortAndCalcHash(words) };
-	term.numberOfArticlesThatUseIt = numberOfArticlesThatUseIt;
-	return term;
+	Node node = { {words, view, Hasher::sortAndCalcHash(words)} , weight };
+	node.term.numberOfArticlesThatUseIt = numberOfArticlesThatUseIt;
+	return node;
 }
 
 void SemanticGraph::importFromStream(std::istream& in)
@@ -260,9 +288,9 @@ void SemanticGraph::importFromStream(std::istream& in)
 	std::vector<Term> terms;
 	terms.reserve(termsCount);
 	for (int i = 0; i < termsCount; i++) {
-		auto term = readTerm(in);
-		terms.push_back(term);
-		addTerm(term);
+		auto node = readNode(in);
+		terms.push_back(node.term);
+		addTerm(node.term, node.weight);
 	}
 	in >> linksCount;
 	while (linksCount--) {
@@ -278,7 +306,7 @@ void drawDotToImage(std::string const& dotView, std::string const& dirPath, std:
 {
 	std::string dotFile = "temp.dot";
 	FileUtils::writeUTF8ToFile(dotFile, dotView);
-	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	std::string command = std::string("external\\graphviz\\dot.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
 }
