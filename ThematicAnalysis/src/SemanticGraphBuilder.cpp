@@ -80,7 +80,7 @@ size_t getTermsCountsSum(std::map<size_t, size_t> const& termsCount)
 	return std::transform_reduce(std::execution::par, termsCount.begin(), termsCount.end(), 0ull, [](size_t a, size_t b) {return a + b; }, [](auto const& pair) {return pair.second; });
 }
 
-SemanticGraphBuilder::SemanticGraphBuilder(size_t nGramLenght): _graph(nGramLenght), nGramLenght(nGramLenght)
+SemanticGraphBuilder::SemanticGraphBuilder(size_t nGramLenght) : _graph(nGramLenght), nGramLenght(nGramLenght)
 {
 }
 
@@ -102,7 +102,14 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 			if (titleHash != termHash) {
 				auto const& term = _graph.nodes[termHash].term;
 				auto tfIdf = TermsUtils::calcTfIdf(linkCount, linkedTermsSumCount, term.numberOfArticlesThatUseIt, articlesCount);
-				_graph.createLink(titleHash, termHash, tfIdf);
+				if (_graph.isLinkExist(titleHash, termHash))
+					_graph.addLinkWeight(termHash, titleHash, tfIdf);
+				else
+					_graph.createLink(titleHash, termHash, tfIdf);
+				if (_graph.isLinkExist(termHash, titleHash))
+					_graph.addLinkWeight(termHash, titleHash, tfIdf * 0.3);
+				else
+					_graph.createLink(termHash, titleHash, tfIdf * 0.3);
 			}
 	}
 	return _graph;

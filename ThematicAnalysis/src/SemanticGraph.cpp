@@ -84,6 +84,12 @@ void SemanticGraph::addTermWeight(size_t termHash, double weight)
 	nodes.at(termHash).weight += weight;
 }
 
+void SemanticGraph::addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight)
+{
+	auto& firstNode = nodes.at(firstTermHash);
+	firstNode.neighbors.at(secondTermHash).weight += weight;
+}
+
 double SemanticGraph::getLinkWeight(size_t firstTermHash, size_t secondTermHash) const
 {
 	return nodes.at(firstTermHash).neighbors.at(secondTermHash).weight;
@@ -104,7 +110,9 @@ void SemanticGraph::merge(SemanticGraph const& src)
 {
 	for (auto [hash, node] : src.nodes)
 	{
+		
 		addTerm(node.term, node.weight);
+		nodes.at(node.term.getHashCode()).cnt = node.cnt;
 	}
 	for (auto [hash, node] : src.nodes)
 	{
@@ -126,23 +134,27 @@ void SemanticGraph::merge(SemanticGraph const& src)
 SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minEdgeWeight, double minNodeWeight) const
 {
 	auto neighbors = SemanticGraph(_nGramLength);
-	buildNeighborhood(centerHash, radius, minEdgeWeight,minNodeWeight, neighbors);
+	buildNeighborhood(centerHash, radius, minEdgeWeight, minNodeWeight, neighbors);
 	return neighbors;
 }
 
 void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double minEdgeWeight,
-                                      double minNodeWeight, SemanticGraph& neighbors) const
+	double minNodeWeight, SemanticGraph& neighbors) const
 {
 	if (!isTermExist(curHash)) return;
 	const auto& termNode = nodes.find(curHash)->second;
-	if(termNode.weight < minNodeWeight) return;
+	if (termNode.weight < minNodeWeight) return;
 	neighbors.addTerm(termNode.term, termNode.weight);
+	neighbors.nodes.at(termNode.term.getHashCode()).cnt = termNode.cnt;
 	if (radius == 0) return;
 	for (auto&& [hash, link] : termNode.neighbors)
 	{
-		if (!neighbors.isLinkExist(curHash, hash) && link.weight >= minEdgeWeight) {
-			neighbors.createLink(curHash, hash, link.weight);
-			buildNeighborhood(hash, radius - 1, minEdgeWeight,minNodeWeight, neighbors);
+		if (link.weight >= minEdgeWeight) {
+			if (!neighbors.isTermExist(hash)) 
+				buildNeighborhood(hash, radius - 1, minEdgeWeight, minNodeWeight, neighbors);
+			
+			if (neighbors.isTermExist(hash) && !neighbors.isLinkExist(curHash, hash))
+				neighbors.createLink(curHash, hash, link.weight);
 		}
 	}
 }
@@ -177,7 +189,7 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 	auto& reg = dotGraph.GetRegistry();
 	for (auto&& [hash, node] : nodes)
 	{
-		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6) + "\n" + doubleToString(node.weight));
+		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6) +"cnt=" +std::to_string(node.cnt) +" " + (node.weight < 1e-5 ? "" : "\n" + doubleToString(node.weight)));
 		dotGraph.AddNode(nodeId);
 		registredNodes.emplace(hash, nodeId);
 	}
@@ -186,7 +198,7 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 		for (auto&& [neighbor_hash, link] : node.neighbors) {
 			auto edgeId = reg.RegisterEdge(registredNodes[hash], registredNodes[neighbor_hash]);
 			reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight, 2));
-			reg.RegisterEdgeAttr(edgeId, "weight", std::to_string(int(link.weight*100)));
+			reg.RegisterEdgeAttr(edgeId, "weight", std::to_string(int(link.weight * 1000)));
 			dotGraph.AddEdge(edgeId);
 		}
 	}

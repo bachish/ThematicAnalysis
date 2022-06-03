@@ -13,6 +13,7 @@ public:
 	Node(Node const& node) = default;
 	Term term;
 	double weight;
+	int cnt = 0;
 	std::map<size_t, Link> neighbors;
 	double sumLinksWeight() const;
 
@@ -38,9 +39,13 @@ public:
 	std::map<size_t, Node> nodes;
 	size_t getNGramLength() const;
 	SemanticGraph(size_t nForNgrams = 4);
+
 	void addTerm(Term const& term, double weight = 0);
 	void createLink(size_t firstTermHash, size_t secondTermHash, double weight = 0);
+
 	void addTermWeight(size_t termHash, double weight);
+	void addLinkWeight(size_t firstTermHash, size_t secondTermHash, double weight);
+
 	double getLinkWeight(size_t firstTermHash, size_t secondTermHash) const;
 	bool isTermExist(size_t termHash) const;
 	bool isLinkExist(size_t firstTermHash, size_t secondTermHash) const;
