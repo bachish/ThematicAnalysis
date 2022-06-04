@@ -9,6 +9,7 @@
 
 #include "Utils/FileUtils.h"
 #include "Hasher.h"
+#include "TextNormalizer.h"
 #include "Utils/StringUtils.h"
 
 Node::Node(Term term) :
@@ -110,7 +111,7 @@ void SemanticGraph::merge(SemanticGraph const& src)
 {
 	for (auto [hash, node] : src.nodes)
 	{
-		
+
 		addTerm(node.term, node.weight);
 		nodes.at(node.term.getHashCode()).cnt = node.cnt;
 	}
@@ -150,9 +151,9 @@ void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double mi
 	for (auto&& [hash, link] : termNode.neighbors)
 	{
 		if (link.weight >= minEdgeWeight) {
-			if (!neighbors.isTermExist(hash)) 
+			if (!neighbors.isTermExist(hash))
 				buildNeighborhood(hash, radius - 1, minEdgeWeight, minNodeWeight, neighbors);
-			
+
 			if (neighbors.isTermExist(hash) && !neighbors.isLinkExist(curHash, hash))
 				neighbors.createLink(curHash, hash, link.weight);
 		}
@@ -173,13 +174,14 @@ std::string breakText(std::string const& text, size_t maxLen)
 	size_t len = 0;
 	for (auto& word : words)
 	{
-		ss << word << ' ';
-		len += word.size();
 		if (len > maxLen)
 		{
-			//ss << '\n';
+			ss << '\n';
 			len = 0;
 		}
+		ss << word << ' ';
+		len += word.size();
+		
 	}
 	return ss.str();
 }
@@ -189,13 +191,16 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 	auto& reg = dotGraph.GetRegistry();
 	for (auto&& [hash, node] : nodes)
 	{
-		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6) +"cnt=" +std::to_string(node.cnt) +" " + (node.weight < 1e-5 ? "" : "\n" + doubleToString(node.weight)));
+		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6) + (node.cnt < 1 ? "" : "cnt=" + std::to_string(node.cnt)) + (node.weight < 1e-5 ? " " : "\n" + doubleToString(node.weight)));
 		dotGraph.AddNode(nodeId);
 		registredNodes.emplace(hash, nodeId);
 	}
+	auto tempHash = Hasher::sortAndCalcHash(TextNormalizer().normalize("Координаты"));
+	auto tempHash2 = Hasher::sortAndCalcHash(TextNormalizer().normalize("Декартова прямоугольная система координат"));
 
 	for (auto&& [hash, node] : nodes) {
-		for (auto&& [neighbor_hash, link] : node.neighbors) {
+		for (auto&& [neighbor_hash, link] : node.neighbors) 
+		if(hash != tempHash || neighbor_hash != tempHash2){
 			auto edgeId = reg.RegisterEdge(registredNodes[hash], registredNodes[neighbor_hash]);
 			reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight, 2));
 			reg.RegisterEdgeAttr(edgeId, "weight", std::to_string(int(link.weight * 1000)));
@@ -203,7 +208,8 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 		}
 	}
 	dotGraph.RegisterGraphAttr("overlap", "false");
-	dotGraph.RegisterGraphAttr("splines", "true");
+	dotGraph.RegisterGraphAttr("start", "14");
+	//dotGraph.RegisterGraphAttr("start", std::to_string(rand()));
 	return dotGraph;
 }
 
@@ -318,7 +324,7 @@ void drawDotToImage(std::string const& dotView, std::string const& dirPath, std:
 {
 	std::string dotFile = "temp.dot";
 	FileUtils::writeUTF8ToFile(dotFile, dotView);
-	std::string command = std::string("external\\graphviz\\dot.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
 	system(command.c_str());
 	std::remove(dotFile.c_str());
 }
@@ -330,5 +336,6 @@ void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& i
 
 void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const
 {
-	drawDotToImage(getDotView(centerHash), dirPath, imageName);
+	auto a = getDotView(centerHash);
+	drawDotToImage(a, dirPath, imageName);
 }

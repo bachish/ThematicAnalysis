@@ -107,9 +107,9 @@ SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& 
 				else
 					_graph.createLink(titleHash, termHash, tfIdf);
 				if (_graph.isLinkExist(termHash, titleHash))
-					_graph.addLinkWeight(termHash, titleHash, tfIdf * 0.3);
+					_graph.addLinkWeight(termHash, titleHash, tfIdf * 0.7);
 				else
-					_graph.createLink(termHash, titleHash, tfIdf * 0.3);
+					_graph.createLink(termHash, titleHash, tfIdf * 0.7);
 			}
 	}
 	return _graph;
