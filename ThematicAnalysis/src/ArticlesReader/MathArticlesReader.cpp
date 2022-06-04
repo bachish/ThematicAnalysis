@@ -13,7 +13,7 @@ struct SubString
 
 auto GetTermsPositions(std::string const& text)
 {
-	boost::regex regex(R"(\r?\n\r?\n([А-ЯЁ]{3,}(?:[^А-ЯЁа-яёA-Za-z]{1,5}(?:[А-ЯЁ\d]{2,}))*|[А-ЯЁ]{2}(?:[^А-ЯЁа-яёA-Za-z]{1,5}(?:[А-ЯЁ\d]{2,}))+)(?:[\s][^А-ЯЁ\-—][^\-—]*)?[\s]*[\-—][\s]*[а-яёa-zA-ZА-ЯЁ\d])");
+	boost::regex regex(R"(\r?\n\r?\n([А-ЯЁ]{3,}(?:[^А-ЯЁа-яёA-Za-z]{1,5}(?:[А-ЯЁ\d]{2,}))*|[А-ЯЁ]{2}(?:[^А-ЯЁа-яёA-Za-z]{1,5}(?:[А-ЯЁ\d]{2,}))+)(?:[\s](?:[^А-ЯЁ\-—][А-ЯЁ]?)+)?[\s]*[\-—:][\s]*[а-яёa-zA-ZА-ЯЁ\d])");
 	std::stringstream res;
 	boost::smatch match;
 	std::vector<std::tuple<std::string::const_iterator, std::string::const_iterator>> terms;
@@ -28,7 +28,7 @@ auto GetTermsPositions(std::string const& text)
 std::tuple<std::vector<std::string>, std::vector<std::string>> MathArticlesReader::read(std::string const& text) const
 {
 	static std::locale loc("ru-RU");
-	std::string saveChars = "-—\n\r";
+	std::string saveChars = "-—:\n\r";
 	auto clearedText = TextNormalizer().clearText(text, [&saveChars](char ch){return !isalpha(ch, loc) && !isdigit(ch, loc) && saveChars.find(ch) == std::string::npos;});
 	auto termsPositions = GetTermsPositions(clearedText);
 	std::vector<std::string> titles, contents;
