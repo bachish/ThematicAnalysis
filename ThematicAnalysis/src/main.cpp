@@ -21,6 +21,13 @@ void listTerms() {
 
 	//FileUtils::writeUTF8ToFile("temp/temp.txt", text);
 	auto [titles, _] = reader.read(text);
+	for(int i = 1; i < titles.size(); i++)
+	{
+		if(titles[i] < titles[i-1])
+		{
+			std::cout << titles[i-1] << " >> " << titles[i] << "\n";
+		}
+	}
 	FileUtils::writeUTF8ToFile("terms.txt", StringUtils::concat(titles, "\n"));
 }
 
@@ -46,29 +53,29 @@ void draw()
 	subgr.drawToImage("temp/", "image2", hash);
 }
 
-void tags()
+void tags(std::string text)
 {
 	auto graph = getMathGraph();
 
 	TagsAnalyzer analyzer;
 	analyzer.DISTRIBUTION_COEF = 1;
 
-	analyzer.analyze(FileUtils::readAllUTF8File("resources/articles/4.txt"), graph);
+	analyzer.analyze(text, graph);
 	auto tags = analyzer.getRelevantTags(30);
 	for (auto& tag : tags)
 	{
-		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << "\n";
+		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << ", ";
 	}
-	auto hash = Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView));
-	auto gr = SemanticGraph();
-	//auto gr = analyzer.tagsGraph.getNeighborhood(hash, 10, 0.09, 0.1);
+	//auto hash = Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView));
+	//auto gr = SemanticGraph();
+	////auto gr = analyzer.tagsGraph.getNeighborhood(hash, 10, 0.09, 0.1);
 
 
-	for (int i = 0; i < tags.size(); i++) {
-		auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.06);
-		gr.merge(gr2);
-	}
-	gr.drawToImage("temp/", "temp2", hash);
+	//for (int i = 0; i < tags.size(); i++) {
+	//	auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.06);
+	//	gr.merge(gr2);
+	//}
+	//gr.drawToImage("temp/", "temp2", hash);
 
 }
 
@@ -109,11 +116,11 @@ void calcTerms()
 int main() {
 	srand(time(0));
 	setlocale(LC_ALL, "rus");
-	getMathGraph().drawToImage("temp/", "all");
+	//getMathGraph().drawToImage("temp/", "all");
 	//create();
 	//calcTerms();
-	//tags();
-	draw();
-	//listTerms();
+	//tags(FileUtils::readAllUTF8File("resources/articles/7.txt"));
+	//draw();
+	listTerms();
 	return 0;
 }
