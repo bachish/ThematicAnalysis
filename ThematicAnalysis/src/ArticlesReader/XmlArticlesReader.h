@@ -10,6 +10,7 @@ class XmlArticlesReader: public IArticlesReader
 {
 public:
 	std::tuple<std::vector<std::string>, std::vector<std::string>> read(std::string const & text) const override;
+	std::string exportToXml(std::vector<std::string> titles, std::vector<std::string> contents) const;
 private:
 	mutable std::vector<std::string> _titles;
 	mutable std::vector<std::string> _contents;

@@ -44,12 +44,12 @@ SemanticGraph getMathGraph()
 	return graph;
 }
 
-void draw()
+void draw(std::string term)
 {
 	auto graph = getMathGraph();
 	TextNormalizer normalizer;
-	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("ПРОГРАММА"));
-	auto subgr = graph.getNeighborhood(hash, 2, 0.22);
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
+	auto subgr = graph.getNeighborhood(hash,1, 0.15);
 	subgr.drawToImage("temp/", "image2", hash);
 }
 
@@ -117,10 +117,11 @@ int main() {
 	srand(time(0));
 	setlocale(LC_ALL, "rus");
 	//getMathGraph().drawToImage("temp/", "all");
-	//create();
-	//calcTerms();
 	//tags(FileUtils::readAllUTF8File("resources/articles/7.txt"));
 	//draw();
-	listTerms();
+	//create();
+	//calcTerms();
+	draw("ФУНКЦИЯ");
+	//listTerms()
 	return 0;
 }
