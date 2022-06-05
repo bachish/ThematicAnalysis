@@ -12,7 +12,17 @@
 #include "Utils/TermsUtils.h"
 #include "TagsAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
+#include "Utils/StringUtils.h"
 
+
+void listTerms() {
+	auto reader = MathArticlesReader();
+	auto text = FileUtils::readAllFile("resources/math/math.txt");
+
+	//FileUtils::writeUTF8ToFile("temp/temp.txt", text);
+	auto [titles, _] = reader.read(text);
+	FileUtils::writeUTF8ToFile("terms.txt", StringUtils::concat(titles, "\n"));
+}
 
 void create() {
 	auto builder = SemanticGraphBuilder();
@@ -32,8 +42,8 @@ void draw(std::string term)
 	auto graph = getMathGraph();
 	TextNormalizer normalizer;
 	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
-	auto subgr = graph.getNeighborhood(hash, 2, 0.1);
-	subgr.drawToImage("temp/", "image", hash);
+	auto subgr = graph.getNeighborhood(hash,1, 0.15);
+	subgr.drawToImage("temp/", "image2", hash);
 }
 
 void tags()
@@ -41,22 +51,24 @@ void tags()
 	auto graph = getMathGraph();
 
 	TagsAnalyzer analyzer;
-	analyzer.DISTRIBUTION_COEF = 3;
+	analyzer.DISTRIBUTION_COEF = 1;
 
-	analyzer.analyze(FileUtils::readAllFile("resources/voevoda.txt"), graph);
-	auto tags = analyzer.getRelevantTags(20);
+	analyzer.analyze(FileUtils::readAllUTF8File("resources/articles/4.txt"), graph);
+	auto tags = analyzer.getRelevantTags(30);
 	for (auto& tag : tags)
 	{
 		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << "\n";
 	}
-		auto gr = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView)), 15, 0.08, 0.1);
+	auto hash = Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView));
+	auto gr = SemanticGraph();
+	//auto gr = analyzer.tagsGraph.getNeighborhood(hash, 10, 0.09, 0.1);
 
 
-	/*for (int i = 0; i < tags.size(); i++) {
-		auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.4);
+	for (int i = 0; i < tags.size(); i++) {
+		auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.06);
 		gr.merge(gr2);
-	}*/
-	gr.drawToImage("temp/", "temp2");
+	}
+	gr.drawToImage("temp/", "temp2", hash);
 
 }
 
@@ -78,19 +90,13 @@ void calcTerms()
 {
 	auto graph = getMathGraph();
 	auto count = std::map<size_t, size_t>();
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 3500; i++)
 		count[i] = 0;
-
-	auto nodes = std::map<size_t, std::string>();
 	for (auto [hash, node] : graph.nodes)
 	{
 		count[node.neighbors.size()]++;
-		if (node.neighbors.size() > 300)
-			nodes.insert(std::make_pair(node.neighbors.size(), node.term.view));
-	}
-	for (auto [size, name] : nodes)
-	{
-		std::cout << size << " " << name << std::endl;
+		if (node.neighbors.size() > 200)
+			std::cout << node.term.view << std::endl;
 	}
 	std::ofstream out = std::ofstream("statres.txt");
 	for (auto value : count)
@@ -101,9 +107,13 @@ void calcTerms()
 }
 
 int main() {
+	srand(time(0));
 	setlocale(LC_ALL, "rus");
-	//create();//calcTerms();
+	//getMathGraph().drawToImage("temp/", "all");
+	create();
+	//calcTerms();
 	//tags();
-	draw("функция");
+	draw("ФУНКЦИЯ");
+	//listTerms();
 	return 0;
 }
