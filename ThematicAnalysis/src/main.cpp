@@ -27,11 +27,11 @@ SemanticGraph getMathGraph()
 	return graph;
 }
 
-void draw()
+void draw(std::string term)
 {
 	auto graph = getMathGraph();
 	TextNormalizer normalizer;
-	auto hash = Hasher::sortAndCalcHash(normalizer.normalize("факториал"));
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
 	auto subgr = graph.getNeighborhood(hash, 2, 0.1);
 	subgr.drawToImage("temp/", "image", hash);
 }
@@ -78,13 +78,19 @@ void calcTerms()
 {
 	auto graph = getMathGraph();
 	auto count = std::map<size_t, size_t>();
-	for (int i = 0; i < 3500; i++)
+	for (int i = 0; i < 5000; i++)
 		count[i] = 0;
+
+	auto nodes = std::map<size_t, std::string>();
 	for (auto [hash, node] : graph.nodes)
 	{
 		count[node.neighbors.size()]++;
-		if (node.neighbors.size() > 200)
-			std::cout << node.term.view << std::endl;
+		if (node.neighbors.size() > 300)
+			nodes.insert(std::make_pair(node.neighbors.size(), node.term.view));
+	}
+	for (auto [size, name] : nodes)
+	{
+		std::cout << size << " " << name << std::endl;
 	}
 	std::ofstream out = std::ofstream("statres.txt");
 	for (auto value : count)
@@ -96,9 +102,8 @@ void calcTerms()
 
 int main() {
 	setlocale(LC_ALL, "rus");
-	//create();
-	//calcTerms();
-	tags();
-	//draw();
+	//create();//calcTerms();
+	//tags();
+	draw("функция");
 	return 0;
 }
