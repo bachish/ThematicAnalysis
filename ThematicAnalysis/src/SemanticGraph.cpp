@@ -320,22 +320,22 @@ void SemanticGraph::importFromStream(std::istream& in)
 	}
 }
 
-void drawDotToImage(std::string const& dotView, std::string const& dirPath, std::string const& imageName)
+void drawDotToImage(std::string const& dotView, std::string const& imagePngPath)
 {
 	std::string dotFile = "temp.dot";
 	FileUtils::writeUTF8ToFile(dotFile, dotView);
-	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + dirPath + imageName + ".png";
+	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + imagePngPath;
 	system(command.c_str());
 	std::remove(dotFile.c_str());
 }
 
-void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName) const
+void SemanticGraph::drawToImage(std::string const& imagePngPath) const
 {
-	drawDotToImage(getDotView(), dirPath, imageName);
+	drawDotToImage(getDotView(), imagePngPath);
 }
 
-void SemanticGraph::drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const
+void SemanticGraph::drawToImage(std::string const& imagePngPath, size_t centerHash) const
 {
 	auto a = getDotView(centerHash);
-	drawDotToImage(a, dirPath, imageName);
+	drawDotToImage(a, imagePngPath);
 }

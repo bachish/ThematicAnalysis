@@ -12,30 +12,8 @@
 #include "Utils/TermsUtils.h"
 #include "TagsAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
+#include "ArticlesReader/XmlArticlesReader.h"
 #include "Utils/StringUtils.h"
-
-
-void listTerms() {
-	auto reader = MathArticlesReader();
-	auto text = FileUtils::readAllFile("resources/math/math.txt");
-
-	//FileUtils::writeUTF8ToFile("temp/temp.txt", text);
-	auto [titles, _] = reader.read(text);
-	for(int i = 1; i < titles.size(); i++)
-	{
-		if(titles[i] < titles[i-1])
-		{
-			std::cout << titles[i-1] << " >> " << titles[i] << "\n";
-		}
-	}
-	FileUtils::writeUTF8ToFile("terms.txt", StringUtils::concat(titles, "\n"));
-}
-
-void create() {
-	auto builder = SemanticGraphBuilder();
-	auto graph = builder.build(FileUtils::readAllFile("resources/math/math.txt"), MathArticlesReader());
-	graph.exportToFile("resources/coolAllMath.gr");
-}
 
 SemanticGraph getMathGraph()
 {
@@ -44,56 +22,22 @@ SemanticGraph getMathGraph()
 	return graph;
 }
 
-void draw(std::string term)
+void wrongTerms()
 {
-	auto graph = getMathGraph();
-	TextNormalizer normalizer;
-	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
-	auto subgr = graph.getNeighborhood(hash,1, 0.15);
-	subgr.drawToImage("temp/", "image2", hash);
-}
+	auto reader = MathArticlesReader();
+	auto text = FileUtils::readAllFile("resources/math/math.txt");
 
-void tags(std::string text)
-{
-	auto graph = getMathGraph();
-
-	TagsAnalyzer analyzer;
-	analyzer.DISTRIBUTION_COEF = 1;
-
-	analyzer.analyze(text, graph);
-	auto tags = analyzer.getRelevantTags(30);
-	for (auto& tag : tags)
+	auto [titles, _] = reader.read(text);
+	for(int i = 1; i < titles.size(); i++)
 	{
-		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << ", ";
-	}
-	//auto hash = Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView));
-	//auto gr = SemanticGraph();
-	////auto gr = analyzer.tagsGraph.getNeighborhood(hash, 10, 0.09, 0.1);
-
-
-	//for (int i = 0; i < tags.size(); i++) {
-	//	auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.06);
-	//	gr.merge(gr2);
-	//}
-	//gr.drawToImage("temp/", "temp2", hash);
-
-}
-
-void terms()
-{
-	auto graph = getMathGraph();
-	auto koko = std::find_if(graph.nodes.begin(), graph.nodes.end(), [](decltype(graph.nodes)::const_reference node)
+		if(titles[i] < titles[i-1])
 		{
-			return node.second.term.view == "КО---ПРОСТРАНСТВО";
-		});
-
-	for (auto& tag : TermsUtils::extractTermsCounts(graph, TextNormalizer().normalize(
-		FileUtils::readAllUTF8File("resources/integral.txt"))))
-	{
-		std::cout << graph.nodes[tag.first].term.view << " " << tag.second << '\n';
+			std::cout << titles[i-1] << " >> " << titles[i] << "\n";
+		}
 	}
 }
-void calcTerms()
+
+void calcTermsLinksCounts()
 {
 	auto graph = getMathGraph();
 	auto count = std::map<size_t, size_t>();
@@ -113,15 +57,72 @@ void calcTerms()
 	}
 }
 
+void termsCounts()
+{
+	auto graph = getMathGraph();
+
+	for (auto& tag : TermsUtils::extractTermsCounts(graph, TextNormalizer().normalize(
+		FileUtils::readAllUTF8File("resources/integral.txt"))))
+	{
+		std::cout << graph.nodes[tag.first].term.view << " " << tag.second << '\n';
+	}
+}
+
+void printTermsToFile(std::string const& path) {
+	auto reader = MathArticlesReader();
+	auto text = FileUtils::readAllFile("resources/math/math.txt");
+	//auto reader = XmlArticlesReader();
+	//auto text = FileUtils::readAllFile("resources/AllMath.txt");
+
+	auto [titles, _] = reader.read(text);
+	FileUtils::writeUTF8ToFile(path, StringUtils::concat(titles, "\n"));
+}
+
+void createMathGraph() {
+	auto builder = SemanticGraphBuilder();
+	auto graph = builder.build(FileUtils::readAllFile("resources/math/math.txt"), MathArticlesReader());
+	graph.exportToFile("demo/newAllMath.gr");
+}
+
+void drawTermSubGraph(std::string term, std::string imagePngPath, int radius, double minEdgeWeight)
+{
+	auto graph = getMathGraph();
+	TextNormalizer normalizer;
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
+	auto subgr = graph.getNeighborhood(hash, radius, minEdgeWeight);
+	subgr.drawToImage(imagePngPath, hash);
+}
+
+void tags(std::string text, int cnt)
+{
+	auto graph = getMathGraph();
+
+	TagsAnalyzer analyzer;
+	analyzer.DISTRIBUTION_COEF = 1;
+
+	analyzer.analyze(text, graph);
+	auto tags = analyzer.getRelevantTags(cnt);
+	for (auto& tag : tags)
+	{
+		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << "\n";
+	}
+}
+
+
+
 int main() {
 	srand(time(0));
 	setlocale(LC_ALL, "rus");
-	//getMathGraph().drawToImage("temp/", "all");
-	//tags(FileUtils::readAllUTF8File("resources/articles/7.txt"));
-	//draw();
-	//create();
-	//calcTerms();
-	draw("ФУНКЦИЯ");
-	//listTerms()
+
+	createMathGraph();
+
+	//tags(FileUtils::readAllUTF8File("resources/articles/7.txt"), 30);
+	//tags(FileUtils::readAllFile("resources/voevoda.txt"), 30);
+	//tags(FileUtils::readAllFile("resources/giperbola.txt"), 30);
+
+	//drawTermSubGraph("функция", "demo/func.png", 1, 0.15);
+	//drawTermSubGraph("программа", "demo/prog.png", 1, 0.15);
+
+
 	return 0;
 }

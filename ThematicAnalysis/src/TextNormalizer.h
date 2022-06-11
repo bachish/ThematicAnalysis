@@ -8,7 +8,7 @@
 class TextNormalizer
 {
 public:
-	std::string clearText(std::string text) const;
+	static std::string clearText(std::string text);
 	std::string clearText(std::string text, std::function<bool(char)> isDeleteableChar) const;
 	std::string eraseStopWords(std::string text) const;
 	std::string toLowerText(std::string word) const;

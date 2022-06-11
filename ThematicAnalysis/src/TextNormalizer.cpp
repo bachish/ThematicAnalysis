@@ -7,7 +7,7 @@
 
 #include "Utils/StringUtils.h"
 
-std::string TextNormalizer::clearText(std::string text) const
+std::string TextNormalizer::clearText(std::string text)
 {
 	static std::locale loc("ru-RU");
 	std::transform(std::execution::par, text.begin(), text.end(), text.begin(), [](char ch) {return isalpha(ch, loc) || isdigit(ch, loc) ? ch : ' '; });

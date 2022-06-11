@@ -58,8 +58,8 @@ public:
 	void exportToStream(std::ostream& out);
 	void importFromFile(std::string const& filePath);
 	void importFromStream(std::istream& in);
-	void drawToImage(std::string const& dirPath, std::string const& imageName) const;
-	void drawToImage(std::string const& dirPath, std::string const& imageName, size_t centerHash) const;
+	void drawToImage(std::string const& imagePngPath) const;
+	void drawToImage(std::string const& imagePngPath, size_t centerHash) const;
 
 private:
 	size_t _nGramLength;
