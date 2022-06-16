@@ -6,27 +6,25 @@
 #include "SemanticGraph.h"
 
 #include <iomanip>
+#include <utility>
 
 #include "Utils/FileUtils.h"
-#include "Hasher.h"
+#include "Utils/Hasher.h"
 #include "TextNormalizer.h"
 #include "Utils/StringUtils.h"
 
 Node::Node(Term term) :
-	term(term),
+	term(std::move(term)),
 	weight(0)
 {
 }
 
 Node::Node(Term term, double weight) :
-	term(term),
+	term(std::move(term)),
 	weight(weight)
 {
 }
 
-Node::Node() : weight(0)
-{
-}
 
 double Node::sumLinksWeight() const
 {
@@ -58,6 +56,18 @@ size_t SemanticGraph::getNGramLength() const
 
 SemanticGraph::SemanticGraph(size_t nForNgrams) : _nGramLength(nForNgrams)
 {
+}
+
+size_t SemanticGraph::getTermsCount() const
+{
+	return nodes.size();
+}
+
+size_t SemanticGraph::getLinksCount() const
+{
+	return std::transform_reduce(std::execution::par, nodes.begin(), nodes.end(), 0ull,
+		[](size_t cnt, size_t cnt2) {return cnt + cnt2; },
+		[](auto const& pair) {return pair.second.neighbors.size(); });
 }
 
 void SemanticGraph::addTerm(Term const& term, double weight)
@@ -125,11 +135,12 @@ void SemanticGraph::merge(SemanticGraph const& src)
 	}
 }
 
-
 /**
  * \brief Extract subGraph
  * \param centerHash subGraph center term
  * \param radius extraction level (from center term)
+ * \param minEdgeWeight min edge weight
+ * \param minNodeWeight min node weight
  * \return result subGraph
  */
 SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minEdgeWeight, double minNodeWeight) const
@@ -185,7 +196,8 @@ std::string breakText(std::string const& text, size_t maxLen)
 	}
 	return ss.str();
 }
-Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& registredNodes) const
+
+Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& registeredNodes) const
 {
 	Ubpa::UGraphviz::Graph dotGraph("SemanticGraph", true);
 	auto& reg = dotGraph.GetRegistry();
@@ -193,7 +205,7 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 	{
 		auto nodeId = reg.RegisterNode(breakText(node.term.view, 6) + (node.cnt < 1 ? "" : "cnt=" + std::to_string(node.cnt)) + (node.weight < 1e-5 ? " " : "\n" + doubleToString(node.weight)));
 		dotGraph.AddNode(nodeId);
-		registredNodes.emplace(hash, nodeId);
+		registeredNodes.emplace(hash, nodeId);
 	}
 	auto tempHash = Hasher::sortAndCalcHash(TextNormalizer().normalize("Координаты"));
 	auto tempHash2 = Hasher::sortAndCalcHash(TextNormalizer().normalize("Декартова прямоугольная система координат"));
@@ -201,9 +213,9 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 	for (auto&& [hash, node] : nodes) {
 		for (auto&& [neighbor_hash, link] : node.neighbors) 
 		if(hash != tempHash || neighbor_hash != tempHash2){
-			auto edgeId = reg.RegisterEdge(registredNodes[hash], registredNodes[neighbor_hash]);
+			auto edgeId = reg.RegisterEdge(registeredNodes[hash], registeredNodes[neighbor_hash]);
 			reg.RegisterEdgeAttr(edgeId, "label", doubleToString(link.weight, 2));
-			reg.RegisterEdgeAttr(edgeId, "weight", std::to_string(int(link.weight * 1000)));
+			reg.RegisterEdgeAttr(edgeId, "weight", std::to_string(static_cast<int>(link.weight * 1000)));
 			dotGraph.AddEdge(edgeId);
 		}
 	}
@@ -231,7 +243,6 @@ std::string SemanticGraph::getDotView(size_t centerHash) const
 	return gr.Dump();
 }
 
-
 ///	EXPORT/IMPORT FORMAT
 ///	<ngram length>
 /// <vertexes count>
@@ -250,9 +261,9 @@ void SemanticGraph::exportToFile(std::string const& filePath)
 
 void SemanticGraph::exportToStream(std::ostream& out)
 {
-	std::map<size_t, int> indexes;
+	std::unordered_map<size_t, int> indexes;
 	out << _nGramLength << std::endl;
-	out << nodes.size() << std::endl;
+	out << getTermsCount() << std::endl;
 	int index = 0;
 
 	for (auto&& [hash, node] : nodes)
@@ -264,11 +275,8 @@ void SemanticGraph::exportToStream(std::ostream& out)
 		indexes[hash] = index++;
 	}
 
-	auto edgesCount = std::transform_reduce(std::execution::par, nodes.begin(), nodes.end(), 0ull,
-		[](size_t cnt, size_t cnt2) {return cnt + cnt2; },
-		[](auto const& pair) {return pair.second.neighbors.size(); });
 
-	out << edgesCount << std::endl;
+	out << getLinksCount() << std::endl;
 	for (auto&& [hash, node] : nodes)
 		for (auto&& [neighborHash, link] : node.neighbors)
 			out << indexes[hash] << ' ' << indexes[neighborHash] << ' ' << link.weight << std::endl;
@@ -287,7 +295,7 @@ Node readNode(std::istream& in)
 	std::string view;
 	double weight;
 	size_t wordsCount, numberOfArticlesThatUseIt;
-	std::ws(in);
+	std::getline(in, view);
 	std::getline(in, view);
 	in >> weight >> numberOfArticlesThatUseIt >> wordsCount;
 	std::vector<std::string> words(wordsCount);
@@ -324,8 +332,7 @@ void drawDotToImage(std::string const& dotView, std::string const& imagePngPath)
 {
 	std::string dotFile = "temp.dot";
 	FileUtils::writeUTF8ToFile(dotFile, dotView);
-	std::string command = std::string("external\\graphviz\\neato.exe  -Tpng temp.dot  -o ") + imagePngPath;
-	system(command.c_str());
+	FileUtils::executeExeWithParams("external\\graphviz\\neato.exe", std::string(" -Tpng temp.dot  -o ") + imagePngPath);
 	std::remove(dotFile.c_str());
 }
 

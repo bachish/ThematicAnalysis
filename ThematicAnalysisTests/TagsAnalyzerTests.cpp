@@ -1,8 +1,8 @@
 ﻿#include "pch.h"
 #include "CppUnitTest.h"
-#include "Hasher.h"
 #include "TagsAnalyzer.h"
 #include "TextNormalizer.h"
+#include "Utils/Hasher.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -15,9 +15,9 @@ namespace ThematicAnalysisTests
 		TEST_METHOD_INITIALIZE(createGraph)
 		{
 			terms = { {"Центр", 0}, {"Сосед первый", 0},{"Сосед второй", 0},{"Сосед далеко", 0} };
-			TextNormalizer normalizer;
 			for (auto& [view, hash] : terms)
 			{
+				TextNormalizer normalizer{};
 				auto words = normalizer.normalize(view);
 				hash = Hasher::sortAndCalcHash(words);
 				graph.addTerm(Term(words, view, hash));
@@ -59,7 +59,7 @@ namespace ThematicAnalysisTests
 		{
 
 			TagsAnalyzer analyzer;
-			analyzer.DISTRIBUTION_COEF = 0;
+			analyzer.distributionCoef = 0;
 			analyzer.analyze("В тексте есть термин центр, центр, центр 3 раза и второй сосед второй сосед 2 раза и сосед первый 1 раз", graph);
 			auto tags = analyzer.getRelevantTags(4);
 			std::vector<Tag> expected = { {"Центр", 0}, {"Сосед второй", 0}, {"Сосед первый", 0},{"Сосед далеко", 0} };
@@ -78,8 +78,8 @@ namespace ThematicAnalysisTests
 		{
 
 			TagsAnalyzer analyzer;
-			analyzer.ABSORPTION_COEF = 1;
-			analyzer.LINK_RADIUS = 1;
+			analyzer.absorptionCoef = 1;
+			analyzer.linkRadius = 1;
 			analyzer.analyze("В тексте есть только термин сосед второй", graph);
 			auto tags = analyzer.getRelevantTags(2);
 			std::vector<Tag> expected = { {"Сосед второй", 0}, {"Сосед далеко", 0} };

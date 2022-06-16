@@ -7,14 +7,14 @@ class IArticlesReader;
 class SemanticGraphBuilder
 {
 public:
-	explicit SemanticGraphBuilder(size_t nGramLenght = 4);
+	explicit SemanticGraphBuilder(size_t nGramLength = 4);
 
-	SemanticGraph build(std::vector<NormalizedArticle> const& articles);
+	SemanticGraph build(std::vector<NormalizedArticle> articles);
 	SemanticGraph build(std::string const& xmlText);
 	SemanticGraph build(std::string const& articlesText, IArticlesReader const& articlesReader);
-	SemanticGraph _graph;
+	SemanticGraph graph;
 
-	const size_t nGramLenght;
+	const size_t nGramLenghth;
 private:
 	void addAllTermsToGraph(std::vector<NormalizedArticle> const& articles);
 	void countTermsUsedDocuments(std::vector<NormalizedArticle> const& articles);

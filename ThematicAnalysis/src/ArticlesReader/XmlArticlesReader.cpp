@@ -20,15 +20,15 @@ std::tuple<std::vector<std::string>, std::vector<std::string>> XmlArticlesReader
 	return std::make_tuple(_titles, _contents);
 }
 
-std::string XmlArticlesReader::exportToXml(std::vector<std::string> titles, std::vector<std::string> contents) const
+std::string XmlArticlesReader::exportToXml(const std::vector<std::string>& titles, const std::vector<std::string>& contents) const
 {
 	std::stringstream xmlText;
 	for (size_t i = 0; i < titles.size(); i++)
 	{
-		xmlText << "<" << paperTag << ">\n";
-		xmlText << "<" << nameTag << ">\n" << titles[i] << "\n</" << nameTag << ">\n";
-		xmlText << "<" << contentTag << ">\n" << contents[i] << "\n</" << contentTag << ">\n";
-		xmlText << "</" << paperTag << ">\n";
+		xmlText << "<" << _paperTag << ">\n";
+		xmlText << "<" << _nameTag << ">\n" << titles[i] << "\n</" << _nameTag << ">\n";
+		xmlText << "<" << _contentTag << ">\n" << contents[i] << "\n</" << _contentTag << ">\n";
+		xmlText << "</" << _paperTag << ">\n";
 	}
 	return xmlText.str();
 }
@@ -64,15 +64,15 @@ void XmlArticlesReader::parsePaper() const
 		if (_text[_ptr] == '<')
 		{
 			auto [tag_name, isClosed] = readTag();
-			if (tag_name == nameTag)
+			if (tag_name == _nameTag)
 			{
-				title = readToEnd(nameTag);
+				title = readToEnd(_nameTag);
 			}
-			else if (tag_name == contentTag || tag_name == definitionTag)
+			else if (tag_name == _contentTag || tag_name == _definitionTag)
 			{
 				content += readToEnd(tag_name);
 			}
-			else if (tag_name == paperTag)
+			else if (tag_name == _paperTag)
 			{
 				if (isClosed) break;
 				parsePaper();
@@ -98,7 +98,7 @@ void XmlArticlesReader::parse() const
 		if (_text[_ptr] == '<')
 		{
 			auto [tag, isClosed] = readTag();
-			if (tag == paperTag && !isClosed)
+			if (tag == _paperTag && !isClosed)
 			{
 				i++;
 				parsePaper();
@@ -106,7 +106,6 @@ void XmlArticlesReader::parse() const
 		}
 		else ++_ptr;
 	}
-	;
 }
 
 std::string XmlArticlesReader::readWord() const

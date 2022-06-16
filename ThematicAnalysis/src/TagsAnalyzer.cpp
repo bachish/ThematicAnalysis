@@ -8,12 +8,9 @@
 #include "SemanticGraphBuilder.h"
 #include "Utils/TermsUtils.h"
 
-
-
-
 void TagsAnalyzer::analyze(std::string const& text, SemanticGraph const& graph)
 {
-	TextNormalizer normalizer;
+	TextNormalizer normalizer{};
 	auto normText = normalizer.normalize(text);
 	analyze(normText, graph);
 }
@@ -36,7 +33,7 @@ void calcFrequency(SemanticGraph& graph, std::vector<std::string> const& normali
 	for (auto&& [termhash, count] : termsCounts)
 	{
 		graph.nodes.at(termhash).cnt+=count;
-		graph.addTermWeight(termhash, count);
+		graph.addTermWeight(termhash, static_cast<double>(count));
 	}
 
 }
@@ -59,8 +56,8 @@ void TagsAnalyzer::distributeTermWeight(SemanticGraph& graph, size_t centerTermH
 		for (auto [neighborHash, link] : node.neighbors)
 		{
 			auto neighborWeight = weight * (link.weight / weightSum);
-			graph.addTermWeight(neighborHash, neighborWeight * ABSORPTION_COEF);
-			distributeTermWeight(graph, neighborHash, radius - 1, neighborWeight * (1 - ABSORPTION_COEF));
+			graph.addTermWeight(neighborHash, neighborWeight * absorptionCoef);
+			distributeTermWeight(graph, neighborHash, radius - 1, neighborWeight * (1 - absorptionCoef));
 		}
 	}
 }
@@ -70,7 +67,7 @@ SemanticGraph TagsAnalyzer::distributeTermsWeights(SemanticGraph const& graph) c
 	auto distrGraph = graph;
 	for (auto&& [hash, node] : graph.nodes)
 		if (node.weight > FLT_EPSILON) {
-			distributeTermWeight(distrGraph, hash, LINK_RADIUS, node.weight * DISTRIBUTION_COEF);
+			distributeTermWeight(distrGraph, hash, linkRadius, node.weight * distributionCoef);
 		}
 	return distrGraph;
 }
@@ -89,14 +86,11 @@ std::vector<Tag> TagsAnalyzer::getRelevantTags(size_t tagsCount)
 	std::vector<Node> nodes;
 	nodes.reserve(tagsGraph.nodes.size());
 	std::transform(tagsGraph.nodes.begin(), tagsGraph.nodes.end(), std::back_inserter(nodes), [](auto el) {return el.second; });
-	std::sort(nodes.begin(), nodes.end(), [](Node& n1, Node& n2) {return n1.weight > n2.weight; });
+	std::sort(nodes.begin(), nodes.end(), [](const Node& n1, const Node& n2) {return n1.weight > n2.weight; });
 	tagsCount = tagsCount <= nodes.size() ? tagsCount : nodes.size();
 
 	std::vector<Tag> tags;
 	tags.reserve(tagsCount);
-	std::transform(nodes.begin(), nodes.begin() + tagsCount, std::back_inserter(tags), [](Node& el) {return Tag{ el.term.view, el.weight }; });
+	std::transform(nodes.begin(), std::next(nodes.begin(), static_cast<long long>(tagsCount)), std::back_inserter(tags), [](const Node& el) {return Tag{ el.term.view, el.weight }; });
 	return tags;
-
 }
-
-

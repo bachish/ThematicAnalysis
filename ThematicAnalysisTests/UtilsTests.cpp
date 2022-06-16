@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include <vector>
 #include "CppUnitTest.h"
-#include "Hasher.h"
+#include "Utils/Hasher.h"
 #include "Utils/StringUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

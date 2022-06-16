@@ -39,7 +39,7 @@
     <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hasher.cpp">
+    <ClCompile Include="src\Utils\Hasher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TextNormalizer.cpp">
@@ -83,7 +83,7 @@
     <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hasher.h">
+    <ClInclude Include="src\Utils\Hasher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\TextNormalizer.h">

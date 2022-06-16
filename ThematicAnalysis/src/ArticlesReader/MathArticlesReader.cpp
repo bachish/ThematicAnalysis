@@ -1,22 +1,17 @@
 ﻿#include <boost/regex.hpp>
 #include <regex>
 #include <sstream>
-
 #include "MathArticlesReader.h"
-
 #include "TextNormalizer.h"
-#include "Utils/FileUtils.h"
 
 struct SubString
 {
 	int position, lenght;
 };
 
-auto GetTermsPositions(std::string const& text)
+auto getTermsPositions(std::string const& text)
 {
-	boost::regex regex(R"(\r?\n\r??\n([А-ЯЁ]{2,}(?:[\-—\s]{1,5}(?:[А-ЯЁ]{1,}|\d{2,}))+|[А-ЯЁ]{3,})(?:[^А-ЯЁ\-—:][А-ЯЁ]?)*[\-—:])");
-
-	//boost::regex regex(R"(\r?\n\r?\n([А-ЯЁ]{3,}(?:[^А-ЯЁа-яёA-Za-z]{1,5}(?:[А-ЯЁ\d]{2,}))*|[А-ЯЁ]{2}(?:[^А-ЯЁа-яёA-Za-z]{1,5}(?:[А-ЯЁ\d]{2,}))+)(?:[А-ЯЁ]?(?:[^А-ЯЁ\-—][А-ЯЁ]?)+)?[\s]*[\-—:][\s]*)");
+	boost::regex regex(R"(\r?\n\r??\n([А-ЯЁ]{2,}(?:[\-—\s]{1,5}(?:[А-ЯЁ]{1,}|\d{2,}))+|[А-ЯЁ]{3,})(?:[^А-ЯЁ\-—:,][А-ЯЁ]?)*[\-—:,])");
 	std::stringstream res;
 	boost::smatch match;
 	std::vector<std::tuple<std::string::const_iterator, std::string::const_iterator>> terms;
@@ -30,10 +25,9 @@ auto GetTermsPositions(std::string const& text)
 
 std::tuple<std::vector<std::string>, std::vector<std::string>> MathArticlesReader::read(std::string const& text) const
 {
-	auto termsPositions = GetTermsPositions(text);
+	auto termsPositions = getTermsPositions(text);
 	std::vector<std::string> titles, contents;
-	titles.reserve(termsPositions.size()), contents.reserve(termsPositions.size());
-	std::string::const_iterator prevTermEnd;
+	titles.reserve(termsPositions.size()); contents.reserve(termsPositions.size());
 	for (auto it = termsPositions.cbegin(); it != termsPositions.cend(); ++it)
 	{
 		auto& [termStart, termEnd] = *it;

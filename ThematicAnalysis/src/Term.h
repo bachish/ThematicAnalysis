@@ -9,10 +9,9 @@ public:
 	std::string view;
 	size_t numberOfArticlesThatUseIt;
 	Term(std::vector<std::string> normalizedWords, std::string view, size_t hash);
-	Term();
 	size_t getHashCode() const;
 private:
-	size_t _hashCode;
+	size_t _hashCode{};
 };
 
 struct TermComparator
