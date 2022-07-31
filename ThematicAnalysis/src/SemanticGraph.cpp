@@ -111,7 +111,6 @@ void SemanticGraph::merge(SemanticGraph const& src)
 {
 	for (auto [hash, node] : src.nodes)
 	{
-
 		addTerm(node.term, node.weight);
 		nodes.at(node.term.getHashCode()).cnt = node.cnt;
 	}

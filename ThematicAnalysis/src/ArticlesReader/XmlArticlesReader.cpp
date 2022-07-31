@@ -106,7 +106,6 @@ void XmlArticlesReader::parse() const
 		}
 		else ++_ptr;
 	}
-	;
 }
 
 std::string XmlArticlesReader::readWord() const
@@ -137,9 +136,6 @@ void XmlArticlesReader::skipSpace() const
 	while (_ptr < _size && (_text[_ptr] == ' ' || _text[_ptr] == '\t' || _text[_ptr] == '\n'))
 		++_ptr;
 }
-
-
-
 
 std::string XmlArticlesReader::readToEnd(const std::string& tagName) const
 {

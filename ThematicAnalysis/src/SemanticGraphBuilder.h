@@ -7,7 +7,7 @@ class IArticlesReader;
 class SemanticGraphBuilder
 {
 public:
-	explicit SemanticGraphBuilder(size_t nGramLenght = 4);
+	explicit SemanticGraphBuilder(size_t nGramLenght = 10);
 
 	SemanticGraph build(std::vector<NormalizedArticle> const& articles);
 	SemanticGraph build(std::string const& xmlText);
