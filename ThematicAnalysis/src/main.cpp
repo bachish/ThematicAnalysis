@@ -50,22 +50,6 @@ void printWrongTerms(std::string const& encName, IArticlesReader const& reader)
 	}
 }
 
-
-void countWordsOfEachTerm(SemanticGraph const& graph) {
-	auto count = std::map<size_t, size_t>();
-	for (int i = 0; i < 20; i++)
-		count[i] = 0;
-	std::ofstream out = std::ofstream("statwords.txt");
-	for (auto [hash, node] : graph.nodes)
-	{
-		count[node.term.normalizedWords.size()]++;
-	}
-	for (auto [words, term] : count)
-	{
-		out << words << " " << term << std::endl;
-	}
-}
-
 void calcTopTerms(SemanticGraph const& graph)
 {
 	auto count = std::map<size_t, size_t>();
@@ -116,6 +100,7 @@ void createAndExportGraph(std::string const& encName, IArticlesReader const& rea
 	graph.exportToFile(getGraphPath(encName));
 }
 
+
 void printTextTags(const SemanticGraph& graph, const std::string& text, int cnt, std::ostream& out)
 {
 	TagsAnalyzer analyzer;
@@ -152,7 +137,7 @@ int main() {
 	srand(time(nullptr));
 	setlocale(LC_ALL, "rus");
 	auto graph = getGraph("math");
-	AnalyzeUtils::countLinksOfEachTerm(graph);
-
+	for(int i = 1; i < 11; i++)
+		AnalyzeUtils::printArticlesTags(graph, std::to_string(i), readArticle(std::to_string(i)), 30);
 	return 0;
 }
