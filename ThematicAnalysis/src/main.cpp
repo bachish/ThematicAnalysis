@@ -89,18 +89,7 @@ void drawTermSubGraph(SemanticGraph const& graph, std::string const& term, int r
 	subGraph.drawToImage("resources/ " + graph.name + "_" + term, hash);
 }
 
-void tags(const SemanticGraph& graph, const std::string& text, int cnt, std::ostream& out)
-{
-	TagsAnalyzer analyzer;
-	analyzer.distributionCoef = 1;
 
-	analyzer.analyze(text, graph);
-	auto tags = analyzer.getRelevantTags(cnt);
-	for (auto& [termView, weight] : tags)
-	{
-		out << termView << ' ' << std::fixed << std::setprecision(2) << weight << "\n";
-	}
-}
 
 void printGraph(SemanticGraph const& gr, std::ostream& out)
 {
@@ -125,13 +114,7 @@ int main() {
 	srand(time(nullptr));
 	setlocale(LC_ALL, "rus");
 	auto graph = getGraph("math");
-	AnalyzeUtils::calcLinksCounts(graph);
-
-	//create();
-	//calcColTerms();
-	//draw("ТОЧКИ");
-	//tags();
-	//draw("ФУНКЦИЯ");
-	//listTerms();
+	for(int i = 1; i < 11; i++)
+		AnalyzeUtils::getTags(graph, std::to_string(i));
 	return 0;
 }

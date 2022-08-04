@@ -4,7 +4,8 @@
 class AnalyzeUtils
 {
 public:
-	static void calcLinksCounts(const SemanticGraph& graph);
+	static void calcStatistic(const SemanticGraph& graph);
+	static void getTags(const SemanticGraph& graph, std::string const& articleName);
 };
 
 
