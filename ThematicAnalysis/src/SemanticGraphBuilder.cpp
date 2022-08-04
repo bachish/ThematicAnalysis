@@ -4,15 +4,15 @@
 #include <iterator>
 
 #include "ArticlesNormalizer.h"
-#include "Hasher.h"
 #include "Utils/TermsUtils.h"
 #include "ArticlesReader/XmlArticlesReader.h"
+#include "Utils/Hasher.h"
 
 
 void SemanticGraphBuilder::addAllTermsToGraph(std::vector<NormalizedArticle> const& articles)
 {
 	for (auto&& article : articles)
-		_graph.addTerm(Term(article.titleWords, article.titleView, Hasher::sortAndCalcHash(article.titleWords)));
+		graph.addTerm(Term(article.titleWords, article.titleView, Hasher::sortAndCalcHash(article.titleWords)));
 }
 
 std::vector<NormalizedArticle> concatArticlesWithSameName(std::vector<NormalizedArticle> const& articles)
@@ -21,24 +21,23 @@ std::vector<NormalizedArticle> concatArticlesWithSameName(std::vector<Normalized
 	for (auto&& article : articles)
 	{
 		auto articleHash = Hasher::sortAndCalcHash(article.titleWords);
-		auto articleIt = hashToArticles.find(articleHash);
-		hashToArticles[articleHash].push_back(std::move(article));
+		hashToArticles[articleHash].push_back(article);
 	}
 	if (articles.size() == hashToArticles.size()) return articles;
 	std::vector<NormalizedArticle> newArticles;
 	std::transform(hashToArticles.begin(), hashToArticles.end(), std::back_inserter(newArticles),
 		[](auto& it)
 		{
-			std::vector<NormalizedArticle>& articles = it.second;
-			if (articles.size() > 1) {
+			std::vector<NormalizedArticle>& titleArticles = it.second;
+			if (titleArticles.size() > 1) {
 				std::vector<std::string> contentSum;
-				std::for_each(articles.begin(), articles.end(), [&contentSum](NormalizedArticle const& art)
+				std::for_each(titleArticles.begin(), titleArticles.end(), [&contentSum](NormalizedArticle const& art)
 					{
 						contentSum.insert(contentSum.end(), art.text.begin(), art.text.end());
 					});
-				articles[0].text = contentSum;
+				titleArticles[0].text = contentSum;
 			}
-			return articles[0];
+			return titleArticles[0];
 		});
 	return newArticles;
 }
@@ -51,14 +50,14 @@ void SemanticGraphBuilder::countTermsUsedDocuments(std::vector<NormalizedArticle
 	for (auto&& article : articles)
 	{
 		auto terms = std::set<size_t>();
-		for (size_t n = 1; n < _graph.getNGramLength(); n++)
+		for (size_t n = 1; n < graph.getNGramLength(); n++)
 		{
 			if (article.text.size() < n)
 				break;
 			for (size_t pos = 0; pos < article.text.size() - n + 1; pos++)
 			{
 				auto ngramHash = Hasher::sortAndCalcHash(article.text, pos, n);
-				if (_graph.isTermExist(ngramHash))
+				if (graph.isTermExist(ngramHash))
 				{
 					terms.insert(ngramHash);
 				}
@@ -66,7 +65,7 @@ void SemanticGraphBuilder::countTermsUsedDocuments(std::vector<NormalizedArticle
 		}
 		for (auto termsHash : terms)
 		{
-			_graph.nodes.at(termsHash).term.numberOfArticlesThatUseIt += 1;
+			graph.nodes.at(termsHash).term.numberOfArticlesThatUseIt += 1;
 		}
 	}
 }
@@ -80,39 +79,39 @@ size_t getTermsCountsSum(std::map<size_t, size_t> const& termsCount)
 	return std::transform_reduce(std::execution::par, termsCount.begin(), termsCount.end(), 0ull, [](size_t a, size_t b) {return a + b; }, [](auto const& pair) {return pair.second; });
 }
 
-SemanticGraphBuilder::SemanticGraphBuilder(size_t nGramLenght) : _graph(nGramLenght), nGramLenght(nGramLenght)
+SemanticGraphBuilder::SemanticGraphBuilder(std::string const& graph_name,size_t nGramLength) : graph(graph_name, nGramLength), nGramLenghth(nGramLength)
 {
 }
 
-SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> const& sourceArticles)
+SemanticGraph SemanticGraphBuilder::build(std::vector<NormalizedArticle> articles)
 {
-	_graph = SemanticGraph(nGramLenght);
-	auto articles = concatArticlesWithSameName(sourceArticles);
+	graph = SemanticGraph(graph.name, nGramLenghth);
+	articles = concatArticlesWithSameName(articles);
 	addAllTermsToGraph(articles);
 	countTermsUsedDocuments(articles);
 	for (auto&& article : articles)
 	{
 		auto titleHash = Hasher::sortAndCalcHash(article.titleWords);
 		auto const& contentWords = article.text;
-		auto linkedTermsCounts = TermsUtils::extractTermsCounts(_graph, contentWords);
+		auto linkedTermsCounts = TermsUtils::extractTermsCounts(graph, contentWords);
 		auto linkedTermsSumCount = getTermsCountsSum(linkedTermsCounts);
 		auto articlesCount = articles.size();
 
 		for (auto [termHash, linkCount] : linkedTermsCounts)
 			if (titleHash != termHash) {
-				auto const& term = _graph.nodes[termHash].term;
+				auto const& term = graph.nodes.at(termHash).term;
 				auto tfIdf = TermsUtils::calcTfIdf(linkCount, linkedTermsSumCount, term.numberOfArticlesThatUseIt, articlesCount);
-				if (_graph.isLinkExist(titleHash, termHash))
-					_graph.addLinkWeight(termHash, titleHash, tfIdf);
+				if (graph.isLinkExist(titleHash, termHash))
+					graph.addLinkWeight(termHash, titleHash, tfIdf);
 				else
-					_graph.createLink(titleHash, termHash, tfIdf);
-				if (_graph.isLinkExist(termHash, titleHash))
-					_graph.addLinkWeight(termHash, titleHash, tfIdf * 0.7);
+					graph.createLink(titleHash, termHash, tfIdf);
+				if (graph.isLinkExist(termHash, titleHash))
+					graph.addLinkWeight(termHash, titleHash, tfIdf * 0.7);
 				else
-					_graph.createLink(termHash, titleHash, tfIdf * 0.7);
+					graph.createLink(termHash, titleHash, tfIdf * 0.7);
 			}
 	}
-	return _graph;
+	return graph;
 }
 
 SemanticGraph SemanticGraphBuilder::build(std::string const& xmlText)

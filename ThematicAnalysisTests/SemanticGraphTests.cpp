@@ -3,11 +3,11 @@
 #include "CppUnitTest.h"
 #include "ArticlesNormalizer.h"
 #include "Utils/FileUtils.h"
-#include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
 #include "Utils/StringUtils.h"
 #include "ArticlesReader/XmlArticlesReader.h"
+#include "Utils/Hasher.h"
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 /**
@@ -78,7 +78,7 @@ namespace ThematicAnalysisTests
 			Assert::IsTrue(graph.getLinkWeight(terms[1].getHashCode(), terms[2].getHashCode()) - 0.5 <  eps);
 		}
 
-		Term getTerm(std::vector<std::string> words = { "диплом" }) const
+		Term getTerm(std::vector<std::string> const& words = { "диплом" }) const
 		{
 			return { words, StringUtils::concat(words), Hasher::sortAndCalcHash(words) };
 		}

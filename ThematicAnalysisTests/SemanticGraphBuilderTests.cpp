@@ -1,12 +1,9 @@
 ﻿#include "pch.h"
-
 #include <algorithm>
 #include <CppUnitTest.h>
 #include <set>
-
-#include "Hasher.h"
-#include "Utils/TermsUtils.h"
 #include "SemanticGraphBuilder.h"
+#include "Utils/Hasher.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -58,7 +55,7 @@ namespace ThematicAnalysisTests
 				{ {"второй"}, "второй", {"второй", "терм"} },
 				{ {"третий"}, "третий", {"второй", "терм"} },
 			};
-			std::vector<size_t> articlesHashes = {Hasher::sortAndCalcHash(articles[0].titleWords), Hasher::sortAndCalcHash(articles[2].titleWords)};
+			std::vector articlesHashes = {Hasher::sortAndCalcHash(articles[0].titleWords), Hasher::sortAndCalcHash(articles[2].titleWords)};
 
 			auto graph = builder.build(articles);
 			Assert::AreEqual(2ull, graph.nodes.size());

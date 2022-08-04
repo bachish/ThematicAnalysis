@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils\FileUtils.cpp" />
-    <ClCompile Include="src\Hasher.cpp" />
+    <ClCompile Include="src\Utils\Hasher.cpp" />
     <ClCompile Include="src\Utils\TermsUtils.cpp" />
     <ClCompile Include="src\TextNormalizer.cpp" />
     <ClCompile Include="src\SemanticGraphBuilder.cpp" />
@@ -34,11 +34,12 @@
     <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
     <ClCompile Include="src\Term.cpp" />
     <ClCompile Include="src\TagsAnalyzer.cpp" />
+    <ClCompile Include="src\Utils\AnalyzeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ArticlesNormalizer.h" />
     <ClInclude Include="src\Utils\FileUtils.h" />
-    <ClInclude Include="src\Hasher.h" />
+    <ClInclude Include="src\Utils\Hasher.h" />
     <ClInclude Include="src\Utils\TermsUtils.h" />
     <ClInclude Include="src\Utils\StringUtils.h" />
     <ClInclude Include="src\ArticlesReader\IArticlesReader.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="src\ArticlesReader\MathArticlesReader.h" />
     <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h" />
     <ClInclude Include="src\TagsAnalyzer.h" />
+    <ClInclude Include="src\Utils\AnalyzeUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\mystem.exe">

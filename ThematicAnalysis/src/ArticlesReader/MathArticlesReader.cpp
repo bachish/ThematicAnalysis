@@ -1,7 +1,7 @@
-﻿#include <sstream>
-
+#include <boost/regex.hpp>
+#include <regex>
+#include <sstream>
 #include "MathArticlesReader.h"
-
 #include "TextNormalizer.h"
 
 struct SubString

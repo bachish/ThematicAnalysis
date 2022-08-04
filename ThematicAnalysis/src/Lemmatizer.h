@@ -10,5 +10,3 @@ public:
 private: 
 	std::vector<std::string> lemmatizeTextWithMyStem(const std::string& text) const;
 };
-
-

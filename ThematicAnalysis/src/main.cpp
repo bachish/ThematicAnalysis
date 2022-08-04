@@ -3,145 +3,135 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <boost/regex.hpp>
 
 #include "Utils/FileUtils.h"
-#include "Hasher.h"
 #include "TextNormalizer.h"
 #include "SemanticGraphBuilder.h"
 #include "Utils/TermsUtils.h"
 #include "TagsAnalyzer.h"
 #include "ArticlesReader/MathArticlesReader.h"
 #include "ArticlesReader/XmlArticlesReader.h"
+#include "Utils/Hasher.h"
 #include "Utils/StringUtils.h"
+#include "Utils/AnalyzeUtils.h"
 
-
-void listTerms() {
-	auto reader = MathArticlesReader();
-	auto text = FileUtils::readAllFile("resources/math/math.txt");
-
-	//FileUtils::writeUTF8ToFile("temp/temp.txt", text);
-	auto [titles, _] = reader.read(text);
-	FileUtils::writeUTF8ToFile("terms.txt", StringUtils::concat(titles, "\n"));
-}
-
-void create() {
-	auto builder = SemanticGraphBuilder();
-	auto graph = builder.build(FileUtils::readAllFile("resources/math/math.txt"), MathArticlesReader());
-	graph.exportToFile("resources/coolAllMath.gr");
-}
-
-void createXml() {
-	auto text = FileUtils::readAllFile("resources/math/math.txt");
-	auto builder = SemanticGraphBuilder();
-	auto [terms, content] = MathArticlesReader().read(text);
-	auto xmlText = XmlArticlesReader().exportToXml(terms, content);
-	std::ofstream out = std::ofstream("xmlMath.txt");
-	out << xmlText;
-	out.close();
-}
-SemanticGraph getMathGraph()
+SemanticGraph getGraph(const std::string& graph_name)
 {
-	SemanticGraph graph;
-	graph.importFromFile("resources/coolAllMath.gr");
+	//todo check on existing
+	SemanticGraph graph(graph_name);
+	graph.importFromFile("resources/" + graph_name + ".gr");
 	return graph;
 }
 
-void draw(std::string term)
+void wrongTerms()
 {
-	auto graph = getMathGraph();
+	auto reader = MathArticlesReader();
+	auto text = FileUtils::readAllFile("resources/math/math.txt");
+
+	auto [titles, _] = reader.read(text);
+	for (int i = 1; i < titles.size(); i++)
+	{
+		if (titles[i] < titles[i - 1])
+		{
+			std::cout << titles[i - 1] << " >> " << titles[i] << "\n";
+		}
+	}
+}
+
+
+void draw(SemanticGraph const& graph, const std::string& term)
+{
 	TextNormalizer normalizer;
 	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
-	auto subgr = graph.getNeighborhood(hash,1, 0.001);
-	subgr.drawToImage("temp/", "image2", hash);
+	auto subgr = graph.getNeighborhood(hash, 1, 0.15);
+	subgr.drawToImage("temp/" + graph.name + "_" + term, hash);
 }
 
-void tags()
+void termsInArticleCount(SemanticGraph const& graph, std::string const& article_name, std::ostream& out)
 {
-	auto graph = getMathGraph();
-
-	TagsAnalyzer analyzer;
-	analyzer.DISTRIBUTION_COEF = 1;
-
-	analyzer.analyze(FileUtils::readAllUTF8File("resources/articles/4.txt"), graph);
-	auto tags = analyzer.getRelevantTags(30);
-	for (auto& tag : tags)
-	{
-		std::cout << tag.termView << ' ' << std::fixed << std::setprecision(2) << tag.weight << "\n";
-	}
-	auto hash = Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[0].termView));
-	auto gr = SemanticGraph();
-	//auto gr = analyzer.tagsGraph.getNeighborhood(hash, 10, 0.09, 0.1);
-
-
-	for (int i = 0; i < tags.size(); i++) {
-		auto gr2 = analyzer.tagsGraph.getNeighborhood(Hasher::sortAndCalcHash(TextNormalizer().normalize(tags[i].termView)), 3, 0.05, 0.06);
-		gr.merge(gr2);
-	}
-	gr.drawToImage("temp/", "temp2", hash);
-
-}
-
-void terms()
-{
-	auto graph = getMathGraph();
-	auto koko = std::find_if(graph.nodes.begin(), graph.nodes.end(), [](decltype(graph.nodes)::const_reference node)
-		{
-			return node.second.term.view == "КО---ПРОСТРАНСТВО";
-		});
-
-	for (auto& tag : TermsUtils::extractTermsCounts(graph, TextNormalizer().normalize(
+	for (auto& [termHash, cnt] : TermsUtils::extractTermsCounts(graph, TextNormalizer().normalize(
 		FileUtils::readAllUTF8File("resources/integral.txt"))))
 	{
-		std::cout << graph.nodes[tag.first].term.view << " " << tag.second << '\n';
+		out << graph.nodes.at(termHash).term.view << " " << cnt << '\n';
 	}
 }
-void calcTerms()
-{
-	auto graph = getMathGraph();
-	auto count = std::map<size_t, size_t>();
-	for (int i = 0; i < 5000; i++)
-		count[i] = 0;
-	std::ofstream out = std::ofstream("statres.txt");
-	std::map<size_t, std::string> top;
-	for (auto [hash, node] : graph.nodes)
-	{
-		count[node.neighbors.size()]++;
-		if (node.neighbors.size() > 1000)
-			top.insert({ node.neighbors.size() , node.term.view });
-	}
-	for (auto value : top)
-	{
-		out << value.first << " " <<value.second <<  std::endl;
-	}
-	out.close();
-}
-void calcColTerms() {
-	auto graph = getMathGraph();
-	auto count = std::map<size_t, size_t>();
-	for (int i = 0; i < 20; i++)
-		count[i] = 0;
-	std::ofstream out = std::ofstream("statwords.txt");
 
-	for (auto [hash, node] : graph.nodes)
+//todo what it do?
+void printTermsToFile(std::string const& path) {
+	auto reader = MathArticlesReader();
+	auto text = FileUtils::readAllFile("resources/math/math.txt");
+	//auto reader = XmlArticlesReader();
+	//auto text = FileUtils::readAllFile("resources/AllMath.txt");
+
+	auto [titles, _] = reader.read(text);
+	FileUtils::writeUTF8ToFile(path, StringUtils::concat(titles, "\n"));
+}
+
+void createGraphFromTxt(std::string const& enc_name) {
+	auto builder = SemanticGraphBuilder();
+	auto graph = builder.build(FileUtils::readAllFile("resources/" + enc_name + ".txt"), MathArticlesReader());
+	graph.exportToFile("resources/" + enc_name + ".gr");
+}
+void createGraphFromXml(std::string const& enc_name) {
+	auto builder = SemanticGraphBuilder();
+	auto graph = builder.build(FileUtils::readAllFile("resources/" + enc_name + ".txt"), XmlArticlesReader());
+	graph.exportToFile("resources/" + enc_name + ".gr");
+}
+
+
+void drawTermSubGraph(SemanticGraph const& graph, std::string const& term, int radius, double minEdgeWeight)
+{
+	TextNormalizer normalizer{};
+	auto hash = Hasher::sortAndCalcHash(normalizer.normalize(term));
+	const auto subGraph = graph.getNeighborhood(hash, radius, minEdgeWeight);
+	subGraph.drawToImage("resources/ " + graph.name + "_" + term, hash);
+}
+
+void tags(const SemanticGraph& graph, const std::string& text, int cnt, std::ostream& out)
+{
+	TagsAnalyzer analyzer;
+	analyzer.distributionCoef = 1;
+
+	analyzer.analyze(text, graph);
+	auto tags = analyzer.getRelevantTags(cnt);
+	for (auto& [termView, weight] : tags)
 	{
-		 count[node.term.normalizedWords.size()]++;
-	}
-	for (auto [words, term]  : count)
-	{
-		out << words << " " << term << std::endl;
+		out << termView << ' ' << std::fixed << std::setprecision(2) << weight << "\n";
 	}
 }
+
+void printGraph(SemanticGraph const& gr, std::ostream& out)
+{
+	out << "Terms count: " << gr.getTermsCount() << "\n";
+	std::vector<std::string> terms(gr.getTermsCount());
+	std::transform(gr.nodes.begin(), gr.nodes.end(), terms.begin(), [](auto& n) {return n.second.term.view; });
+	std::sort(terms.begin(), terms.end());
+	for (auto& term : terms)
+		out << term << "\n";
+	std::vector<std::tuple<std::string, std::string, double>> links;
+	for (auto& [_, node] : gr.nodes)
+		for (auto& [neighborHash, link] : node.neighbors)
+			links.emplace_back(node.term.view, gr.nodes.at(neighborHash).term.view, link.weight);
+	std::sort(links.begin(), links.end(), [](auto& a, auto& b) {return std::get<2>(a) > std::get<2>(b); });
+	out << "Links count: " << links.size() << "\n";
+	for (auto& [term1, term2, w] : links)
+		out << term1 << " -> " << term2 << " (" << w << ")\n";
+}
+
 
 int main() {
-	srand(time(0));
+	srand(time(nullptr));
 	setlocale(LC_ALL, "rus");
-	//getMathGraph().drawToImage("temp/", "all");
+	auto graph = getGraph("math");
+	AnalyzeUtils::calcLinksCounts(graph);
+
 	//create();
 	//calcColTerms();
 	//draw("ТОЧКИ");
 	//tags();
-	draw("ФУНКЦИЯ");
+	//draw("ФУНКЦИЯ");
 	//listTerms();
 	return 0;
 }

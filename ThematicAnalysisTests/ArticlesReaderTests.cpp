@@ -55,9 +55,9 @@ namespace ThematicAnalysisTests
 			Assert::AreEqual(2ull, titles.size());
 			Assert::AreEqual(2ull, contents.size());
 			Assert::AreEqual({ "ТЕРМИН" }, titles[0]);
-			Assert::AreEqual({ " — очень \n интересный Термин \n\n" }, contents[0]);
+			Assert::AreEqual({ " — очень \t\n интересный Термин. \n\n" }, contents[0]);
 			Assert::AreEqual({ "ТЕРМИН ДВА" }, titles[1]);
-			Assert::AreEqual({ " три четыре — ля - ля" }, contents[1]);
+			Assert::AreEqual({ " три четыре — ля - ля." }, contents[1]);
 		}
 
 	};

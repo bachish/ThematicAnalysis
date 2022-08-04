@@ -8,10 +8,10 @@
 #include "CppUnitTest.h"
 #include "ArticlesNormalizer.h"
 #include "Utils/FileUtils.h"
-#include "Hasher.h"
 #include "SemanticGraph.h"
 #include "SemanticGraphBuilder.h"
 #include "ArticlesReader/MathArticlesReader.h"
+#include "Utils/Hasher.h"
 #include "Utils/TermsUtils.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -86,16 +86,16 @@ namespace ThematicAnalysisTests
 			auto allTermsCount = std::transform_reduce(std::execution::par, countTerms.begin(),
 				countTerms.end(), 0ull, [](size_t a, size_t b) {return a + b; }, [](auto const& pair) {return pair.second; });
 			auto hash = Hasher::sortAndCalcHash({ "медиана" });
-			auto idfs = TermsUtils::calcTfIdf(countTerms[hash], allTermsCount, 
-				smallGraph.nodes[hash].term.numberOfArticlesThatUseIt, articlesCount);
+			auto idfs = TermsUtils::calcTfIdf(countTerms.at(hash), allTermsCount, 
+				smallGraph.nodes.at(hash).term.numberOfArticlesThatUseIt, articlesCount);
 
 			//7 терминов потому что "квантили" лемматизиуется как "квантить"
 			auto handIdf = (2. / 7.) * std::log10((double)articlesCount / 1.);
 			Assert::IsTrue(idfs - handIdf < eps);
 
 			hash = Hasher::sortAndCalcHash({ "выборочный", "медиана"});
-			idfs = TermsUtils::calcTfIdf(countTerms[hash], allTermsCount,
-				smallGraph.nodes[hash].term.numberOfArticlesThatUseIt, articlesCount);
+			idfs = TermsUtils::calcTfIdf(countTerms.at(hash), allTermsCount,
+				smallGraph.nodes.at(hash).term.numberOfArticlesThatUseIt, articlesCount);
 			handIdf = (1. / 7.) * std::log10((double)(articlesCount + 1)  / 1.);
 			Assert::IsTrue(idfs - handIdf < eps);
 		}

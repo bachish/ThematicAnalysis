@@ -1,8 +1,6 @@
 ﻿#include "StringUtils.h"
-
 #include <algorithm>
 #include <execution>
-#include <iostream>
 #include <numeric>
 #include <sstream>
 #include <string>
@@ -11,7 +9,6 @@
 
 std::vector<std::string> StringUtils::split(std::string const& text, std::string const& delim, bool removeBlanks)
 {
-	auto curIt = text.begin();
 	std::vector<std::string> words;
 	words.reserve(text.size()/8);
 	auto start = 0ull;

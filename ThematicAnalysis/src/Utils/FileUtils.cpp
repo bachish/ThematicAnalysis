@@ -1,5 +1,4 @@
 ﻿#include "FileUtils.h"
-
 #include <Windows.h>
 #include <sstream>
 #include <fstream>
@@ -9,15 +8,12 @@
 #include <string>
 #include <array>
 
-
 std::string FileUtils::readAllFile(const std::ifstream& fin)
 {
 	std::stringstream wss;
 	wss << fin.rdbuf();
 	return wss.str();
 }
-
-
 
 std::string FileUtils::readAllFile(std::string const& filePath)
 {
@@ -29,7 +25,7 @@ std::string FileUtils::readAllFile(std::string const& filePath)
 
 std::string convertEncodings(std::string const& str, UINT encodingFrom, UINT encodingTo)
 {
-		auto wsize = MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, nullptr, 0);
+	auto wsize = MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, nullptr, 0);
 	auto wres = new WCHAR[wsize];
 	MultiByteToWideChar(encodingFrom, 0, str.c_str(), -1, wres, wsize);
 
@@ -44,22 +40,20 @@ std::string convertEncodings(std::string const& str, UINT encodingFrom, UINT enc
 	return res;
 }
 
-
-std::string UTF8ToCp1251(const std::string& str)
+std::string convertUTF8ToCp1251(const std::string& str)
 {
 	return convertEncodings(str, CP_UTF8, 1251);
 }
 
-std::string cp1251ToUTF8(const std::string& str)
+std::string convertCp1251ToUTF8(const std::string& str)
 {
-		return convertEncodings(str, 1251, CP_UTF8);
-
+	return convertEncodings(str, 1251, CP_UTF8);
 }
 
 std::string FileUtils::readAllUTF8File(std::string const& filePath)
 {
 	auto text = readAllFile(filePath);
-	text = UTF8ToCp1251(text);
+	text = convertUTF8ToCp1251(text);
 	return text;
 }
 
@@ -67,7 +61,7 @@ void FileUtils::writeUTF8ToFile(std::string const& filePath, std::string const& 
 {
 	std::ofstream fout(filePath);
 	fout.imbue(std::locale(""));
-	auto wtext = cp1251ToUTF8(text);
+	auto wtext = convertCp1251ToUTF8(text);
 	fout << wtext;
 	fout.close();
 }
@@ -80,18 +74,24 @@ void FileUtils::writeToFile(std::string const& filePath, std::string const& text
 	fout.close();
 }
 
-bool FileUtils::executeExeWithParams(std::string exe, std::string params, std::string& output)
+bool FileUtils::executeExeWithParams(const std::string& exePath, const std::string& params, std::string& output)
 {
-		if(!std::filesystem::exists(exe)) return false;
-		auto cmd = exe + " " + params;
-		std::array<char, 128> buffer;
-		std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.c_str(), "r"), _pclose);
-		if (pipe == nullptr) {
-			return false;
-		}
-		while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-			output += buffer.data();
-		}
+	if (!std::filesystem::exists(exePath)) return false;
+	auto cmd = exePath + " " + params;
+	std::array<char, 128> buffer{};
+	std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.c_str(), "r"), _pclose);
+	if (pipe == nullptr) {
+		return false;
+	}
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+		output += buffer.data();
+	}
 
-		return true;
+	return true;
+}
+
+bool FileUtils::executeExeWithParams(const std::string& exePath, const std::string& params)
+{
+	std::string _;
+	return executeExeWithParams(exePath, params, _);
 }
