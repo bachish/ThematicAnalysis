@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include "IArticlesReader.h"
 #include <vector>
-#include <boost/regex.hpp>
 #include <regex>
+
 class MathArticlesReader : public IArticlesReader
 {
 public:

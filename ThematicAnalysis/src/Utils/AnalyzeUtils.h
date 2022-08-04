@@ -4,7 +4,7 @@
 class AnalyzeUtils
 {
 public:
-	static void calcLinksCounts(const SemanticGraph& graph);
+	static void countLinksOfEachTerm(const SemanticGraph& graph);
 };
 
 

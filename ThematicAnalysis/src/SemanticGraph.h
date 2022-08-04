@@ -68,6 +68,6 @@ public:
 
 private:
 	size_t _nGramLength;
-	void buildNeighborhood(size_t curHash, unsigned radius, double minEdgeWeight, double minNodeWeight, SemanticGraph& neighbors) const;
+	void buildNeighborhood(size_t curHash, unsigned radius, double curWeightCoef, double minEdgeWeight, double minNodeWeight, SemanticGraph& neighbors) const;
 	Ubpa::UGraphviz::Graph createDotView(std::map<size_t, size_t>& registeredNodes) const;
 };

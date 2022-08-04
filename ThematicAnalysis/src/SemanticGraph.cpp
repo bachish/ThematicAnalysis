@@ -145,12 +145,12 @@ void SemanticGraph::merge(SemanticGraph const& src)
 SemanticGraph SemanticGraph::getNeighborhood(size_t centerHash, unsigned radius, double minEdgeWeight, double minNodeWeight) const
 {
 	auto neighbors = SemanticGraph(name + "_" + nodes.at(centerHash).term.view, _nGramLength);
-	buildNeighborhood(centerHash, radius, minEdgeWeight, minNodeWeight, neighbors);
+	buildNeighborhood(centerHash, radius, 1, minEdgeWeight, minNodeWeight, neighbors);
 	return neighbors;
 }
 
-void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double minEdgeWeight,
-	double minNodeWeight, SemanticGraph& neighbors) const
+void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double curWeightCoef,
+	double minEdgeWeight, double minNodeWeight, SemanticGraph& neighbors) const
 {
 	if (!isTermExist(curHash)) return;
 	const auto& termNode = nodes.find(curHash)->second;
@@ -160,9 +160,9 @@ void SemanticGraph::buildNeighborhood(size_t curHash, unsigned radius, double mi
 	if (radius == 0) return;
 	for (auto&& [hash, link] : termNode.neighbors)
 	{
-		if (link.weight >= minEdgeWeight) {
+		if (curWeightCoef * link.weight >= minEdgeWeight) {
 			if (!neighbors.isTermExist(hash))
-				buildNeighborhood(hash, radius - 1, minEdgeWeight, minNodeWeight, neighbors);
+				buildNeighborhood(hash, radius - 1, std::min(1., curWeightCoef * link.weight*1.5), minEdgeWeight, minNodeWeight, neighbors);
 
 			if (neighbors.isTermExist(hash) && !neighbors.isLinkExist(curHash, hash))
 				neighbors.createLink(curHash, hash, link.weight);
@@ -219,7 +219,7 @@ Ubpa::UGraphviz::Graph SemanticGraph::createDotView(std::map<size_t, size_t>& re
 			}
 	}
 	dotGraph.RegisterGraphAttr("overlap", "false");
-	dotGraph.RegisterGraphAttr("start", "14");
+	dotGraph.RegisterGraphAttr("start", std::to_string(rand()));
 	//dotGraph.RegisterGraphAttr("start", std::to_string(rand()));
 	return dotGraph;
 }
