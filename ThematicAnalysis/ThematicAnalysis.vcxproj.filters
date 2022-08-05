@@ -60,7 +60,7 @@
     <ClCompile Include="src\Utils\TermsUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\AnalyzeUtils.cpp">
+    <ClCompile Include="src\AnalyzeUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,7 +110,7 @@
     <ClInclude Include="src\Utils\TermsUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\AnalyzeUtils.h">
+    <ClInclude Include="src\AnalyzeUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

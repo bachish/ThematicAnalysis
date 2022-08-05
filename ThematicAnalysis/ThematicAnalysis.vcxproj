@@ -34,7 +34,7 @@
     <ClCompile Include="src\ArticlesReader\XmlArticlesReader.cpp" />
     <ClCompile Include="src\Term.cpp" />
     <ClCompile Include="src\TagsAnalyzer.cpp" />
-    <ClCompile Include="src\Utils\AnalyzeUtils.cpp" />
+    <ClCompile Include="src\AnalyzeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ArticlesNormalizer.h" />
@@ -52,7 +52,7 @@
     <ClInclude Include="src\ArticlesReader\MathArticlesReader.h" />
     <ClInclude Include="src\ArticlesReader\XmlArticlesReader.h" />
     <ClInclude Include="src\TagsAnalyzer.h" />
-    <ClInclude Include="src\Utils\AnalyzeUtils.h" />
+    <ClInclude Include="src\AnalyzeUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\mystem.exe">
