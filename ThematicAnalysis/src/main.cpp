@@ -141,7 +141,7 @@ int main() {
 	/*for(int i = 1; i < 11; i++)
 		AnalyzeUtils::printArticlesTags(graph, std::to_string(i), readArticle(std::to_string(i)), 30);*/
 		//listEncyclopediaTerms("math", MathArticlesReader());
-	createAndExportGraph("physic", MathArticlesReader());
+	createAndExportGraph("med", MathArticlesReader());
 //	printWrongTerms("math", MathArticlesReader());
 	return 0;
 }
