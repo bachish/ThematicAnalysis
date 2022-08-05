@@ -5,6 +5,7 @@
 #include <iostream>
 #include <boost/regex.hpp>
 
+#include "ArticlesNormalizer.h"
 #include "Utils/FileUtils.h"
 #include "TextNormalizer.h"
 #include "SemanticGraphBuilder.h"
@@ -86,11 +87,11 @@ void drawTermSubGraph(SemanticGraph const& graph, std::string const& term, int r
 	subGraph.drawToImage("resources/ " + graph.name + "_" + term, hash);
 }
 
-void listUniqueTerms(std::string text, IArticlesReader const& reader)
+void listEncyclopediaTerms(std::string const& encName, IArticlesReader const& reader)
 {
-	auto [titles, _] = reader.read(text);
+	auto [titles, _] = reader.read(readEncyclopedia(encName));
 	std::transform(titles.begin(), titles.end(), titles.begin(), [](std::string const& title) {return TextNormalizer::clearText(title); });
-	FileUtils::writeUTF8ToFile("terms.txt", StringUtils::concat(titles, "\n"));
+	FileUtils::writeUTF8ToFile("temp/" + encName + "_terms.txt", StringUtils::concat(titles, "\n"));
 }
 
 void createAndExportGraph(std::string const& encName, IArticlesReader const& reader)
@@ -136,8 +137,11 @@ void printGraphStructure(SemanticGraph const& gr, std::ostream& out)
 int main() {
 	srand(time(nullptr));
 	setlocale(LC_ALL, "rus");
-	auto graph = getGraph("math");
-	for(int i = 1; i < 11; i++)
-		AnalyzeUtils::printArticlesTags(graph, std::to_string(i), readArticle(std::to_string(i)), 30);
+	//auto graph = getGraph("math");
+	/*for(int i = 1; i < 11; i++)
+		AnalyzeUtils::printArticlesTags(graph, std::to_string(i), readArticle(std::to_string(i)), 30);*/
+		//listEncyclopediaTerms("math", MathArticlesReader());
+	createAndExportGraph("physic", MathArticlesReader());
+//	printWrongTerms("math", MathArticlesReader());
 	return 0;
 }
