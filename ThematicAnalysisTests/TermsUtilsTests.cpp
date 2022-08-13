@@ -28,7 +28,7 @@ namespace ThematicAnalysisTests
 		static SemanticGraph graph;
 		TEST_CLASS_INITIALIZE(TermsUtilsInitialize)
 		{
-			graph.importFromFile("resources/coolAllMath.gr");
+			graph.importFromFile("resources/graphs/coolAllMath.gr");
 		}
 
 		std::vector<std::string> getTextVectorFromFS(std::string pathFile)
